@@ -177,10 +177,6 @@ The block is rectangular, lies flat and is the only red object. The table is cle
 
 The robustness suite also injects a 2 mm calibration-mount error and a 2% depth-scale error. The moving-target/velocity-feedforward and visual-feedback ablations provide the independent-contribution argument. The additional confidence-policy comparison must earn its conclusion from held-out evidence. No hardware performance or guaranteed mark is claimed.
 
-## Evidence from the earlier revision
-
-[Archived original recordings, figures and project page](results/legacy_before_review/) are preserved. They predate corrected estimator timing, strict calibration and sustained-lift checks. Their numerical claims are historical, not validation of this revision. The saved original clips do not embed a seed.
-
 ## Five-minute demonstration video
 
 <!-- VIDEO:START -->
