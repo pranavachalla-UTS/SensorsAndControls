@@ -1,0 +1,259 @@
+<!--
+  Track B scene: UR3 on a table, with a parallel gripper and a wrist RGB-D camera.
+
+  This extends the scene we built in view_project.py:
+    - the UR3 links/inertias are the ones imported from ur_description
+    - added here: a gripper, a wrist camera, torque motors, and the blocks
+
+  Frames:
+    world      origin on the floor, z up
+    base_link  the robot base, bolted to the table at z = 0.6 m
+    tool0      the flange (z points out of the flange)
+    tcp        a site between the finger pads = the point we drive to the object
+    wrist_camera  looks along tool +z
+
+  The red block is the only block on the table, and it is the target. Its
+  position is randomised on every run (see Sim.randomise_blocks).
+-->
+<mujoco model="ur3_pick">
+  <compiler angle="radian" meshdir="assets/ur3" texturedir="."/>
+  <option timestep="0.001" integrator="implicitfast"/>
+
+  <visual>
+    <headlight ambient="0.35 0.35 0.35" diffuse="0.4 0.4 0.4" specular="0 0 0"/>
+    <global offwidth="1280" offheight="720"/>
+  </visual>
+
+  <default>
+    <!-- contype 2 / conaffinity 1: arm links collide with the world, not with
+         each other. Self-collision between neighbouring links is a nuisance
+         here and we never command a self-colliding pose. -->
+    <default class="arm">
+      <geom contype="2" conaffinity="1"/>
+      <!-- Each link is drawn with the OBJ shells and collided with the convex
+           STL hull, which is the usual MuJoCo split: the shells carry the real
+           shape and the UR colours but would be far too expensive to run
+           contacts against. Group 2 is drawn by default, group 3 is not, so
+           the hulls stay invisible unless you tick group 3 in the viewer. -->
+      <default class="visual">
+        <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+      </default>
+      <default class="collision">
+        <geom type="mesh" group="3"/>
+      </default>
+    </default>
+    <!-- armature = motor rotor inertia seen at the joint; damping = viscous
+         friction; frictionloss = Coulomb friction (the controller does NOT
+         model this term - the observer has to deal with it). -->
+    <default class="big_joint">
+      <joint armature="0.1" damping="2.0" frictionloss="0.5"/>
+    </default>
+    <default class="small_joint">
+      <joint armature="0.02" damping="0.5" frictionloss="0.2"/>
+    </default>
+  </default>
+
+  <asset>
+    <!-- Link shells. One OBJ per material, converted from the ur_description
+         UR3 visual meshes (which ship as DAE, a format MuJoCo cannot read).
+         Same per-material split MuJoCo Menagerie uses, and the parts sit in
+         the same link frames as the collision hulls below. -->
+    <material name="black"     rgba="0.033 0.033 0.033 1" specular="0.5" shininess="0.25"/>
+    <material name="jointgray" rgba="0.278 0.278 0.278 1" specular="0.5" shininess="0.25"/>
+    <material name="linkgray"  rgba="0.82 0.82 0.82 1"    specular="0.5" shininess="0.25"/>
+    <material name="urblue"    rgba="0.49 0.678 0.8 1"    specular="0.5" shininess="0.25"/>
+
+    <mesh file="base_0.obj"/>
+    <mesh file="base_1.obj"/>
+    <mesh file="shoulder_0.obj"/>
+    <mesh file="shoulder_1.obj"/>
+    <mesh file="shoulder_2.obj"/>
+    <mesh file="upperarm_0.obj"/>
+    <mesh file="upperarm_1.obj"/>
+    <mesh file="upperarm_2.obj"/>
+    <mesh file="forearm_0.obj"/>
+    <mesh file="forearm_1.obj"/>
+    <mesh file="forearm_2.obj"/>
+    <mesh file="wrist1_0.obj"/>
+    <mesh file="wrist1_1.obj"/>
+    <mesh file="wrist2_0.obj"/>
+    <mesh file="wrist2_1.obj"/>
+    <mesh file="wrist3_0.obj"/>
+    <mesh file="wrist3_1.obj"/>
+
+    <!-- Convex hulls used for contact only. -->
+    <mesh name="base_hull"     file="collision/base.stl"/>
+    <mesh name="shoulder_hull" file="collision/shoulder.stl"/>
+    <mesh name="upperarm_hull" file="collision/upperarm.stl"/>
+    <mesh name="forearm_hull"  file="collision/forearm.stl"/>
+    <mesh name="wrist1_hull"   file="collision/wrist1.stl"/>
+    <mesh name="wrist2_hull"   file="collision/wrist2.stl"/>
+    <mesh name="wrist3_hull"   file="collision/wrist3.stl"/>
+    <texture name="grid" type="2d" builtin="checker" rgb1="0.3 0.32 0.34" rgb2="0.26 0.28 0.3"
+             width="512" height="512"/>
+    <material name="floor" texture="grid" texrepeat="8 8"/>
+    <!-- Mid-grey table: a white table would wash out the colour detector. -->
+    <material name="table" rgba="0.5 0.52 0.5 1"/>
+    <!-- Calibration board, used by part_b_sensing.py. trackb.py writes the
+         PNG on import if it is missing. -->
+    <texture name="checker_tex" type="2d" file="checkerboard.png"/>
+    <material name="checker_mat" texture="checker_tex" texuniform="false"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0.2 -0.6 2.2" dir="-0.1 0.3 -1" diffuse="0.55 0.55 0.55"/>
+    <geom name="floor" type="plane" size="2 2 0.1" material="floor"/>
+
+    <!-- Table, top surface at z = 0.6 m -->
+    <geom name="table" type="box" pos="0 0 0.575" size="0.55 0.45 0.025" material="table"/>
+    <geom name="leg1" type="box" pos="-0.5 -0.4 0.275" size="0.025 0.025 0.275" rgba="0.35 0.35 0.35 1"/>
+    <geom name="leg2" type="box" pos="-0.5 0.4 0.275" size="0.025 0.025 0.275" rgba="0.35 0.35 0.35 1"/>
+    <geom name="leg3" type="box" pos="0.5 -0.4 0.275" size="0.025 0.025 0.275" rgba="0.35 0.35 0.35 1"/>
+    <geom name="leg4" type="box" pos="0.5 0.4 0.275" size="0.025 0.025 0.275" rgba="0.35 0.35 0.35 1"/>
+
+    <!-- Camera for the demo video / screenshots (not a sensor) -->
+    <camera name="scene_cam" pos="0.45 -0.75 1.15" xyaxes="0.806 0.591 0 -0.267 0.364 0.892" fovy="42"/>
+
+    <!-- ===================== UR3 ===================== -->
+    <body name="base_link" pos="-0.35 0 0.6">
+      <body name="base_link_inertia" quat="0 0 0 1" childclass="arm">
+        <inertial pos="0 0 0" quat="0.5 0.5 -0.5 0.5" mass="2" diaginertia="0.005625 0.00305317 0.00305317"/>
+        <geom class="visual" quat="0 0 0 1" mesh="base_0" material="jointgray"/>
+        <geom class="visual" quat="0 0 0 1" mesh="base_1" material="black"/>
+        <geom class="collision" quat="0 0 0 1" mesh="base_hull"/>
+        <body name="shoulder_link" pos="0 0 0.1519">
+          <inertial pos="0 0 -0.02" mass="2" diaginertia="0.00809317 0.00809317 0.005625"/>
+          <joint name="shoulder_pan_joint" class="big_joint" axis="0 0 1" range="-6.28319 6.28319"/>
+          <geom class="visual" quat="0 0 0 1" mesh="shoulder_0" material="jointgray"/>
+          <geom class="visual" quat="0 0 0 1" mesh="shoulder_1" material="urblue"/>
+          <geom class="visual" quat="0 0 0 1" mesh="shoulder_2" material="black"/>
+          <geom class="collision" quat="0 0 0 1" mesh="shoulder_hull"/>
+          <body name="upper_arm_link" quat="0.707107 0.707107 0 0">
+            <inertial pos="-0.11365 0 0.1157" mass="3.42" diaginertia="0.0217285 0.0217285 0.00961875"/>
+            <joint name="shoulder_lift_joint" class="big_joint" axis="0 0 1" range="-6.28319 6.28319"/>
+            <geom class="visual" pos="0 0 0.1198" quat="0.5 0.5 -0.5 -0.5" mesh="upperarm_0" material="urblue"/>
+            <geom class="visual" pos="0 0 0.1198" quat="0.5 0.5 -0.5 -0.5" mesh="upperarm_1" material="jointgray"/>
+            <geom class="visual" pos="0 0 0.1198" quat="0.5 0.5 -0.5 -0.5" mesh="upperarm_2" material="linkgray"/>
+            <geom class="collision" pos="0 0 0.1198" quat="0.5 0.5 -0.5 -0.5" mesh="upperarm_hull"/>
+            <body name="forearm_link" pos="-0.24365 0 0">
+              <inertial pos="-0.16325 0 0.0238" mass="1.26" diaginertia="0.00654681 0.00654681 0.00354375"/>
+              <joint name="elbow_joint" class="big_joint" axis="0 0 1" range="-3.14159 3.14159"/>
+              <geom class="visual" pos="0 0 0.0275" quat="0.5 0.5 -0.5 -0.5" mesh="forearm_0" material="jointgray"/>
+              <geom class="visual" pos="0 0 0.0275" quat="0.5 0.5 -0.5 -0.5" mesh="forearm_1" material="linkgray"/>
+              <geom class="visual" pos="0 0 0.0275" quat="0.5 0.5 -0.5 -0.5" mesh="forearm_2" material="urblue"/>
+              <geom class="collision" pos="0 0 0.0275" quat="0.5 0.5 -0.5 -0.5" mesh="forearm_hull"/>
+              <body name="wrist_1_link" pos="-0.21325 0 0.11235">
+                <inertial pos="0 -0.01 0" quat="0.5 0.5 -0.5 0.5" mass="0.8" diaginertia="0.00225 0.00161064 0.00161064"/>
+                <joint name="wrist_1_joint" class="small_joint" axis="0 0 1" range="-6.28319 6.28319"/>
+                <geom class="visual" pos="0 0 -0.085" quat="0.707107 0.707107 0 0" mesh="wrist1_0" material="jointgray"/>
+                <geom class="visual" pos="0 0 -0.085" quat="0.707107 0.707107 0 0" mesh="wrist1_1" material="urblue"/>
+                <geom class="collision" pos="0 0 -0.085" quat="0.707107 0.707107 0 0" mesh="wrist1_hull"/>
+                <body name="wrist_2_link" pos="0 -0.08535 0" quat="0.707107 0.707107 0 0">
+                  <inertial pos="0 0.01 0" quat="0.5 0.5 -0.5 0.5" mass="0.8" diaginertia="0.00225 0.00157217 0.00157217"/>
+                  <joint name="wrist_2_joint" class="small_joint" axis="0 0 1" range="-6.28319 6.28319"/>
+                  <geom class="visual" pos="0 0 -0.083" mesh="wrist2_0" material="urblue"/>
+                  <geom class="visual" pos="0 0 -0.083" mesh="wrist2_1" material="jointgray"/>
+                  <geom class="collision" pos="0 0 -0.083" mesh="wrist2_hull"/>
+                  <body name="wrist_3_link" pos="0 0.0819 0" quat="0.707107 -0.707107 0 0">
+                    <inertial pos="0 0 -0.02" quat="0.5 0.5 -0.5 0.5" mass="0.35" diaginertia="0.0001792 0.000136267 0.000136267"/>
+                    <joint name="wrist_3_joint" class="small_joint" axis="0 0 1" range="-6.28319 6.28319"/>
+                    <geom class="visual" pos="0 -0.002 -0.082" quat="0.707107 0.707107 0 0" mesh="wrist3_0" material="linkgray"/>
+                    <geom class="visual" pos="0 -0.002 -0.082" quat="0.707107 0.707107 0 0" mesh="wrist3_1" material="jointgray"/>
+                    <geom class="collision" pos="0 -0.002 -0.082" quat="0.707107 0.707107 0 0" mesh="wrist3_hull"/>
+                    <body name="flange" quat="0.5 -0.5 -0.5 -0.5">
+                      <body name="tool0" quat="0.5 0.5 0.5 0.5">
+
+                        <!-- ============ gripper + camera ============ -->
+                        <body name="gripper">
+                          <inertial pos="0 0 0.03" mass="0.35" diaginertia="0.0004 0.0004 0.0003"/>
+                          <geom name="palm" type="box" pos="0 0 0.02" size="0.022 0.045 0.02"
+                                contype="2" conaffinity="1" rgba="0.25 0.25 0.28 1"/>
+
+                          <!-- MuJoCo cameras look down their own -z, so the
+                               180 deg flip about x aims this one along tool +z. -->
+                          <body name="camera_mount" pos="0.055 0 0.03">
+                            <geom name="camera_housing" type="box" size="0.012 0.04 0.012"
+                                  contype="0" conaffinity="0" mass="0.07" rgba="0.1 0.1 0.12 1"/>
+                            <camera name="wrist_camera" pos="0 0 0.014" quat="0 1 0 0" fovy="58"
+                                    resolution="640 480"/>
+                          </body>
+
+                          <!-- Two sliding fingers. They close along tool y, so
+                               tool x has to line up with the block's long side. -->
+                          <body name="finger_left" pos="0 0 0.04">
+                            <joint name="finger_left_joint" type="slide" axis="0 1 0" range="0 0.04"
+                                   damping="5" armature="0.01"/>
+                            <geom name="finger_left_geom" type="box" pos="0 0.006 0.045"
+                                  size="0.01 0.006 0.045" mass="0.03" condim="4"
+                                  friction="1.5 0.02 0.002" rgba="0.2 0.2 0.22 1"/>
+                          </body>
+                          <body name="finger_right" pos="0 0 0.04">
+                            <joint name="finger_right_joint" type="slide" axis="0 -1 0" range="0 0.04"
+                                   damping="5" armature="0.01"/>
+                            <geom name="finger_right_geom" type="box" pos="0 -0.006 0.045"
+                                  size="0.01 0.006 0.045" mass="0.03" condim="4"
+                                  friction="1.5 0.02 0.002" rgba="0.2 0.2 0.22 1"/>
+                          </body>
+
+                          <!-- TCP: the point we actually drive to the object,
+                               25 mm above the fingertips. -->
+                          <site name="tcp" pos="0 0 0.105" size="0.004" rgba="1 1 0 0.6"/>
+                        </body>
+
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+
+    <!-- ===================== block ===================== -->
+    <!-- Target: red, 30 x 50 x 40 mm. Grasped across the 30 mm side.
+         Placed from Python at a random spot on the table each run. -->
+    <body name="target" pos="0 0 0.62">
+      <freejoint name="target_free"/>
+      <geom name="target_geom" type="box" size="0.015 0.025 0.02" mass="0.06" condim="4"
+            friction="1.2 0.02 0.002" rgba="0.85 0.1 0.08 1"/>
+    </body>
+    <!-- Calibration board. "mocap" means we place it from Python rather than
+         letting physics move it. Parked below the floor except during Part B. -->
+    <body name="checkerboard" mocap="true" pos="0 0 -1">
+      <geom name="checkerboard_geom" type="plane" size="0.12 0.09 0.001"
+            material="checker_mat" contype="0" conaffinity="0"/>
+    </body>
+  </worldbody>
+
+  <!-- The block travels across the table on a belt, so the table must not drag
+       on it: this pair gives the block-on-table contact almost no friction,
+       which is what lets it hold a steady speed. Without the pair MuJoCo would
+       take the larger of the two geoms' friction (1.2) and the block would
+       stop within a few milliseconds.
+
+       Only the block-on-table contact is affected. The finger pads still meet
+       the block at their own friction of 1.5, which is what the grasp needs. -->
+  <contact>
+    <pair geom1="target_geom" geom2="table" friction="0.02 0.02 0.002 0.001 0.001"/>
+  </contact>
+
+  <!-- Keep the two fingers symmetric about the palm -->
+  <equality>
+    <joint joint1="finger_left_joint" joint2="finger_right_joint" polycoef="0 1 0 0 0"/>
+  </equality>
+
+  <actuator>
+    <!-- Torque motors at the UR3's rated joint torques [N m] -->
+    <motor name="shoulder_pan"  joint="shoulder_pan_joint"  ctrlrange="-56 56"/>
+    <motor name="shoulder_lift" joint="shoulder_lift_joint" ctrlrange="-56 56"/>
+    <motor name="elbow"         joint="elbow_joint"         ctrlrange="-28 28"/>
+    <motor name="wrist_1"       joint="wrist_1_joint"       ctrlrange="-12 12"/>
+    <motor name="wrist_2"       joint="wrist_2_joint"       ctrlrange="-12 12"/>
+    <motor name="wrist_3"       joint="wrist_3_joint"       ctrlrange="-12 12"/>
+    <!-- Gripper: position servo, force limited to 15 N so it squeezes the
+         block rather than crushing or pushing it. -->
+    <position name="gripper" joint="finger_left_joint" kp="600" ctrlrange="0 0.04" forcerange="-15 15"/>
+  </actuator>
+</mujoco>

@@ -1,4 +1,7 @@
 {
     "python-envs.defaultEnvManager": "ms-python.python:conda",
-    "python-envs.defaultPackageManager": "ms-python.python:conda"
+    "python-envs.defaultPackageManager": "ms-python.python:conda",
+    "python.defaultInterpreterPath": "/opt/anaconda3/envs/sensors_controls/bin/python",
+    "python.terminal.activateEnvironment": true,
+    "cmake.sourceDirectory": "/Users/ryanbudhiraja/SensorsAndControls/Robots"
 }
