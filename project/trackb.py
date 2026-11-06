@@ -1,22 +1,20 @@
-"""
-Track B: vision-guided pick with a UR3.
-Shared code used by all the part_*.py scripts.
-
-The split between "the real robot" and "what the robot knows" matters here, so
-it is worth stating once:
-
-  * MuJoCo is the REAL robot.  It holds the true joint angles, the true object
-    pose, and does the physics.  We are only allowed to touch it through the
-    sensor functions below (read_encoders, capture_rgbd) and the torque command.
-
-  * roboticstoolbox holds the robot's OWN MODEL of itself - the kinematics and
-    inertias from the UR3 datasheet.  The controller and the observer only ever
-    use this model and the sensor readings.
-
-  * Ground truth (true_q, true_object_pose, ...) is used ONLY to plot errors and
-    score trials.  Every such function has "true_" in its name so it is easy to
-    check that none of them feed the controller.
-"""
+# Track B: vision-guided pick with a UR3.
+# Shared code used by all the part_*.py scripts.
+#
+# The split between "the real robot" and "what the robot knows" matters here, so
+# it is worth stating once:
+#
+#   * MuJoCo is the REAL robot.  It holds the true joint angles, the true object
+#     pose, and does the physics.  We are only allowed to touch it through the
+#     sensor functions below (read_encoders, capture_rgbd) and the torque command.
+#
+#   * roboticstoolbox holds the robot's OWN MODEL of itself - the kinematics and
+#     inertias from the UR3 datasheet.  The controller and the observer only ever
+#     use this model and the sensor readings.
+#
+#   * Ground truth (true_q, true_object_pose, ...) is used ONLY to plot errors and
+#     score trials.  Every such function has "true_" in its name so it is easy to
+#     check that none of them feed the controller.
 
 import secrets
 import numpy as np
@@ -35,8 +33,8 @@ BOARD_SQUARE = 0.02      # [m]
 
 
 def _write_checkerboard_texture():
-    """Draw the calibration board PNG if it is not there yet. The scene file
-    needs it to exist before MuJoCo can load the model."""
+    # Draw the calibration board PNG if it is not there yet. The scene file
+    #     needs it to exist before MuJoCo can load the model.
     path = HERE / "checkerboard.png"
     if path.exists():
         return
@@ -94,38 +92,36 @@ T_TOOL_CAM_NOMINAL = SE3(0.055, 0, 0.044)
 
 
 def fk_tcp(q):
-    """Pose of the TCP in the robot base frame, from joint angles q."""
+    # Pose of the TCP in the robot base frame, from joint angles q.
     return ur3.fkine(q, end="tool0") * T_TOOL_TCP
 
 
 def jacobian_tcp(q):
-    """6x6 Jacobian of the TCP in the base frame: [v; omega] = J @ qdot."""
+    # 6x6 Jacobian of the TCP in the base frame: [v; omega] = J @ qdot.
     return ur3.jacob0(q, end="tool0", tool=T_TOOL_TCP)
 
 
 def ik_tcp(T_goal, q_guess):
-    """Joint angles that put the TCP at T_goal.
-
-    Seeded with q_guess so we stay on the same arm configuration (elbow up,
-    wrist pointing down) instead of jumping to a mirrored solution.
-    """
+    # Joint angles that put the TCP at T_goal.
+    #
+    #     Seeded with q_guess so we stay on the same arm configuration (elbow up,
+    #     wrist pointing down) instead of jumping to a mirrored solution.
     sol = ur3.ikine_LM(T_goal, q0=q_guess, end="tool0", tool=T_TOOL_TCP)
     return sol.q, sol.success
 
 
 class ControllerModel:
-    """The rigid-body model the controller uses to work out torques.
-
-    It is built from the same UR3 description as the simulated robot, but it
-    is a SEPARATE copy with its own state, which we only ever feed estimated
-    joint angles. That separation is the point: nothing in here can see the
-    simulator's true state.
-
-    What it deliberately does NOT model:
-      * Coulomb friction in the joints
-      * the weight of whatever the gripper is carrying
-    Both are left for the observer's disturbance state to estimate.
-    """
+    # The rigid-body model the controller uses to work out torques.
+    #
+    #     It is built from the same UR3 description as the simulated robot, but it
+    #     is a SEPARATE copy with its own state, which we only ever feed estimated
+    #     joint angles. That separation is the point: nothing in here can see the
+    #     simulator's true state.
+    #
+    #     What it deliberately does NOT model:
+    #       * Coulomb friction in the joints
+    #       * the weight of whatever the gripper is carrying
+    #     Both are left for the observer's disturbance state to estimate.
 
     def __init__(self):
         self.model = mujoco.MjModel.from_xml_path(str(SCENE_XML))
@@ -137,7 +133,7 @@ class ControllerModel:
         self.damping = self.model.dof_damping[self.dadr].copy()
 
     def dynamics(self, q, qd):
-        """Inertia matrix M(q) and bias torque c(q,qd) + g(q), for the arm."""
+        # Inertia matrix M(q) and bias torque c(q,qd) + g(q), for the arm.
         self.data.qpos[self.qadr] = q
         self.data.qvel[:] = 0
         self.data.qvel[self.dadr] = qd
@@ -149,15 +145,19 @@ class ControllerModel:
         bias = np.zeros(self.model.nv)
         mujoco.mj_rne(self.model, self.data, 0, bias)          # c(q,qd) + g(q)
         M_full = np.zeros((self.model.nv, self.model.nv))
-        mujoco.mj_fullM(self.model, self.data, M_full)
+        # MuJoCo changed the mass-matrix interface between releases.
+        if hasattr(self.data, "qM"):
+            mujoco.mj_fullM(self.model, M_full, self.data.qM)
+        else:
+            mujoco.mj_fullM(self.model, self.data, M_full)
         return M_full[np.ix_(self.dadr, self.dadr)], bias[self.dadr]
 
 
 class Sim:
-    """Thin wrapper around the MuJoCo model: the 'real' robot and the world."""
+    # Thin wrapper around the MuJoCo model: the 'real' robot and the world.
 
     def __init__(self, seed=None):
-        """seed=None draws a fresh seed from the OS, so every run differs."""
+        # seed=None draws a fresh seed from the OS, so every run differs.
         self.model = mujoco.MjModel.from_xml_path(str(SCENE_XML))
         self.data = mujoco.MjData(self.model)
         self.rng = np.random.default_rng(seed)
@@ -186,27 +186,26 @@ class Sim:
         mujoco.mj_forward(self.model, self.data)
 
     def set_block(self, name, x, y, yaw):
-        """Place a block flat on the table at (x, y) turned by yaw."""
+        # Place a block flat on the table at (x, y) turned by yaw.
         adr = self.model.jnt_qposadr[self.model.joint(name + "_free").id]
         self.data.qpos[adr:adr + 3] = [x, y, TABLE_Z + BLOCK_HALF]
         self.data.qpos[adr + 3:adr + 7] = [np.cos(yaw / 2), 0, 0, np.sin(yaw / 2)]
 
     def randomise_blocks(self, speed=BLOCK_SPEED):
-        """Put the red target block on the table and start the belt running.
-
-        The box is the area that is BOTH reachable for a top-down grasp at any
-        block angle and visible from one of the arm's look poses (see
-        OBSERVE_SWEEP_DEG) - measured, not guessed. The block often lands
-        outside the first look's field of view, which is what the sweep is for.
-
-        With the belt on the block starts at the upstream edge of that box
-        rather than anywhere in it, so it has the full width of the table to
-        cross before it runs out of room. Which way it runs, and the few
-        degrees it runs off-axis, are redrawn every time.
-
-        speed=0 parks it, which is how Part B and the open-loop comparison
-        want the world.
-        """
+        # Put the red target block on the table and start the belt running.
+        #
+        #         The box is the area that is BOTH reachable for a top-down grasp at any
+        #         block angle and visible from one of the arm's look poses (see
+        #         OBSERVE_SWEEP_DEG) - measured, not guessed. The block often lands
+        #         outside the first look's field of view, which is what the sweep is for.
+        #
+        #         With the belt on the block starts at the upstream edge of that box
+        #         rather than anywhere in it, so it has the full width of the table to
+        #         cross before it runs out of room. Which way it runs, and the few
+        #         degrees it runs off-axis, are redrawn every time.
+        #
+        #         speed=0 parks it, which is how Part B and the open-loop comparison
+        #         want the world.
         heading = np.deg2rad(self.rng.uniform(-BLOCK_HEADING_DEG, BLOCK_HEADING_DEG))
         downstream = 1.0 if self.rng.random() < 0.5 else -1.0
 
@@ -228,25 +227,36 @@ class Sim:
         return x, y
 
     def drive_block(self):
-        """Hold the block at belt speed for this control step.
-
-        Written as a velocity, not a position, so the block still rests on the
-        table under gravity and can still be gripped - the belt only insists on
-        how fast it travels, contact physics does everything else. Spin is held
-        at zero because a block on a belt slides, it does not tumble.
-        """
+        # Hold the block at belt speed for this control step.
+        #
+        #         Written as a velocity, not a position, so the block still rests on the
+        #         table under gravity and can still be gripped - the belt only insists on
+        #         how fast it travels, contact physics does everything else. Spin is held
+        #         at zero because a block on a belt slides, it does not tumble.
         if self.block_velocity is None:
             return
         adr = self.model.jnt_dofadr[self.model.joint("target_free").id]
         self.data.qvel[adr:adr + 2] = self.block_velocity
         self.data.qvel[adr + 3:adr + 6] = 0.0
 
+    def read_gripper_contacts(self):
+        # Simulated tactile switches on the two finger pads. No target pose is read.
+        target = self.model.geom("target_geom").id
+        left = self.model.geom("finger_left_geom").id
+        right = self.model.geom("finger_right_geom").id
+        touched = set()
+        for contact in self.data.contact:
+            pair = {contact.geom1, contact.geom2}
+            if target in pair:
+                touched.update(pair)
+        return left in touched, right in touched
+
     def release_block(self):
-        """Take the block off the belt - called the moment the fingers close."""
+        # Take the block off the belt - called the moment the fingers close.
         self.block_velocity = None
 
     def step(self, torque, gripper):
-        """Apply a joint torque and a gripper command for one control period."""
+        # Apply a joint torque and a gripper command for one control period.
         self.data.ctrl[:6] = torque
         self.data.ctrl[6] = gripper
         for _ in range(int(round(DT / self.model.opt.timestep))):
@@ -255,22 +265,21 @@ class Sim:
     # Sensors: the only legitimate way to read the robot.
 
     def read_encoders(self):
-        """Joint position measurement: true angle + noise, then quantised to
-        the encoder's resolution. Note there is NO velocity output - that is
-        what the observer is for."""
+        # Joint position measurement: true angle + noise, then quantised to
+        #         the encoder's resolution. Note there is NO velocity output - that is
+        #         what the observer is for.
         noisy = self.true_q() + self.rng.normal(0, ENCODER_NOISE, 6)
         return np.round(noisy / ENCODER_COUNT) * ENCODER_COUNT
 
     def capture_rgbd(self):
-        """Render one RGB-D frame from the wrist camera and add sensor noise.
-
-        Depth error is modelled in three parts because only the first averages
-        away over a blob of pixels:
-          1. per-pixel random noise
-          2. a smooth bias field (neighbouring pixels share nearly the same
-             error - this is what really limits the accuracy)
-          3. missing pixels
-        """
+        # Render one RGB-D frame from the wrist camera and add sensor noise.
+        #
+        #         Depth error is modelled in three parts because only the first averages
+        #         away over a blob of pixels:
+        #           1. per-pixel random noise
+        #           2. a smooth bias field (neighbouring pixels share nearly the same
+        #              error - this is what really limits the accuracy)
+        #           3. missing pixels
         if self.renderer is None:
             self.renderer = mujoco.Renderer(self.model, 480, 640)
             fovy = np.deg2rad(self.model.camera("wrist_camera").fovy[0])
@@ -292,8 +301,8 @@ class Sim:
         return rgb, depth
 
     def camera_matrix(self):
-        """The true pinhole intrinsics, from the camera's field of view.
-        Part B recovers these from checkerboard images instead."""
+        # The true pinhole intrinsics, from the camera's field of view.
+        #         Part B recovers these from checkerboard images instead.
         fovy = np.deg2rad(self.model.camera("wrist_camera").fovy[0])
         f = 480 / 2 / np.tan(fovy / 2)
         return np.array([[f, 0, 319.5], [0, f, 239.5], [0, 0, 1.0]])
@@ -307,16 +316,15 @@ class Sim:
         return self.data.qvel[self.dadr].copy()
 
     def true_tcp(self):
-        """TCP position in the base frame."""
+        # TCP position in the base frame.
         p = self.data.site_xpos[self.model.site("tcp").id]
         return (self.T_base_world @ np.append(p, 1))[:3]
 
     def true_object_pose(self):
-        """Target block as [x, y, z, yaw] in the base frame.
-
-        yaw is the direction of the block's LONG side. The 50 mm side is the
-        block's own y axis, so we read column 1 of its rotation matrix.
-        """
+        # Target block as [x, y, z, yaw] in the base frame.
+        #
+        #         yaw is the direction of the block's LONG side. The 50 mm side is the
+        #         block's own y axis, so we read column 1 of its rotation matrix.
         body = self.model.body("target").id
         p = (self.T_base_world @ np.append(self.data.xpos[body], 1))[:3]
         R = self.T_base_world[:3, :3] @ self.data.xmat[body].reshape(3, 3)
@@ -324,18 +332,17 @@ class Sim:
         return np.append(p, wrap_pi_2(np.arctan2(long_axis[1], long_axis[0])))
 
     def true_object_velocity(self):
-        """Target block's linear velocity in the base frame [m/s].
-
-        Only ever used to score the filter: nothing in the robot measures this,
-        the filter has to work it out from how the pose moves.
-        """
+        # Target block's linear velocity in the base frame [m/s].
+        #
+        #         Only ever used to score the filter: nothing in the robot measures this,
+        #         the filter has to work it out from how the pose moves.
         adr = self.model.jnt_dofadr[self.model.joint("target_free").id]
         v_world = self.data.qvel[adr:adr + 3]
         return self.T_base_world[:3, :3] @ v_world
 
     def true_camera_pose(self):
-        """Camera pose in the base frame, in the OPTICAL convention
-        (x right, y down, z forward). Used only to check the calibration."""
+        # Camera pose in the base frame, in the OPTICAL convention
+        #         (x right, y down, z forward). Used only to check the calibration.
         cid = self.model.camera("wrist_camera").id
         T = np.eye(4)
         T[:3, :3] = self.data.cam_xmat[cid].reshape(3, 3) @ MUJOCO_TO_OPTICAL
@@ -348,12 +355,11 @@ MUJOCO_TO_OPTICAL = np.diag([1.0, -1.0, -1.0])
 
 
 def smooth_noise_field(shape, rng, cells=4):
-    """A low-resolution random grid stretched smoothly to full size.
-
-    Used for the depth bias: neighbouring pixels get almost the same error, so
-    averaging over a blob does NOT cancel it, which is how real stereo cameras
-    behave.
-    """
+    # A low-resolution random grid stretched smoothly to full size.
+    #
+    #     Used for the depth bias: neighbouring pixels get almost the same error, so
+    #     averaging over a blob does NOT cancel it, which is how real stereo cameras
+    #     behave.
     h, w = shape
     coarse = rng.normal(0, 1, (cells, cells))
     yi = np.linspace(0, cells - 1, h)
@@ -368,11 +374,10 @@ def smooth_noise_field(shape, rng, cells=4):
 
 
 def wrap_pi_2(angle):
-    """Wrap to [-pi/2, pi/2).
-
-    A parallel gripper is the same after turning 180 degrees, so a grasp angle
-    only ever means anything modulo pi.
-    """
+    # Wrap to [-pi/2, pi/2).
+    #
+    #     A parallel gripper is the same after turning 180 degrees, so a grasp angle
+    #     only ever means anything modulo pi.
     return (angle + np.pi / 2) % np.pi - np.pi / 2
 
 
@@ -382,30 +387,25 @@ def rot_z(a):
 
 
 def rotation_log(R):
-    """Rotation matrix -> rotation vector (axis * angle). The rotational half
-    of a pose error."""
-    cos_angle = np.clip((np.trace(R) - 1) / 2, -1.0, 1.0)
-    angle = np.arccos(cos_angle)
-    if angle < 1e-9:
-        return np.zeros(3)
-    w = np.array([R[2, 1] - R[1, 2], R[0, 2] - R[2, 0], R[1, 0] - R[0, 1]])
-    return angle * w / (2 * np.sin(angle))
+    # Rotation matrix -> rotation vector (axis * angle). The rotational half
+    #     of a pose error.
+    return cv2.Rodrigues(np.asarray(R, dtype=float))[0].ravel()
+
 
 
 def pose_error(T_now, T_goal):
-    """6-vector [dx, dy, dz, rotation vector] that moves T_now towards T_goal.
-    Both are 4x4 matrices in the same frame."""
+    # 6-vector [dx, dy, dz, rotation vector] that moves T_now towards T_goal.
+    #     Both are 4x4 matrices in the same frame.
     return np.concatenate([T_goal[:3, 3] - T_now[:3, 3],
                            rotation_log(T_goal[:3, :3] @ T_now[:3, :3].T)])
 
 
 def detect_red_block(rgb):
-    """Return a boolean mask of the biggest red blob, or None.
-
-    HSV rather than raw RGB, because hue separates "is it red" from "how
-    bright is it", which keeps the threshold stable as the arm shadows the
-    table. The grey table and the arm fall outside the hue window.
-    """
+    # Return a boolean mask of the biggest red blob, or None.
+    #
+    #     HSV rather than raw RGB, because hue separates "is it red" from "how
+    #     bright is it", which keeps the threshold stable as the arm shadows the
+    #     table. The grey table and the arm fall outside the hue window.
     hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
     h, s, v = hsv[..., 0], hsv[..., 1], hsv[..., 2]
     mask = (((h < 10) | (h > 170)) & (s > 120) & (v > 50)).astype(np.uint8)
@@ -428,25 +428,24 @@ def detect_red_block(rgb):
     return labels == biggest
 
 
-def locate_block(mask, depth, K, T_base_cam):
-    """Turn a detected blob into [x, y, z, yaw] in the robot base frame.
-
-    Steps:
-      1. back-project every masked pixel using its own depth -> 3D points
-      2. move those points into the base frame
-      3. the top face is the highest few mm of points; its mean gives x, y
-         and the direction it is longest in gives yaw
-      4. a ring of pixels just outside the blob is the table, so
-         centre height = table height + block height / 2
-
-    Returns (z, camera_range) or None, where z = [x, y, z, yaw].
-    """
-    valid = mask & np.isfinite(depth)
+def locate_block(mask, depth, K, T_base_cam, dist=None):
+    # Turn a detected blob into [x, y, z, yaw] in the robot base frame.
+    #
+    #     Steps:
+    #       1. back-project every masked pixel using its own depth -> 3D points
+    #       2. move those points into the base frame
+    #       3. the top face is the highest few mm of points; its mean gives x, y
+    #          and the direction it is longest in gives yaw
+    #       4. a ring of pixels just outside the blob is the table, so
+    #          centre height = table height + block height / 2
+    #
+    #     Returns (z, camera_range) or None, where z = [x, y, z, yaw].
+    valid = mask & np.isfinite(depth) & (depth > 0) & (depth < 2)
     v, u = np.nonzero(valid)
     if len(u) < 40:
         return None
 
-    pts = backproject(u, v, depth[v, u], K)
+    pts = backproject(u, v, depth[v, u], K, dist)
     pts = pts @ T_base_cam[:3, :3].T + T_base_cam[:3, 3]
 
     # 90th percentile, not the maximum, so a few bad depth pixels cannot decide the top.
@@ -465,11 +464,11 @@ def locate_block(mask, depth, K, T_base_cam):
     kernel = np.ones((3, 3), np.uint8)
     ring = (cv2.dilate(m8, kernel, iterations=25).astype(bool)
             & ~cv2.dilate(m8, kernel, iterations=8).astype(bool)
-            & np.isfinite(depth))
+            & np.isfinite(depth) & (depth > 0) & (depth < 2))
     rv, ru = np.nonzero(ring)
     if len(ru) < 200:
         return None
-    ring_pts = backproject(ru, rv, depth[rv, ru], K)
+    ring_pts = backproject(ru, rv, depth[rv, ru], K, dist)
     ring_pts = ring_pts @ T_base_cam[:3, :3].T + T_base_cam[:3, 3]
     table_z = np.median(ring_pts[:, 2])
 
@@ -480,28 +479,31 @@ def locate_block(mask, depth, K, T_base_cam):
     return np.array([xy[0], xy[1], table_z + height / 2, yaw]), float(np.median(depth[v, u]))
 
 
-def backproject(u, v, Z, K):
-    """Pixels + depth -> 3D points in the camera frame (the pinhole model
-    run backwards)."""
+def backproject(u, v, Z, K, dist=None):
+    # Pixels + depth -> 3D points in the camera frame (the pinhole model
+    #     run backwards).
+    if dist is not None and np.any(dist):
+        pixels = np.column_stack([u, v]).astype(float).reshape(-1, 1, 2)
+        normalised = cv2.undistortPoints(pixels, K, dist).reshape(-1, 2)
+        return np.column_stack([normalised[:, 0] * Z, normalised[:, 1] * Z, Z])
     x = (u - K[0, 2]) * Z / K[0, 0]
     y = (v - K[1, 2]) * Z / K[1, 1]
     return np.column_stack([x, y, Z])
 
 
 class JointObserver:
-    """One Kalman filter per joint, on the state [q, qdot, d].
-
-    Why three states and not two:
-      * qdot is never measured, so it has to be estimated;
-      * d is an unknown acceleration disturbance. It mops up everything the
-        controller's model gets wrong - Coulomb friction, the gripper's weight,
-        and later the weight of the block being carried. The controller
-        subtracts the estimate, which removes steady-state error without
-        putting an integrator in the loop.
-
-    All six joints are filtered at once with array maths, because after the
-    computed-torque step below they are six identical, independent systems.
-    """
+    # One Kalman filter per joint, on the state [q, qdot, d].
+    #
+    #     Why three states and not two:
+    #       * qdot is never measured, so it has to be estimated;
+    #       * d is an unknown acceleration disturbance. It mops up everything the
+    #         controller's model gets wrong - Coulomb friction, the gripper's weight,
+    #         and later the weight of the block being carried. The controller
+    #         subtracts the estimate, which removes steady-state error without
+    #         putting an integrator in the loop.
+    #
+    #     All six joints are filtered at once with array maths, because after the
+    #     computed-torque step below they are six identical, independent systems.
 
     def __init__(self, sigma_a=2.0, sigma_d=60.0):
         # Constant acceleration: q += qdot*dt + (u+d)*dt^2/2, qdot += (u+d)*dt, d random-walks.
@@ -527,7 +529,7 @@ class JointObserver:
         self.P[:] = np.diag([self.R, 0.05 ** 2, 5.0 ** 2])
 
     def predict(self, u):
-        """u = the acceleration we actually commanded, per joint."""
+        # u = the acceleration we actually commanded, per joint.
         self.x = self.x @ self.F.T + np.outer(u, self.G)
         self.P = self.F @ self.P @ self.F.T + self.Q
 
@@ -554,17 +556,16 @@ class JointObserver:
         return self.x[:, 2].copy()
 
     def sigma(self):
-        """Standard deviation of each state, per joint. Shape (6, 3)."""
+        # Standard deviation of each state, per joint. Shape (6, 3).
         return np.sqrt(np.diagonal(self.P, axis1=1, axis2=2))
 
     def nees(self, q_true, qd_true):
-        """Normalised estimation error squared over [q, qdot], per joint.
-
-        This is the consistency check: if the filter's covariance is honest,
-        the average comes out near 2 (the number of states being checked).
-        Much bigger means the filter is over-confident; much smaller means it
-        is being too cautious.
-        """
+        # Normalised estimation error squared over [q, qdot], per joint.
+        #
+        #         This is the consistency check: if the filter's covariance is honest,
+        #         the average comes out near 2 (the number of states being checked).
+        #         Much bigger means the filter is over-confident; much smaller means it
+        #         is being too cautious.
         e = np.column_stack([q_true - self.q, qd_true - self.qd])
         P2 = self.P[:, :2, :2]
         return np.einsum("ni,nij,nj->n", e, np.linalg.inv(P2), e)
@@ -582,27 +583,26 @@ BLOCK_VEL_PRIOR = np.array([0.15, 0.15, 0.05, 1.0])
 
 
 class ObjectFilter:
-    """Kalman filter on the block's pose AND velocity in the base frame.
-
-    State is [x, y, z, yaw, vx, vy, vz, vyaw]. The block rides a belt, so a
-    filter that assumed it sat still would sit a fixed distance behind it -
-    roughly speed/gain, about 15 mm at belt speed - and the gripper would close
-    on where the block used to be. Carrying a velocity fixes that twice over:
-    the estimate keeps up between frames, and the controller gets something to
-    feed forward (see run_pick).
-
-    The camera measures the POSE ONLY. Nothing ever measures velocity: the
-    filter infers it from the way the pose moves, which is the whole reason
-    this is a Kalman filter and not a smoother.
-
-    Between frames the block is taken to travel in a straight line at constant
-    speed,
-
-        x(k+1) = F x(k),    F = [[I, dt*I], [0, I]]
-
-    with Q the usual white-noise-acceleration covariance, so the filter can
-    still follow a belt that speeds up or a block that gets knocked.
-    """
+    # Kalman filter on the block's pose AND velocity in the base frame.
+    #
+    #     State is [x, y, z, yaw, vx, vy, vz, vyaw]. The block rides a belt, so a
+    #     filter that assumed it sat still would sit a fixed distance behind it -
+    #     roughly speed/gain, about 15 mm at belt speed - and the gripper would close
+    #     on where the block used to be. Carrying a velocity fixes that twice over:
+    #     the estimate keeps up between frames, and the controller gets something to
+    #     feed forward (see run_pick).
+    #
+    #     The camera measures the POSE ONLY. Nothing ever measures velocity: the
+    #     filter infers it from the way the pose moves, which is the whole reason
+    #     this is a Kalman filter and not a smoother.
+    #
+    #     Between frames the block is taken to travel in a straight line at constant
+    #     speed,
+    #
+    #         x(k+1) = F x(k),    F = [[I, dt*I], [0, I]]
+    #
+    #     with Q the usual white-noise-acceleration covariance, so the filter can
+    #     still follow a belt that speeds up or a block that gets knocked.
 
     N = 4            # pose components: x, y, z, yaw
 
@@ -627,19 +627,18 @@ class ObjectFilter:
         return self.x[self.N:]
 
     def pose_at(self, lead):
-        """Where the block will be `lead` seconds from now, on present evidence."""
+        # Where the block will be `lead` seconds from now, on present evidence.
         return self.x[:self.N] + lead * self.x[self.N:]
 
     def R_at(self, rng_m):
-        """Measurement covariance for a frame taken at range rng_m."""
+        # Measurement covariance for a frame taken at range rng_m.
         return np.diag((self.noise_a + self.noise_b * rng_m ** 2) ** 2)
 
     def _Q(self, dt):
-        """White-noise-acceleration process covariance over dt.
-
-        Per axis this is the textbook  q * [[dt^3/3, dt^2/2], [dt^2/2, dt]],
-        laid out to match the [pose, velocity] ordering of the state.
-        """
+        # White-noise-acceleration process covariance over dt.
+        #
+        #         Per axis this is the textbook  q * [[dt^3/3, dt^2/2], [dt^2/2, dt]],
+        #         laid out to match the [pose, velocity] ordering of the state.
         n, Q = self.N, np.zeros((2 * self.N, 2 * self.N))
         idx = np.arange(n)
         Q[idx, idx] = BLOCK_ACCEL_PSD * dt ** 3 / 3
@@ -648,12 +647,11 @@ class ObjectFilter:
         return Q
 
     def start(self, z, rng_m, keep_velocity=False):
-        """Begin (or restart) from a single pose measurement.
-
-        A restart means the block is somewhere we did not expect. The belt is
-        still running, so the velocity estimate is worth keeping - but it is
-        now much less trustworthy, hence the widened covariance.
-        """
+        # Begin (or restart) from a single pose measurement.
+        #
+        #         A restart means the block is somewhere we did not expect. The belt is
+        #         still running, so the velocity estimate is worth keeping - but it is
+        #         now much less trustworthy, hence the widened covariance.
         v = self.velocity.copy() if (keep_velocity and self.x is not None) else np.zeros(self.N)
         self.x = np.concatenate([z, v])
         self.P = np.zeros((2 * self.N, 2 * self.N))
@@ -663,7 +661,7 @@ class ObjectFilter:
         self.n_used += 1
 
     def predict(self, dt=DT):
-        """Coast the estimate forward one control period."""
+        # Coast the estimate forward one control period.
         if self.x is None:
             return
         n = self.N
@@ -674,7 +672,7 @@ class ObjectFilter:
         self.P = F @ self.P @ F.T + self._Q(dt)
 
     def update(self, z, rng_m):
-        """Fuse one pose measurement. Returns what happened, as a string."""
+        # Fuse one pose measurement. Returns what happened, as a string.
         if self.x is None:
             self.start(z, rng_m)
             return "first"
@@ -710,7 +708,7 @@ class ObjectFilter:
         return "used"
 
     def sigma(self):
-        """Standard deviations of the whole state: 4 pose, then 4 velocity."""
+        # Standard deviations of the whole state: 4 pose, then 4 velocity.
         return np.sqrt(np.diag(self.P))
 
 
@@ -721,13 +719,12 @@ MAX_ACCEL = 5.0            # [rad/s^2]
 
 
 def design_lqr():
-    """Gains for one joint, from a discrete LQR on a double integrator.
-
-    After the computed-torque step in joint_torque() every joint behaves like
-    qddot = v, so one small design serves all six.
-
-    Returns (kp, kd, closed-loop poles).
-    """
+    # Gains for one joint, from a discrete LQR on a double integrator.
+    #
+    #     After the computed-torque step in joint_torque() every joint behaves like
+    #     qddot = v, so one small design serves all six.
+    #
+    #     Returns (kp, kd, closed-loop poles).
     import control as ct
 
     # Double integrator, discretised exactly over one control period.
@@ -742,21 +739,20 @@ def design_lqr():
 
 
 def joint_torque(model, q_hat, qd_hat, d_hat, q_ref, qd_ref, qdd_ref, kp, kd, torque_limit):
-    """Computed torque + LQR. Returns (torque, acceleration actually applied).
-
-    Two nested ideas:
-
-      1. Feedback linearisation. The arm obeys  M(q) qddot + c + g = tau.
-         If we ask for  tau = M(q)*v + c + g  then it obeys  qddot = v.
-         A coupled nonlinear system becomes six independent double integrators.
-
-      2. On top of that, a simple LQR picks v:
-             v = qdd_ref - kp*(position error) - kd*(velocity error) - d_hat
-         The last term cancels the disturbance the observer found, which is
-         what removes steady-state droop without an integrator.
-
-    Everything fed in here is an ESTIMATE or a reference - never ground truth.
-    """
+    # Computed torque + LQR. Returns (torque, acceleration actually applied).
+    #
+    #     Two nested ideas:
+    #
+    #       1. Feedback linearisation. The arm obeys  M(q) qddot + c + g = tau.
+    #          If we ask for  tau = M(q)*v + c + g  then it obeys  qddot = v.
+    #          A coupled nonlinear system becomes six independent double integrators.
+    #
+    #       2. On top of that, a simple LQR picks v:
+    #              v = qdd_ref - kp*(position error) - kd*(velocity error) - d_hat
+    #          The last term cancels the disturbance the observer found, which is
+    #          what removes steady-state droop without an integrator.
+    #
+    #     Everything fed in here is an ESTIMATE or a reference - never ground truth.
     v = qdd_ref - kp * (q_hat - q_ref) - kd * (qd_hat - qd_ref) - d_hat
 
     M, bias = model.dynamics(q_hat, qd_hat)
@@ -770,12 +766,11 @@ def joint_torque(model, q_hat, qd_hat, d_hat, q_ref, qd_ref, qdd_ref, kp, kd, to
 
 
 def quintic(q_start, q_end, duration, t):
-    """Smooth point-to-point joint move, at rest at both ends.
-
-    A quintic has zero velocity AND zero acceleration at both ends, so the
-    reference we hand the controller is smooth enough to differentiate twice.
-    Returns (q_ref, qd_ref, qdd_ref).
-    """
+    # Smooth point-to-point joint move, at rest at both ends.
+    #
+    #     A quintic has zero velocity AND zero acceleration at both ends, so the
+    #     reference we hand the controller is smooth enough to differentiate twice.
+    #     Returns (q_ref, qd_ref, qdd_ref).
     s = np.clip(t / duration, 0, 1)
     pos = 10 * s ** 3 - 15 * s ** 4 + 6 * s ** 5
     vel = (30 * s ** 2 - 60 * s ** 3 + 30 * s ** 4) / duration
@@ -785,13 +780,12 @@ def quintic(q_start, q_end, duration, t):
 
 
 def grasp_pose(obj_xyz, obj_yaw, current_tool_x, height_above=0.0):
-    """Where the TCP has to be to grasp the block, as a 4x4 matrix.
-
-    The fingers close along the tool's y axis, so the tool's x axis must line
-    up with the block's LONG side. Turning the wrist by 180 degrees gives an
-    equally good grasp, so we pick whichever of the two is closer to where the
-    wrist already is and save ourselves half a turn.
-    """
+    # Where the TCP has to be to grasp the block, as a 4x4 matrix.
+    #
+    #     The fingers close along the tool's y axis, so the tool's x axis must line
+    #     up with the block's LONG side. Turning the wrist by 180 degrees gives an
+    #     equally good grasp, so we pick whichever of the two is closer to where the
+    #     wrist already is and save ourselves half a turn.
     tool_down = np.diag([1.0, -1.0, -1.0])        # z down, x along base x
     now = np.arctan2(current_tool_x[1], current_tool_x[0])
     options = np.array([obj_yaw, obj_yaw + np.pi])
@@ -804,15 +798,14 @@ def grasp_pose(obj_xyz, obj_yaw, current_tool_x, height_above=0.0):
 
 
 def pbvs_velocity(T_now, T_goal, gain, max_linear, max_angular):
-    """Position-based visual servoing: turn a pose error into a joint velocity
-    command. Returns (joint velocity, pose error).
-
-    The goal comes from the object filter, which the camera updates every
-    frame, so the loop really is closed through vision.
-
-    v = gain * pose error, then capped so the arm moves at a sane speed, then
-    mapped to joint velocities with the Jacobian.
-    """
+    # Position-based visual servoing: turn a pose error into a joint velocity
+    #     command. Returns (joint velocity, pose error).
+    #
+    #     The goal comes from the object filter, which the camera updates every
+    #     frame, so the loop really is closed through vision.
+    #
+    #     v = gain * pose error, then capped so the arm moves at a sane speed, then
+    #     mapped to joint velocities with the Jacobian.
     e = pose_error(T_now, T_goal)
     velocity = gain * e
 
@@ -826,12 +819,11 @@ def pbvs_velocity(T_now, T_goal, gain, max_linear, max_angular):
 
 
 def joint_velocity_from_twist(J, twist, damping=0.01):
-    """Solve J @ qdot = twist for qdot.
-
-    Damped least squares rather than a plain inverse: near a singularity the
-    plain inverse asks for enormous joint speeds, while this trades a little
-    accuracy for a bounded answer.
-    """
+    # Solve J @ qdot = twist for qdot.
+    #
+    #     Damped least squares rather than a plain inverse: near a singularity the
+    #     plain inverse asks for enormous joint speeds, while this trades a little
+    #     accuracy for a bounded answer.
     return J.T @ np.linalg.solve(J @ J.T + damping ** 2 * np.eye(6), twist)
 
 
@@ -863,21 +855,25 @@ TOL_ANG = np.deg2rad(2.0)
 SETTLE_TIME = 0.15      # stay inside tolerance this long before moving on [s]
 
 
-def load_noise_model():
-    """Measurement noise fitted by part_b_sensing.py, or the fallback."""
+def load_noise_model(require=True):
+    # Measurement noise fitted by part_b_sensing.py, or the fallback.
     path = HERE / "noise_model.npy"
     if path.exists():
         data = np.load(path)
         return data[0], data[1]
+    if require:
+        raise FileNotFoundError("Missing noise_model.npy. Run part_b_sensing.py successfully first.")
     return np.array(DEFAULT_NOISE_A), np.array(DEFAULT_NOISE_B)
 
 
-def load_calibration():
-    """Camera calibration from part_b_calibration.py, or the nominal values."""
+def load_calibration(require=True):
+    # Camera calibration from part_b_calibration.py, or the nominal values.
     path = HERE / "calibration.npz"
     if path.exists():
         data = np.load(path)
         return data["K"], data["dist"], data["T_tool_cam"]
+    if require:
+        raise FileNotFoundError("Missing calibration.npz. Run part_b_sensing.py successfully first.")
     sim = Sim()
     return sim.camera_matrix(), np.zeros(5), np.array(T_TOOL_CAM_NOMINAL.A)
 
@@ -885,25 +881,35 @@ def load_calibration():
 def run_pick(seed=None, noise_scale=1.0, payload=0.0, nudge=None, nudge_time=1.2,
              push=None, push_time=1.0, open_loop=False, record=None, max_time=30.0,
              observer_tuning=None, use_d_feedforward=True, block_speed=BLOCK_SPEED,
-             use_v_feedforward=True):
-    """Run one complete pick and return (success, info, log).
-
-    seed fixes the block placement and the sensor noise; seed=None (the
-    default) gives a fresh random block position on every run.
-
-    Options are the disturbances used in Part E:
-      noise_scale  multiply all sensor noise
-      payload      extra mass on the gripper the controller does not know about [kg]
-      nudge        (dx, dy) the block is shoved by, part way through the approach
-      push         (fx, fy, fz) force applied to the forearm for 0.3 s
-      open_loop    look once, then stop using the camera (to show what vision buys)
-      record       a Recorder object for the demo video, or None
-      observer_tuning   (sigma_a, sigma_d) to override the observer's defaults
-      use_d_feedforward whether the controller cancels the estimated disturbance
-      block_speed  how fast the belt carries the block [m/s]; 0 parks it
-      use_v_feedforward whether the arm feeds the block's estimated velocity
-                   forward, or only chases its position
-    """
+             use_v_feedforward=True, grasp_policy="baseline", allow_nominal=False,
+             save_dir=None, persist=True, mount_error_mm=0.0, depth_scale=1.0):
+    # Run one complete pick and return (success, info, log).
+    #
+    #     seed fixes the block placement and the sensor noise; seed=None (the
+    #     default) gives a fresh random block position on every run.
+    #
+    #     Options are the disturbances used in Part E:
+    #       noise_scale  multiply all sensor noise
+    #       payload      extra mass on the gripper the controller does not know about [kg]
+    #       nudge        (dx, dy) the block is shoved by, part way through the approach
+    #       push         (fx, fy, fz) force applied to the forearm for 0.3 s
+    #       open_loop    look once, then stop using the camera (to show what vision buys)
+    #       record       a Recorder object for the demo video, or None
+    #       observer_tuning   (sigma_a, sigma_d) to override the observer's defaults
+    #       use_d_feedforward whether the controller cancels the estimated disturbance
+    #       block_speed  how fast the belt carries the block [m/s]; 0 parks it
+    #       use_v_feedforward whether the arm feeds the block's estimated velocity
+    #                    forward, or only chases its position
+    if grasp_policy not in ("baseline", "confidence"):
+        raise ValueError("grasp_policy must be baseline or confidence")
+    # Assessment runs require measured calibration; nominal mode is explicit development only.
+    K, dist, T_tool_cam = load_calibration(require=not allow_nominal)
+    noise_a, noise_b = load_noise_model(require=not allow_nominal)
+    if depth_scale <= 0:
+        raise ValueError("depth_scale must be positive")
+    T_tool_cam = T_tool_cam.copy()
+    # Deliberately wrong estimated mount, for robustness studies; actual camera is unchanged.
+    T_tool_cam[0, 3] += mount_error_mm / 1000.0
     global ENCODER_NOISE, DEPTH_NOISE, DEPTH_BIAS, RGB_NOISE
     base_noise = (ENCODER_NOISE, DEPTH_NOISE, DEPTH_BIAS, RGB_NOISE)
     ENCODER_NOISE, DEPTH_NOISE, DEPTH_BIAS, RGB_NOISE = [n * noise_scale for n in base_noise]
@@ -920,8 +926,6 @@ def run_pick(seed=None, noise_scale=1.0, payload=0.0, nudge=None, nudge_time=1.2
             sim.data.qpos[sim.model.jnt_qposadr[sim.model.joint(j).id]] = GRIPPER_OPEN
         mujoco.mj_forward(sim.model, sim.data)
 
-        K, dist, T_tool_cam = load_calibration()
-        noise_a, noise_b = load_noise_model()
         kp, kd, _ = design_lqr()
 
         model = ControllerModel()
@@ -945,9 +949,9 @@ def run_pick(seed=None, noise_scale=1.0, payload=0.0, nudge=None, nudge_time=1.2
             q_observe.append(q_look)
 
         log = {k: [] for k in ["t", "phase", "q", "qd", "q_hat", "qd_hat", "d_hat",
-                               "q_sigma", "qd_sigma", "q_meas", "q_ref", "tau",
+                               "q_sigma", "qd_sigma", "q_cov", "q_meas", "q_ref", "tau",
                                "obj_est", "obj_sigma", "obj_true", "obj_vel_true",
-                               "tcp", "nees", "cam"]}
+                               "tcp", "nees", "cam", "obj_cov"]}
 
         phase, t, t_phase, step = "settle", 0.0, 0.0, 0
         scan = 0                 # which observation pose we are looking from
@@ -955,6 +959,11 @@ def run_pick(seed=None, noise_scale=1.0, payload=0.0, nudge=None, nudge_time=1.2
         gripper, goal, inside_since = GRIPPER_OPEN, None, None
         traj_start, nudged, reason = Q_HOME.copy(), False, "ran out of time"
         grasp_info, pbvs_start = None, None
+        last_measurement = None
+        confidence_wait = 0.0
+        contact_since = None
+        contact_confirmed = False
+        hold_heights, hold_offsets = [], []
 
         while t < max_time and phase != "done":
             # Sense.
@@ -967,19 +976,20 @@ def run_pick(seed=None, noise_scale=1.0, payload=0.0, nudge=None, nudge_time=1.2
             looking = phase in ("look", "align", "descend") and not (open_loop and phase != "look")
             if looking and step % CAM_PERIOD == 0:
                 rgb, depth = sim.capture_rgbd()
+                depth = depth * depth_scale
                 # Camera pose from the ESTIMATED angles and the calibration, not the simulator.
                 T_base_cam = ur3.fkine(q_hat, end="tool0").A @ T_tool_cam
                 mask = detect_red_block(rgb)
-                found = locate_block(mask, depth, K, T_base_cam) if mask is not None else None
+                found = locate_block(mask, depth, K, T_base_cam, dist) if mask is not None else None
                 if found is None:
                     cam_result = 1
                 else:
                     status = objects.update(found[0], found[1])
                     cam_result = 2 if status == "rejected" else 3
+                    if status != "rejected":
+                        last_measurement = t
                 if record is not None:
                     record.last_view = (rgb, mask)
-            objects.predict()
-
             # Decide what to do next.
             t_phase += DT
             if phase == "settle":
@@ -1004,7 +1014,7 @@ def run_pick(seed=None, noise_scale=1.0, payload=0.0, nudge=None, nudge_time=1.2
                         break
                     phase, t_phase, traj_start = "to_observe", 0.0, q_hat.copy()
 
-            elif phase in ("align", "descend", "grasp", "lift"):
+            elif phase in ("align", "descend", "grasp", "lift", "hold"):
                 if phase == "align":
                     # Hover above the block, lined up with it.
                     goal = grasp_pose(objects.x[:3], objects.x[3],
@@ -1033,7 +1043,7 @@ def run_pick(seed=None, noise_scale=1.0, payload=0.0, nudge=None, nudge_time=1.2
                 # forward cancels that lag and turns the chase into an
                 # interception. Nothing measures this velocity; it comes
                 # entirely from the filter.
-                if use_v_feedforward and phase != "lift":
+                if use_v_feedforward and phase not in ("lift", "hold"):
                     twist[:3] += objects.velocity[:3]
                     twist[5] += objects.velocity[3]
 
@@ -1045,31 +1055,52 @@ def run_pick(seed=None, noise_scale=1.0, payload=0.0, nudge=None, nudge_time=1.2
                 q_ref = q_ref + qd_ref * DT
 
                 if phase == "grasp":
-                    # Fixed time for the fingers to close, then it is ours and
-                    # it comes off the belt.
-                    if t_phase > GRASP_TIME:
+                    left, right = sim.read_gripper_contacts()
+                    contact_since = (t if contact_since is None else contact_since) if left and right else None
+                    contact_confirmed = contact_since is not None and t - contact_since >= 0.08
+                    if t_phase > GRASP_TIME and contact_confirmed:
                         sim.release_block()
                         phase, t_phase = "lift", 0.0
                         goal = goal.copy()
                         goal[2, 3] += LIFT_HEIGHT
+                    elif t_phase > GRASP_TIME + 0.8:
+                        reason = "grasp not confirmed by both finger contact sensors"
+                        break
+
+                elif phase == "hold":
+                    # These readings score the hold only; they are not fed into control.
+                    hold_heights.append(float(sim.true_object_pose()[2] - BLOCK_HALF))
+                    hold_offsets.append(float(np.linalg.norm(sim.true_object_pose()[:3] - sim.true_tcp())))
+                    if t_phase >= 0.5:
+                        phase, t_phase = "done", 0.0
 
                 else:
                     arrived = (np.linalg.norm(err[:3]) < TOL_POS
                                and np.linalg.norm(err[3:]) < TOL_ANG)
-                    inside_since = (inside_since or t) if arrived else None
-
+                    inside_since = (t if inside_since is None else inside_since) if arrived else None
                     if inside_since is not None and t - inside_since > SETTLE_TIME:
                         inside_since = None
                         if phase == "align":
                             phase, t_phase = "descend", 0.0
                         elif phase == "descend":
-                            phase, t_phase = "grasp", 0.0
-                            grasp_info = grasp_report(sim, objects)
+                            if grasp_policy == "confidence":
+                                age = float("inf") if last_measurement is None else t - last_measurement
+                                if not grasp_confident(objects.P, age):
+                                    confidence_wait = t if confidence_wait == 0.0 else confidence_wait
+                                    if t - confidence_wait >= 0.4:
+                                        reason = "grasp aborted: target uncertainty or stale vision"
+                                        break
+                            else:
+                                age = 0.0
+                            permitted = grasp_policy == "baseline" or grasp_confident(objects.P, age)
+                            if permitted:
+                                phase, t_phase = "grasp", 0.0
+                                grasp_info = grasp_report(sim, objects)
                         else:
-                            phase, t_phase = "done", 0.0
+                            phase, t_phase = "hold", 0.0
                     elif t_phase > timeout:
                         if phase == "lift":
-                            phase, t_phase = "done", 0.0
+                            phase, t_phase = "hold", 0.0
                         else:
                             reason = f"{phase} took too long"
                             break
@@ -1079,6 +1110,27 @@ def run_pick(seed=None, noise_scale=1.0, payload=0.0, nudge=None, nudge_time=1.2
                                               d_hat if use_d_feedforward else np.zeros(6),
                                               q_ref, qd_ref, qdd_ref,
                                               kp, kd, sim.torque_limit)
+
+            # Record.
+            sigma = observer.sigma()
+            log["t"].append(t);                 log["phase"].append(phase)
+            log["q"].append(q_true);            log["qd"].append(qd_true)
+            log["q_hat"].append(q_hat);         log["qd_hat"].append(qd_hat)
+            log["d_hat"].append(d_hat);         log["q_meas"].append(q_meas)
+            log["q_sigma"].append(sigma[:, 0]); log["qd_sigma"].append(sigma[:, 1])
+            log["q_cov"].append(observer.P.copy())
+            log["q_ref"].append(q_ref.copy());  log["tau"].append(tau)
+            log["tcp"].append(sim.true_tcp());  log["cam"].append(cam_result)
+            log["nees"].append(observer.nees(q_true, qd_true))
+            blank = np.full(2 * ObjectFilter.N, np.nan)
+            log["obj_est"].append(objects.x.copy() if objects.x is not None else blank)
+            log["obj_sigma"].append(objects.sigma() if objects.x is not None else blank)
+            log["obj_cov"].append(objects.P.copy() if objects.P is not None else np.full((8, 8), np.nan))
+            log["obj_true"].append(sim.true_object_pose())
+            log["obj_vel_true"].append(sim.true_object_velocity())
+            if record is not None:
+                record.maybe_capture(sim, observer, objects, t, phase)
+
 
             # Disturbances, applied to the real robot only.
             sim.data.xfrc_applied[sim.model.body("forearm_link").id, :3] = 0
@@ -1094,38 +1146,33 @@ def run_pick(seed=None, noise_scale=1.0, payload=0.0, nudge=None, nudge_time=1.2
             sim.drive_block()        # keep the belt running under the block
             sim.step(tau, gripper)
             observer.predict(accel_applied)
+            objects.predict()
 
-            # Record.
-            sigma = observer.sigma()
-            log["t"].append(t);                 log["phase"].append(phase)
-            log["q"].append(q_true);            log["qd"].append(qd_true)
-            log["q_hat"].append(q_hat);         log["qd_hat"].append(qd_hat)
-            log["d_hat"].append(d_hat);         log["q_meas"].append(q_meas)
-            log["q_sigma"].append(sigma[:, 0]); log["qd_sigma"].append(sigma[:, 1])
-            log["q_ref"].append(q_ref.copy());  log["tau"].append(tau)
-            log["tcp"].append(sim.true_tcp());  log["cam"].append(cam_result)
-            log["nees"].append(observer.nees(q_true, qd_true))
-            blank = np.full(2 * ObjectFilter.N, np.nan)
-            log["obj_est"].append(objects.x.copy() if objects.x is not None else blank)
-            log["obj_sigma"].append(objects.sigma() if objects.x is not None else blank)
-            log["obj_true"].append(sim.true_object_pose())
-            log["obj_vel_true"].append(sim.true_object_velocity())
-            if record is not None:
-                record.maybe_capture(sim, observer, objects, t, phase)
 
             t += DT
             step += 1
 
         # Score it.
         lifted = sim.true_object_pose()[2] - BLOCK_HALF
-        success = bool(phase == "done" and lifted > 0.08)
+        success = bool(phase == "done" and lift_verified(hold_heights, hold_offsets, contact_confirmed))
         if phase == "done":
             reason = "picked it up" if success else "did not lift it"
 
         log = {k: np.array(v) for k, v in log.items()}
         info = {"seed": seed, "success": success, "reason": reason,
                 "block_xy": block_xy, "block_speed": block_speed,
-                "looks_used": scan + 1,
+                "looks_used": scan + 1, "grasp_policy": grasp_policy,
+                "contact_confirmed": bool(contact_confirmed),
+                "hold_samples": len(hold_heights),
+                "min_hold_lift_m": min(hold_heights) if hold_heights else None,
+                "max_hold_tcp_distance_m": max(hold_offsets) if hold_offsets else None,
+                "calibration_mode": "nominal_development" if allow_nominal else "measured",
+                "settings": {"noise_scale": noise_scale, "payload_kg": payload,
+                             "nudge_m": nudge, "push_n": push, "block_speed_m_s": block_speed,
+                             "open_loop": open_loop, "observer_tuning": observer_tuning,
+                             "use_d_feedforward": use_d_feedforward,
+                             "use_v_feedforward": use_v_feedforward,
+                             "mount_error_mm": mount_error_mm, "depth_scale": depth_scale},
                 "time_s": t, "lift_m": lifted,
                 "frames_used": objects.n_used, "frames_rejected": objects.n_rejected,
                 "frames_blind": int(np.sum(log["cam"] == 1)), "filter_resets": objects.n_resets}
@@ -1133,26 +1180,30 @@ def run_pick(seed=None, noise_scale=1.0, payload=0.0, nudge=None, nudge_time=1.2
             info.update(grasp_info)
         if len(log["t"]):
             moving = log["phase"] != "settle"
+            if not np.any(moving):
+                moving = np.ones(len(log["t"]), dtype=bool)
             info["tracking_rms_mrad"] = 1e3 * float(np.sqrt(np.mean(
                 (log["q"][moving] - log["q_ref"][moving]) ** 2)))
             info["kf_qd_rmse_mrad_s"] = 1e3 * float(np.sqrt(np.mean(
                 (log["qd"] - log["qd_hat"]) ** 2)))
-            info["nees_mean"] = float(np.mean(log["nees"][50:]))
+            info["nees_mean"] = float(np.mean(log["nees"][min(50, len(log["nees"])//10):]))
             info["torque_rms"] = float(np.sqrt(np.mean(log["tau"] ** 2)))
-        if sim.renderer is not None:
-            sim.renderer.close()
+        if persist:
+            from evidence import save_trial
+            save_trial(info, log, save_dir)
         return success, info, log
 
     finally:
+        if "sim" in locals() and sim.renderer is not None:
+            sim.renderer.close()
         ENCODER_NOISE, DEPTH_NOISE, DEPTH_BIAS, RGB_NOISE = base_noise
 
 
 def grasp_report(sim, objects):
-    """How far off we were at the moment the gripper closed.
-
-    Uses ground truth, so it is for marking the result only - by this point
-    the robot has already committed to the grasp.
-    """
+    # How far off we were at the moment the gripper closed.
+    #
+    #     Uses ground truth, so it is for marking the result only - by this point
+    #     the robot has already committed to the grasp.
     obj = sim.true_object_pose()
     tcp = sim.true_tcp()
     est = objects.x
@@ -1166,3 +1217,26 @@ def grasp_report(sim, objects):
         "object_speed_error_mm_s": 1e3 * float(
             np.linalg.norm(objects.velocity[:2] - v_true[:2])),
     }
+
+
+def grasp_confident(covariance, measurement_age, max_age=1.0, position_margin=0.012):
+    # A two-sigma planar uncertainty ellipse must fit within the configured grasp margin.
+    # This is an experimental conservative policy, compared with the baseline on held-out seeds.
+    if covariance is None or measurement_age > max_age:
+        return False
+    planar = np.asarray(covariance)[:2, :2]
+    if not np.all(np.isfinite(planar)):
+        return False
+    largest = np.linalg.eigvalsh(planar).max()
+    return bool(largest >= 0 and 2 * np.sqrt(largest) <= position_margin)
+
+
+def lift_verified(heights, tcp_distances, contact_confirmed):
+    # Evaluation only: a momentary bounce is not a sustained successful pick.
+    required_samples = int(np.ceil(0.5 / DT))
+    if not contact_confirmed or len(heights) < required_samples:
+        return False
+    if len(tcp_distances) != len(heights):
+        return False
+    return bool(np.all(np.isfinite(heights)) and np.all(np.isfinite(tcp_distances))
+                and min(heights) > 0.08 and max(tcp_distances) < 0.06)

@@ -1,0 +1,18 @@
+test_angle_wrap_and_rotation_at_pi (__main__.ProjectTests.test_angle_wrap_and_rotation_at_pi) ... ok
+test_assessment_requires_calibration_files (__main__.ProjectTests.test_assessment_requires_calibration_files) ... ok
+test_backprojection_uses_optical_depth (__main__.ProjectTests.test_backprojection_uses_optical_depth) ... ok
+test_confidence_rule_rejects_old_or_uncertain_targets (__main__.ProjectTests.test_confidence_rule_rejects_old_or_uncertain_targets) ... ok
+test_filter_covariance_stays_positive_and_velocity_is_inferred (__main__.ProjectTests.test_filter_covariance_stays_positive_and_velocity_is_inferred) ... ok
+test_kinematics_matches_physics_at_several_poses (__main__.ProjectTests.test_kinematics_matches_physics_at_several_poses) ... ok
+test_lift_needs_contact_full_hold_and_no_drop (__main__.ProjectTests.test_lift_needs_contact_full_hold_and_no_drop) ... ok
+test_mass_matrix_is_symmetric_positive_and_torque_is_limited (__main__.ProjectTests.test_mass_matrix_is_symmetric_positive_and_torque_is_limited) ... ok
+test_missing_red_and_invalid_depth_are_rejected (__main__.ProjectTests.test_missing_red_and_invalid_depth_are_rejected) ... ok
+test_nees_is_evaluated_before_prediction (__main__.ProjectTests.test_nees_is_evaluated_before_prediction) ... ok
+test_object_outlier_gate_and_reinitialisation (__main__.ProjectTests.test_object_outlier_gate_and_reinitialisation) ... ok
+test_success_intervals_express_small_sample_uncertainty (__main__.ProjectTests.test_success_intervals_express_small_sample_uncertainty) ... ok
+test_trial_evidence_round_trip_and_no_overwrite (__main__.ProjectTests.test_trial_evidence_round_trip_and_no_overwrite) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.299s
+
+OK

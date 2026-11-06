@@ -1,27 +1,14 @@
-"""
-PART B - Sensing: calibrating the camera and measuring how good it is.
-
-Run:  python part_b_sensing.py
-
-Two jobs:
-  1. Calibrate the wrist camera. Find its lens parameters (intrinsics) from
-     checkerboard photos, and find where it is bolted to the flange
-     (hand-eye). Both are done the way you would on the real robot, using the
-     ENCODER readings for the arm's pose - never the simulator's true pose.
-  2. Measure how accurately the camera can actually locate the block, at
-     several distances. That number becomes the R matrix of the object filter
-     in Part C.
-
-Writes: calibration.npz, noise_model.npy, results/part_b_*.png
-"""
-
 import numpy as np
+# Save figures without opening a desktop plotting window.
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import cv2
 import mujoco
 from pathlib import Path
 
 import trackb as tb
+from evidence import provenance, write_json
 
 np.set_printoptions(precision=4, suppress=True)
 HERE = Path(__file__).resolve().parent
@@ -33,8 +20,8 @@ BOARD_POS = np.array([-0.02, 0.0, 0.6005])      # board on the table, world fram
 
 
 def look_at(eye, target, roll):
-    """Build a camera pose at `eye` pointing at `target`, in the optical
-    convention (x right, y down, z forward)."""
+    # Build a camera pose at `eye` pointing at `target`, in the optical
+    #     convention (x right, y down, z forward).
     z = target - eye
     z = z / np.linalg.norm(z)
     x = np.cross(z, [0, 0, 1.0])
@@ -47,12 +34,11 @@ def look_at(eye, target, roll):
 
 
 def collect_views(n_wanted=20):
-    """Move the arm to assorted poses above the board and photograph it.
-
-    The camera is deliberately moved to a RANGE of distances, tilts and roll
-    angles. Calibration needs that variety: photos all taken from the same
-    place cannot separate the focal length from the distance to the board.
-    """
+    # Move the arm to assorted poses above the board and photograph it.
+    #
+    #     The camera is deliberately moved to a RANGE of distances, tilts and roll
+    #     angles. Calibration needs that variety: photos all taken from the same
+    #     place cannot separate the focal length from the distance to the board.
     sim = tb.Sim(seed=1)
     # Park the block off to the side so it does not sit on the board.
     sim.set_block("target", 0.45, 0.35, 0.0)
@@ -103,8 +89,14 @@ print("1. CALIBRATING THE WRIST CAMERA")
 print("=" * 70)
 print("Photographing the checkerboard from assorted poses...")
 
-views, sim = collect_views()
-print(f"Usable views: {len(views)}")
+if not hasattr(cv2, "calibrateHandEye"):
+    raise RuntimeError("This OpenCV build lacks calibrateHandEye. Install project/requirements.txt in .venv.")
+all_views, sim = collect_views(30)
+if len(all_views) < 30:
+    raise RuntimeError(f"Need 30 usable calibration views, collected {len(all_views)}")
+# Fit and choose a solver on the first 24 views only. Hold the last six out.
+views, held_out = all_views[:24], all_views[24:]
+print(f"Usable views: {len(views)} training, {len(held_out)} held out")
 
 # Where every corner sits on the board, in the board's own frame (z = 0).
 object_points = np.zeros((tb.BOARD_CORNERS[0] * tb.BOARD_CORNERS[1], 3), np.float32)
@@ -138,6 +130,7 @@ for view, rvec, tvec in zip(views, rvecs, tvecs):
 print("\nHand-eye calibration (three standard solvers):")
 print("  method        position error   angle error   board scatter")
 best = None
+solver_results = []
 for name, flag in [("Tsai", cv2.CALIB_HAND_EYE_TSAI),
                    ("Park", cv2.CALIB_HAND_EYE_PARK),
                    ("Daniilidis", cv2.CALIB_HAND_EYE_DANIILIDIS)]:
@@ -159,9 +152,16 @@ for name, flag in [("Tsai", cv2.CALIB_HAND_EYE_TSAI),
     scatter = 1e3 * np.linalg.norm(positions - positions.mean(axis=0), axis=1).mean()
 
     print(f"  {name:<12}  {pos_err:8.2f} mm   {ang_err:8.3f} deg   {scatter:7.3f} mm")
+    if not np.all(np.isfinite(T_tool_cam)):
+        continue
+    solver_results.append({"method": name, "training_board_scatter_mm": scatter,
+                           "reference_position_error_mm": pos_err,
+                           "reference_angle_error_deg": ang_err})
     if best is None or scatter < best[0]:
         best = (scatter, name, T_tool_cam)
 
+if best is None:
+    raise RuntimeError("All hand-eye solvers failed")
 _, chosen, T_tool_cam = best
 print(f"\nUsing the {chosen} result (lowest board scatter).")
 print("Camera position on the flange [m]:", T_tool_cam[:3, 3].round(4))
@@ -171,20 +171,46 @@ np.savez(HERE / "calibration.npz", K=K, dist=dist.ravel(), T_tool_cam=T_tool_cam
 print(f"\nSaved {HERE / 'calibration.npz'}")
 
 
+# Validation poses and image corners never enter the fitted intrinsics or hand-eye solver.
+validation_positions, validation_reprojection = [], []
+for view in held_out:
+    ok, rvec, tvec = cv2.solvePnP(object_points, view["corners"], K, dist)
+    if not ok:
+        raise RuntimeError("Held-out checkerboard pose could not be recovered")
+    projected, _ = cv2.projectPoints(object_points, rvec, tvec, K, dist)
+    residual = projected.reshape(-1, 2) - view["corners"].reshape(-1, 2)
+    validation_reprojection.append(float(np.sqrt(np.mean(np.sum(residual**2, axis=1)))))
+    T_cam_board = np.eye(4)
+    T_cam_board[:3, :3] = cv2.Rodrigues(rvec)[0]
+    T_cam_board[:3, 3] = tvec.ravel()
+    T_base_board = tb.ur3.fkine(view["q"], end="tool0").A @ T_tool_cam @ T_cam_board
+    validation_positions.append(T_base_board[:3, 3])
+validation_positions = np.array(validation_positions)
+held_scatter = 1e3 * float(np.sqrt(np.mean(np.sum(
+    (validation_positions - validation_positions.mean(axis=0))**2, axis=1))))
+calibration_report = {
+    "training_views": len(views), "validation_views": len(held_out),
+    "training_reprojection_rms_px": float(rms),
+    "validation_reprojection_rms_px": float(np.sqrt(np.mean(np.square(validation_reprojection)))),
+    "validation_board_scatter_rms_mm": held_scatter,
+    "selected_solver": chosen, "solver_results": solver_results,
+    "selection": "minimum training board scatter; held-out views used for evaluation only",
+    "distortion": dist.ravel().tolist(), "provenance": provenance()}
+write_json(RESULTS / "calibration_report.json", calibration_report)
+np.savez_compressed(RESULTS / "calibration_observations.npz",
+                    corners=np.array([v["corners"] for v in all_views]),
+                    measured_q=np.array([v["q"] for v in all_views]),
+                    object_points=object_points, train_indices=np.arange(24),
+                    validation_indices=np.arange(24, 30))
+print(f"Held-out reprojection RMS: {calibration_report['validation_reprojection_rms_px']:.3f} px")
+print(f"Held-out fixed-board scatter RMS: {held_scatter:.3f} mm")
+
+
 print()
 print("=" * 70)
 print("2. MEASURING THE LOCALISATION ERROR")
 print("=" * 70)
-print("""
-Holding the arm still and photographing the same block many times tells us two
-different things, and the difference matters:
-
-  SPREAD  how much the answer jumps about between frames (random noise)
-  BIAS    how far the average answer sits from the truth (a systematic offset)
-
-A Kalman filter's R has to describe the TOTAL error, so we fit to the RMS error
-about the true position, not to the spread.
-""")
+print("\nHolding the arm still and photographing the same block many times tells us two\ndifferent things, and the difference matters:\n\n  SPREAD  how much the answer jumps about between frames (random noise)\n  BIAS    how far the average answer sits from the truth (a systematic offset)\n\nA Kalman filter's R has to describe the TOTAL error, so we fit to the RMS error\nabout the true position, not to the spread.\n")
 
 sim2 = tb.Sim(seed=7)
 sim2.data.mocap_pos[0] = [0, 0, -1]                  # board out of the way
@@ -213,7 +239,7 @@ for h in heights:
     for _ in range(N_FRAMES):
         rgb, depth = sim2.capture_rgbd()
         mask = tb.detect_red_block(rgb)
-        got = tb.locate_block(mask, depth, K, T_base_cam) if mask is not None else None
+        got = tb.locate_block(mask, depth, K, T_base_cam, dist) if mask is not None else None
         if got is not None:
             measurements.append(got[0])
             ranges.append(got[1])
@@ -239,21 +265,7 @@ for r in rows:
           f"{1e3*r['spread'][2]:7.2f}    {1e3*r['bias'][0]:+7.2f} {1e3*r['bias'][1]:+7.2f} "
           f"{1e3*r['bias'][2]:+7.2f}   {np.rad2deg(r['rms'][3]):7.2f}")
 
-print("""
-The z column is the interesting one. The spread is a few tenths of a
-millimetre, but the bias is over a millimetre - the measurement is repeatable
-without being accurate. Two reasons, both of which a real RGB-D camera shares:
-
-  * the block comes out 1-2 mm taller than it is, because its top face and the
-    surrounding table are both measured from depth, and the smooth part of the
-    depth error does not cancel between them;
-  * the top face is taken as the 90th percentile of the blob's heights, which
-    sits a fraction above the true face.
-
-If we fitted R to the spread alone, the filter would claim +-0.3 mm while
-actually being 1.5 mm out. Its gate would then start throwing away perfectly
-good measurements. So we fit to the RMS error instead.
-""")
+print("\nThe z column is the interesting one. The spread is a few tenths of a\nmillimetre, but the bias is over a millimetre - the measurement is repeatable\nwithout being accurate. Two reasons, both of which a real RGB-D camera shares:\n\n  * the block comes out 1-2 mm taller than it is, because its top face and the\n    surrounding table are both measured from depth, and the smooth part of the\n    depth error does not cancel between them;\n  * the top face is taken as the 90th percentile of the blob's heights, which\n    sits a fraction above the true face.\n\nIf we fitted R to the spread alone, the filter would claim +-0.3 mm while\nactually being 1.5 mm out. Its gate would then start throwing away perfectly\ngood measurements. So we fit to the RMS error instead.\n")
 
 # Fit sigma(Z) = a + b*Z^2: stereo depth error grows with the square of range.
 Z = np.array([r["range"] for r in rows])
@@ -330,3 +342,13 @@ fig.suptitle("Localisation error grows with range - and is mostly bias, not nois
 fig.tight_layout()
 fig.savefig(RESULTS / "part_b_noise.png", dpi=150)
 print(f"Saved {RESULTS / 'part_b_detection.png'} and part_b_noise.png")
+
+# Store the measurements used to fit R, rather than retaining only a plot.
+write_json(RESULTS / "noise_report.json", {"samples_per_range": N_FRAMES,
+           "range_results": rows, "noise_a": noise_a, "noise_b": noise_b,
+           "bias_model": "bias is included in total RMS, not corrected away",
+           "provenance": provenance()})
+if sim.renderer is not None:
+    sim.renderer.close()
+if sim2.renderer is not None:
+    sim2.renderer.close()

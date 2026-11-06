@@ -1,25 +1,13 @@
-"""
-PART A - Modelling, controllability and observability.
-
-Run:  python part_a_model.py
-
-Three things:
-  1. Linearise the UR3 about a working pose and show it is unstable in open
-     loop - gravity pulls it over, so feedback is not optional.
-  2. Check controllability and observability. In particular: can we get away
-     with position-only encoders and no tachometers?
-  3. Show what feedback linearisation does to the problem, and where the
-     controller and observer poles end up.
-
-Writes: results/part_a_poles.png
-"""
-
 import numpy as np
+# Save figures without opening a desktop plotting window.
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import control as ct
 from pathlib import Path
 
 import trackb as tb
+from evidence import provenance, write_json
 
 np.set_printoptions(precision=4, suppress=True)
 RESULTS = Path(__file__).resolve().parent / "results"
@@ -27,16 +15,15 @@ RESULTS.mkdir(exist_ok=True)
 
 
 def pbh_missing_modes(A, B, tol=1e-8):
-    """Count the modes of A that B cannot reach (the PBH test).
-
-    A mode (eigenvalue) lam is uncontrollable exactly when the matrix
-    [A - lam*I, B] loses rank. Testing each mode separately is far more
-    reliable than taking the rank of [B, AB, A^2 B, ...], whose entries here
-    span about ten orders of magnitude - numpy's rank on that matrix gives a
-    wrong answer for this arm (see the printout below).
-
-    Swap A -> A.T and B -> C.T to get the observability version.
-    """
+    # Count the modes of A that B cannot reach (the PBH test).
+    #
+    #     A mode (eigenvalue) lam is uncontrollable exactly when the matrix
+    #     [A - lam*I, B] loses rank. Testing each mode separately is far more
+    #     reliable than taking the rank of [B, AB, A^2 B, ...], whose entries here
+    #     span about ten orders of magnitude - numpy's rank on that matrix gives a
+    #     wrong answer for this arm (see the printout below).
+    #
+    #     Swap A -> A.T and B -> C.T to get the observability version.
     n = A.shape[0]
     modes = []
     for lam in np.linalg.eigvals(A):
@@ -62,6 +49,8 @@ T_observe[:3, :3] = np.diag([1.0, -1.0, -1.0])
 sim = tb.Sim()
 T_observe[:3, 3] = (sim.T_base_world @ np.append(tb.OBSERVE_TCP_WORLD, 1))[:3]
 q0, ok = tb.ik_tcp(tb.SE3(T_observe, check=False), tb.Q_HOME)
+if not ok:
+    raise RuntimeError("Observation-pose IK failed; cannot analyse an invalid operating point")
 print(f"Operating point (deg): {np.rad2deg(q0).round(1)}")
 
 # Linearised about a still pose: A = [[0, I], [-M^-1 G, -M^-1 B]], B_u = [[0], [M^-1]].
@@ -124,21 +113,7 @@ for label, Bi, Ci in rows:
     o_txt = f"{12 - pbh_missing_modes(A.T, Ci.T):>6} / 12"
     print(f"  {label:<44}{c_txt}{o_txt}")
 
-print("""
-  Reading that table:
-
-  * With one motor per joint the inertia matrix is invertible, so we can
-    produce any joint acceleration we like: fully controllable.
-
-  * With POSITION encoders alone, all twelve states are observable - including
-    the six joint velocities we never measure. That is the formal reason we
-    can leave tachometers off the robot and estimate velocity instead, which
-    is exactly what Part C does.
-
-  * With VELOCITY sensors alone we lose a state. Turning the shoulder about
-    the vertical axis changes no gravity torque and no velocity reading, so a
-    constant offset in that angle is invisible. Same story if the shoulder-pan
-    encoder fails.""")
+print('\n  Reading that table:\n\n  * With one motor per joint the inertia matrix is invertible, so we can\n    produce any joint acceleration we like: fully controllable.\n\n  * With POSITION encoders alone, all twelve states are observable - including\n    the six joint velocities we never measure. That is the formal reason we\n    can leave tachometers off the robot and estimate velocity instead, which\n    is exactly what Part C does.\n\n  * With VELOCITY sensors alone we lose a state. Turning the shoulder about\n    the vertical axis changes no gravity torque and no velocity reading, so a\n    constant offset in that angle is invisible. Same story if the shoulder-pan\n    encoder fails.')
 
 
 print()
@@ -146,17 +121,7 @@ print("=" * 70)
 print("3. THE MODEL THE CONTROLLER ACTUALLY DESIGNS AGAINST")
 print("=" * 70)
 
-print("""
-  The controller cancels the arm's own dynamics (Part D):
-      tau = M(q) v + c(q,qdot) + g(q) + B qdot      =>      qddot = v
-  so the coupled 12-state problem becomes six identical double integrators,
-  one per joint, and we design one small controller for all of them.
-
-  Per joint, with state [q, qdot]:   A = [[0,1],[0,0]]   B = [0,1]'   C = [1,0]
-
-  The observer uses one extra state, d, for the acceleration the model did not
-  predict - friction, and the weight of whatever is in the gripper:
-      [q, qdot, d]        d behaves as a slow random walk""")
+print("\n  The controller cancels the arm's own dynamics (Part D):\n      tau = M(q) v + c(q,qdot) + g(q) + B qdot      =>      qddot = v\n  so the coupled 12-state problem becomes six identical double integrators,\n  one per joint, and we design one small controller for all of them.\n\n  Per joint, with state [q, qdot]:   A = [[0,1],[0,0]]   B = [0,1]'   C = [1,0]\n\n  The observer uses one extra state, d, for the acceleration the model did not\n  predict - friction, and the weight of whatever is in the gripper:\n      [q, qdot, d]        d behaves as a slow random walk")
 
 A2 = np.array([[0.0, 1.0], [0.0, 0.0]])
 B2 = np.array([[0.0], [1.0]])
@@ -191,8 +156,8 @@ speed = lambda z: np.abs(np.log(z.astype(complex))) / tb.DT
 print(f"  Controller speed : {speed(ctrl_poles).max():.0f} rad/s")
 print(f"  Observer speed   : {speed(obs_poles).min():.0f} rad/s")
 print(f"\n  The observer is about {speed(obs_poles).min() / speed(ctrl_poles).max():.0f}x faster than the controller.")
-print("  That is the separation principle in practice: the estimate settles")
-print("  well before the controller reacts, so the two can be designed apart.")
+print("  These are local linear-design poles. Faster observer poles do not prove")
+print("  global nonlinear stability under saturation, contact or model error.")
 
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4))
@@ -220,3 +185,26 @@ ax2.grid(alpha=0.3)
 fig.tight_layout()
 fig.savefig(RESULTS / "part_a_poles.png", dpi=150)
 print(f"\nSaved {RESULTS / 'part_a_poles.png'}")
+
+# Check the local approximation against the same smooth rigid-body dynamics.
+# Coulomb friction is deliberately outside this model and is not validated by this test.
+_, equilibrium = model.dynamics(q0, np.zeros(6))
+direction = np.array([1., -.5, .3, -.2, .4, -.1])
+validation = []
+for size in [1e-4, 1e-3, .01, .05]:
+    delta = direction * size
+    mass, bias = model.dynamics(q0 + delta, np.zeros(6))
+    actual_acceleration = np.linalg.solve(mass, equilibrium - bias)
+    predicted_acceleration = (-Minv @ G) @ delta
+    validation.append({"position_perturbation_rad": size,
+                       "acceleration_error_norm_rad_s2": float(np.linalg.norm(
+                           actual_acceleration - predicted_acceleration))})
+report = {"operating_q_rad": q0, "open_loop_poles_real": eigs.real,
+          "open_loop_poles_imag": eigs.imag, "controllability_rank": 12-pbh_missing_modes(A, B),
+          "observability_rank": 12-pbh_missing_modes(A.T, C_encoders.T),
+          "lqr_kp": kp, "lqr_kd": kd, "pbh_relative_tolerance": 1e-8,
+          "local_approximation_check": validation,
+          "scope": "local smooth model; does not prove global/contact stability",
+          "provenance": provenance()}
+write_json(RESULTS / "model_report.json", report)
+np.savez_compressed(RESULTS / "model_matrices.npz", A=A, B=B, C=C_encoders, M=M, G=G)

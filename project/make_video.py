@@ -1,20 +1,18 @@
-"""
-Render a demo video of one pick.
+# Render a demo video of one pick.
+#
+# Run:  python make_video.py                    (nominal)
+#       python make_video.py --nudge            (block gets knocked mid-approach)
+#       python make_video.py --seed 4
+#
+# Each frame shows the scene on the left and, on the right, what the wrist camera
+# sees plus the numbers that matter: the filter's estimate of the block, its own
+# uncertainty, and the true value next to it. The marking guide asks the video to
+# show "the estimate and its uncertainty alongside the true state", which is more
+# than just footage of the arm moving.
+#
+# Writes: results/demo_<name>.mp4
 
-Run:  python make_video.py                    (nominal)
-      python make_video.py --nudge            (block gets knocked mid-approach)
-      python make_video.py --seed 4
-
-Each frame shows the scene on the left and, on the right, what the wrist camera
-sees plus the numbers that matter: the filter's estimate of the block, its own
-uncertainty, and the true value next to it. The marking guide asks the video to
-show "the estimate and its uncertainty alongside the true state", which is more
-than just footage of the arm moving.
-
-Writes: results/demo_<name>.mp4
-"""
-
-import secrets
+import argparse
 import sys
 import numpy as np
 import cv2
@@ -23,6 +21,7 @@ import imageio.v2 as imageio
 from pathlib import Path
 
 import trackb as tb
+from evidence import new_run_folder, write_json
 
 RESULTS = Path(__file__).resolve().parent / "results"
 RESULTS.mkdir(exist_ok=True)
@@ -42,9 +41,10 @@ FONT = cv2.FONT_HERSHEY_SIMPLEX
 
 
 class Recorder:
-    """Grabs a composite frame every 1/FPS of simulated time."""
+    # Grabs a composite frame every 1/FPS of simulated time.
 
-    def __init__(self):
+    def __init__(self, seed=None):
+        self.seed = seed
         self.frames = []
         self.next_time = 0.0
         self.scene = None
@@ -75,6 +75,7 @@ class Recorder:
 
         # What the camera sees, with the detected pixels tinted.
         write("WRIST CAMERA", 16, 52, 0.4, GREY)
+        write(f"seed {self.seed}", 330, 52, 0.32, GREY)
         view = np.full((225, 300, 3), 40, np.uint8)
         if self.last_view is not None:
             rgb, mask = self.last_view
@@ -110,8 +111,10 @@ class Recorder:
         write("speed [mm/s]", 16, y)
         if objects.x is not None:
             v_est = 1e3 * float(np.linalg.norm(objects.velocity[:2]))
-            v_sd = 1e3 * float(np.linalg.norm(objects.sigma()[4:6]))
-            write(f"{v_est:8.1f} +/-{v_sd:5.1f}", 100, y, 0.44, BLUE)
+            v = objects.velocity[:2]
+            direction = v / max(float(np.linalg.norm(v)), 1e-12)
+            v_sd = 1e3 * float(np.sqrt(max(0, direction @ objects.P[4:6, 4:6] @ direction)))
+            write(f"{v_est:8.1f} ~+/-{v_sd:5.1f}", 100, y, 0.44, BLUE)
         else:
             write("      --", 100, y, 0.44, GREY)
         write(f"{1e3 * np.linalg.norm(sim.true_object_velocity()[:2]):8.1f}",
@@ -152,20 +155,35 @@ class Recorder:
 
 
 if __name__ == "__main__":
-    seed = secrets.randbelow(100000)
-    if "--seed" in sys.argv:
-        seed = int(sys.argv[sys.argv.index("--seed") + 1])
-
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--seed", type=int, default=0)
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("--nudge", action="store_true")
+    group.add_argument("--open-loop", action="store_true")
+    group.add_argument("--noise", action="store_true")
+    parser.add_argument("--confidence", action="store_true")
+    args = parser.parse_args()
     options, name = {}, "nominal"
-    if "--nudge" in sys.argv:
-        options, name = {"nudge": (0.04, -0.03)}, "nudge"
-    elif "--open-loop" in sys.argv:
-        options, name = {"open_loop": True, "nudge": (0.04, -0.03)}, "open_loop"
-    elif "--noise" in sys.argv:
+    if args.nudge:
+        options, name = {"nudge": (.04, -.03)}, "nudge"
+    elif args.open_loop:
+        options, name = {"open_loop": True, "nudge": (.04, -.03)}, "open_loop"
+    elif args.noise:
         options, name = {"noise_scale": 6.0}, "noise"
-
-    print(f"Rendering '{name}' (seed {seed})...")
-    recorder = Recorder()
-    success, info, _ = tb.run_pick(seed=seed, record=recorder, **options)
-    print(f"  {info['reason']}")
-    recorder.save(RESULTS / f"demo_{name}.mp4")
+    if args.confidence:
+        options["grasp_policy"] = "confidence"
+        name += "_confidence"
+    folder = new_run_folder("video-" + name)
+    print(f"Rendering {name}, seed {args.seed}", flush=True)
+    recorder = Recorder(seed=args.seed)
+    try:
+        success, info, _ = tb.run_pick(seed=args.seed, record=recorder, save_dir=folder, **options)
+        path = folder / f"demo_{name}_seed_{args.seed}.mp4"
+        recorder.save(path)
+        write_json(path.with_suffix(".json"), {"video": path.name, "condition": name,
+                                               "playback": "25 fps simulation capture",
+                                               "result": info})
+        print(info["reason"])
+    finally:
+        if recorder.scene is not None:
+            recorder.scene.close()

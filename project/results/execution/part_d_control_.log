@@ -1,0 +1,82 @@
+WARNING: ARB_clip_control unavailable while mjDEPTH_ZEROFAR requested, depth accuracy will be limited
+
+======================================================================
+1. CHOOSING THE GAINS
+======================================================================
+
+After computed torque each joint is just  qddot = v, so we only have to design
+one controller and use it six times.
+
+The LQR cost is   sum of  q_err^2/e_max^2 + qdot_err^2/v_max^2 + v^2/a_max^2.
+Dividing each term by the largest value we are willing to accept (Bryson's
+rule) means the weights have units we can argue about instead of being picked
+by trial and error:
+
+  e_max = 0.005 rad      a position error this big...
+  v_max = 0.125 rad/s    ...matters as much as this velocity error...
+  a_max = 5.0 rad/s^2      ...and is worth this much correction.
+
+  gives  kp = 942 1/s^2,  kd = 57.5 1/s
+  closed-loop poles [0.9416+0.0188j 0.9416-0.0188j]
+  natural frequency 32 rad/s, damping 0.95
+
+Why not simply turn the gains up? kd multiplies the velocity ESTIMATE, and that
+estimate carries noise. The sweep below shows what that costs.
+
+  e_max      kp      kd   settling   overshoot   noise -> accel
+  [rad]                     [ms]        [%]        [rad/s^2 rms]
+  0.002      2305    77.3        78        1.3           3.09
+  0.005       942    57.5       166        0.0           2.30  <- used
+  0.02        239    44.0       646        0.0           1.76
+  0.05         96    40.8      1588        0.0           1.63
+
+Tighter weights settle faster but push more sensor noise through to the motors.
+We took e_max = 0.005 rad: it settles in about a tenth of a second, which is
+much quicker than the arm is ever asked to move, without making the torque
+command twitchy.
+
+======================================================================
+2. TRACKING DURING AN ACTUAL PICK
+======================================================================
+
+  result                    picked it up
+  tracking error, RMS       0.38 mrad
+  tracking error, worst     4.48 mrad
+  torque, RMS               4.73 N m
+  torque, peak              23.3 N m  (limits are 56/56/28/12/12/12)
+
+Sub-milliradian tracking on a 0.25 m forearm is about 0.1 mm at the tool, which
+is well under what the camera can see anyway - so the controller is not the
+thing limiting how accurately we grasp. The vision is.
+
+======================================================================
+3. VISUAL SERVOING
+======================================================================
+
+PBVS works in the robot's own coordinates rather than in the image:
+
+  error  = where the block is  -  where the tool is       (a 6-vector)
+  twist  = gain * error, then capped to a sensible speed
+  twist += the block's estimated velocity                 (feedforward)
+  qdot   = J(q)^+ twist                                   (damped least squares)
+
+The goal is recomputed from the object filter on EVERY control step, so a new
+camera frame immediately changes where the arm is heading. That is what makes
+it closed-loop vision rather than "take a photo, then move blindly" - and Part
+E measures exactly how much that is worth.
+
+The feedforward term is there because the block is on a belt. A proportional
+law alone cannot hold zero error against a target that keeps moving: it settles
+at error = speed/gain, which at belt speed is about 14 mm, and the grasp
+tolerance is 3 mm, so the arm would trail the block for ever and never trigger.
+Adding the filter's velocity estimate makes the tool travel WITH the block and
+puts the proportional term back in charge of the remaining offset only. This is
+the same reason a servo tracking a ramp needs feedforward or an integrator -
+except that here the velocity is not measured anywhere, it comes out of the
+object filter (Part C).
+
+J is inverted with damping rather than exactly. Near a singular configuration a
+true inverse asks for enormous joint speeds; damping trades a little accuracy
+for a command the motors can actually follow.
+
+Saved two figures to /Users/pranavachalla/Desktop/S&C/Assessment4/project/results

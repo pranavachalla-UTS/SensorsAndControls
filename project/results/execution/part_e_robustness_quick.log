@@ -1,0 +1,116 @@
+WARNING: ARB_clip_control unavailable while mjDEPTH_ZEROFAR requested, depth accuracy will be limited
+
+nominal 0 PASS picked it up
+nominal 1 PASS picked it up
+nominal 2 PASS picked it up
+nominal 3 PASS picked it up
+nominal 4 PASS picked it up
+nominal 5 PASS picked it up
+noise_3 0 PASS picked it up
+noise_3 1 PASS picked it up
+noise_3 2 PASS picked it up
+noise_3 3 PASS picked it up
+noise_3 4 PASS picked it up
+noise_3 5 PASS picked it up
+noise_6 0 PASS picked it up
+noise_6 1 FAIL grasp not confirmed by both finger contact sensors
+noise_6 2 FAIL grasp not confirmed by both finger contact sensors
+noise_6 3 FAIL grasp not confirmed by both finger contact sensors
+noise_6 4 FAIL grasp not confirmed by both finger contact sensors
+noise_6 5 FAIL grasp not confirmed by both finger contact sensors
+noise_10 0 FAIL align took too long
+noise_10 1 FAIL align took too long
+noise_10 2 FAIL align took too long
+noise_10 3 FAIL align took too long
+noise_10 4 FAIL align took too long
+noise_10 5 FAIL align took too long
+forearm_push_40N 0 PASS picked it up
+forearm_push_40N 1 PASS picked it up
+forearm_push_40N 2 PASS picked it up
+forearm_push_40N 3 PASS picked it up
+forearm_push_40N 4 PASS picked it up
+forearm_push_40N 5 PASS picked it up
+forearm_push_120N 0 PASS picked it up
+forearm_push_120N 1 PASS picked it up
+forearm_push_120N 2 PASS picked it up
+forearm_push_120N 3 PASS picked it up
+forearm_push_120N 4 PASS picked it up
+forearm_push_120N 5 PASS picked it up
+nudge_dx_3cm 0 PASS picked it up
+nudge_dx_3cm 1 PASS picked it up
+nudge_dx_3cm 2 PASS picked it up
+nudge_dx_3cm 3 PASS picked it up
+nudge_dx_3cm 4 PASS picked it up
+nudge_dx_3cm 5 PASS picked it up
+nudge_dx_6cm 0 PASS picked it up
+nudge_dx_6cm 1 PASS picked it up
+nudge_dx_6cm 2 PASS picked it up
+nudge_dx_6cm 3 PASS picked it up
+nudge_dx_6cm 4 PASS picked it up
+nudge_dx_6cm 5 PASS picked it up
+payload_0.5kg 0 PASS picked it up
+payload_0.5kg 1 PASS picked it up
+payload_0.5kg 2 PASS picked it up
+payload_0.5kg 3 PASS picked it up
+payload_0.5kg 4 PASS picked it up
+payload_0.5kg 5 PASS picked it up
+payload_2.0kg 0 PASS picked it up
+payload_2.0kg 1 PASS picked it up
+payload_2.0kg 2 PASS picked it up
+payload_2.0kg 3 PASS picked it up
+payload_2.0kg 4 PASS picked it up
+payload_2.0kg 5 PASS picked it up
+mount_error_2mm 0 PASS picked it up
+mount_error_2mm 1 PASS picked it up
+mount_error_2mm 2 PASS picked it up
+mount_error_2mm 3 PASS picked it up
+mount_error_2mm 4 PASS picked it up
+mount_error_2mm 5 PASS picked it up
+depth_scale_1p02 0 PASS picked it up
+depth_scale_1p02 1 PASS picked it up
+depth_scale_1p02 2 PASS picked it up
+depth_scale_1p02 3 PASS picked it up
+depth_scale_1p02 4 PASS picked it up
+depth_scale_1p02 5 PASS picked it up
+parked_open_loop 0 FAIL grasp not confirmed by both finger contact sensors
+parked_open_loop 1 PASS picked it up
+parked_open_loop 2 FAIL grasp not confirmed by both finger contact sensors
+parked_open_loop 3 PASS picked it up
+parked_open_loop 4 FAIL grasp not confirmed by both finger contact sensors
+parked_open_loop 5 FAIL descend took too long
+moving_open_loop 0 PASS picked it up
+moving_open_loop 1 PASS picked it up
+moving_open_loop 2 PASS picked it up
+moving_open_loop 3 FAIL did not lift it
+moving_open_loop 4 FAIL did not lift it
+moving_open_loop 5 FAIL grasp not confirmed by both finger contact sensors
+no_velocity_feedforward 0 FAIL align took too long
+no_velocity_feedforward 1 FAIL align took too long
+no_velocity_feedforward 2 FAIL align took too long
+no_velocity_feedforward 3 FAIL align took too long
+no_velocity_feedforward 4 FAIL align took too long
+no_velocity_feedforward 5 FAIL align took too long
+nudge_closed_loop 0 PASS picked it up
+nudge_closed_loop 1 PASS picked it up
+nudge_closed_loop 2 PASS picked it up
+nudge_closed_loop 3 PASS picked it up
+nudge_closed_loop 4 PASS picked it up
+nudge_closed_loop 5 PASS picked it up
+nudge_open_loop 0 FAIL grasp not confirmed by both finger contact sensors
+nudge_open_loop 1 FAIL grasp not confirmed by both finger contact sensors
+nudge_open_loop 2 FAIL grasp not confirmed by both finger contact sensors
+nudge_open_loop 3 FAIL grasp not confirmed by both finger contact sensors
+nudge_open_loop 4 FAIL grasp not confirmed by both finger contact sensors
+nudge_open_loop 5 FAIL grasp not confirmed by both finger contact sensors
+Traceback (most recent call last):
+  File "/Users/pranavachalla/Desktop/S&C/Assessment4/project/part_e_robustness.py", line 110, in <module>
+    ax.errorbar(np.arange(len(names)), rates, yerr=[low, high], fmt="none", ecolor="black", capsize=3)
+  File "/Users/pranavachalla/Desktop/S&C/Assessment4/.venv/lib/python3.12/site-packages/matplotlib/_api/deprecation.py", line 477, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/pranavachalla/Desktop/S&C/Assessment4/.venv/lib/python3.12/site-packages/matplotlib/__init__.py", line 1531, in inner
+    return func(
+           ^^^^^
+  File "/Users/pranavachalla/Desktop/S&C/Assessment4/.venv/lib/python3.12/site-packages/matplotlib/axes/_axes.py", line 4232, in errorbar
+    raise ValueError(
+ValueError: 'yerr' must not contain negative values

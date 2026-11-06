@@ -1,25 +1,24 @@
-"""One-shot COLLADA -> OBJ converter for the ur_description UR3 visual meshes.
-
-Each DAE holds several sub-meshes, one per material (grey shell, blue plastic,
-black joint band, ...). MuJoCo cannot read DAE and one OBJ carries one material,
-so each link is split into <link>_<n>.obj, the same layout MuJoCo Menagerie uses.
-
-The OBJ files next to this script were produced from the DAE visuals that ship
-in ur_description (github.com/UniversalRobots/Universal_Robots_ROS2_Description),
-under meshes/ur3/visual. They are not in this repo any more, so fetch them from
-the commit that still had them and point the script at those:
-
-    mkdir -p /tmp/ur3_dae
-    for f in base shoulder upperarm forearm wrist1 wrist2 wrist3; do
-        git show 88e3d88:Robots/meshes/ur3/visual/$f.dae > /tmp/ur3_dae/$f.dae
-    done
-    python dae_to_obj.py /tmp/ur3_dae .
-
-Only rerun it if the meshes need regenerating; the output is committed. The
-parts come out in the link frame the URDF uses, which is the same frame as the
-collision hulls in collision/, so the geom pos/quat in ur3_pick_scene.xml are
-shared between the two.
-"""
+# One-shot COLLADA -> OBJ converter for the ur_description UR3 visual meshes.
+#
+# Each DAE holds several sub-meshes, one per material (grey shell, blue plastic,
+# black joint band, ...). MuJoCo cannot read DAE and one OBJ carries one material,
+# so each link is split into <link>_<n>.obj, the same layout MuJoCo Menagerie uses.
+#
+# The OBJ files next to this script were produced from the DAE visuals that ship
+# in ur_description (github.com/UniversalRobots/Universal_Robots_ROS2_Description),
+# under meshes/ur3/visual. They are not in this repo any more, so fetch them from
+# the commit that still had them and point the script at those:
+#
+#     mkdir -p /tmp/ur3_dae
+#     for f in base shoulder upperarm forearm wrist1 wrist2 wrist3; do
+#         git show 88e3d88:Robots/meshes/ur3/visual/$f.dae > /tmp/ur3_dae/$f.dae
+#     done
+#     python dae_to_obj.py /tmp/ur3_dae .
+#
+# Only rerun it if the meshes need regenerating; the output is committed. The
+# parts come out in the link frame the URDF uses, which is the same frame as the
+# collision hulls in collision/, so the geom pos/quat in ur3_pick_scene.xml are
+# shared between the two.
 import sys, json
 from pathlib import Path
 import xml.etree.ElementTree as ET
@@ -33,7 +32,7 @@ def tag(e):
 
 
 def floats(root, src_id):
-    """Resolve a <source>/<vertices> url to its float array and stride."""
+    # Resolve a <source>/<vertices> url to its float array and stride.
     src_id = src_id.lstrip('#')
     v = root.find(f".//c:vertices[@id='{src_id}']", NS)
     if v is not None:
@@ -47,7 +46,7 @@ def floats(root, src_id):
 
 
 def mat_colors(root):
-    """material id -> diffuse rgba, following material -> effect."""
+    # material id -> diffuse rgba, following material -> effect.
     out = {}
     for m in root.findall('.//c:library_materials/c:material', NS):
         eff = m.find('c:instance_effect', NS).get('url').lstrip('#')
@@ -58,7 +57,7 @@ def mat_colors(root):
 
 
 def primitives(root):
-    """[(material, positions, normals, [(vi, ni), ...] per triangle corner)]"""
+    # [(material, positions, normals, [(vi, ni), ...] per triangle corner)]
     out = []
     for node in root.findall('.//c:library_visual_scenes//c:node', NS):
         inst = node.find('c:instance_geometry', NS)
@@ -96,7 +95,7 @@ def primitives(root):
 
 
 def write_obj(path, prims, name):
-    """Merge the prims sharing one material into a single OBJ."""
+    # Merge the prims sharing one material into a single OBJ.
     v, vn, faces = [], [], []
     for pr in prims:
         vbase, nbase = len(v), len(vn)

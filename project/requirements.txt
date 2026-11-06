@@ -2,8 +2,9 @@
 mujoco==3.15.0
 roboticstoolbox-python==1.4.4
 control==0.10.2
-opencv-python==4.14.0        # 4.x needed: OpenCV 5 drops cv2.calibrateHandEye
+opencv-python==4.14.0.94        # 4.x needed: OpenCV 5 drops cv2.calibrateHandEye
 numpy==2.4.6
 matplotlib==3.11.2
 imageio==2.38.1
 imageio-ffmpeg==0.6.0
+Pillow==13.0.0

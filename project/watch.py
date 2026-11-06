@@ -1,16 +1,14 @@
-"""
-Watch one pick live in the MuJoCo viewer.
-
-Run:  mjpython watch.py                    (macOS needs mjpython for the viewer)
-      mjpython watch.py --nudge            (block gets knocked mid-approach)
-      mjpython watch.py --seed 4   (repeat an earlier run exactly)
-
-Without --seed the red block lands somewhere new on the table every run; the
-seed used is printed so a run can be repeated.
-
-Uses the same run_pick as everything else; the viewer just hooks in where the
-demo video's Recorder would, and slows the sim down to real time.
-"""
+# Watch one pick live in the MuJoCo viewer.
+#
+# Run:  mjpython watch.py                    (macOS needs mjpython for the viewer)
+#       mjpython watch.py --nudge            (block gets knocked mid-approach)
+#       mjpython watch.py --seed 4   (repeat an earlier run exactly)
+#
+# Without --seed the red block lands somewhere new on the table every run; the
+# seed used is printed so a run can be repeated.
+#
+# Uses the same run_pick as everything else; the viewer just hooks in where the
+# demo video's Recorder would, and slows the sim down to real time.
 
 import secrets
 import sys
@@ -21,7 +19,7 @@ import trackb as tb
 
 
 class LiveViewer:
-    """Stands in for make_video's Recorder: syncs a viewer instead of grabbing frames."""
+    # Stands in for make_video's Recorder: syncs a viewer instead of grabbing frames.
 
     FPS = 50
 

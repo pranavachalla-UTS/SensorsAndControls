@@ -1,0 +1,95 @@
+WARNING: ARB_clip_control unavailable while mjDEPTH_ZEROFAR requested, depth accuracy will be limited
+
+Running one pick to collect data...
+  picked it up  (11.5 s simulated)
+
+======================================================================
+1. ESTIMATING A VELOCITY WE NEVER MEASURE
+======================================================================
+
+Velocity error over the whole pick:
+
+  difference the encoder      363.4 mrad/s
+  Kalman filter                39.6 mrad/s     9x better
+
+Differencing amplifies the encoder's quantisation: one count of 0.38 mrad
+divided by a 2 ms timestep is already 0.19 rad/s of noise, and that lands
+straight on the controller's kd term. The filter instead uses the fact that a
+real arm cannot change velocity instantly.
+
+======================================================================
+2. WHAT THE DISTURBANCE STATE IS DOING
+======================================================================
+
+d is the acceleration the controller's model did not account for. The model
+leaves out Coulomb friction and does not know the gripper is holding a block,
+so there is genuinely something there to find.
+
+Cancelling it in the controller is worth a lot:
+
+  tracking error, d fed forward         0.38 mrad
+  tracking error, d ignored             5.43 mrad
+                                      14x worse
+
+This is how we get rid of steady-state droop without putting an integrator in
+the controller - no wind-up to worry about, and d is a signal we can plot.
+
+======================================================================
+3. CONSISTENCY, AND TUNING
+======================================================================
+
+A filter can be accurate and still be lying about how sure it is. The standard
+check is NEES: compare the actual error against the covariance the filter
+claims. Averaged over [q, qdot] an honest filter scores about 2 (the number of
+states). Much higher means over-confident, much lower means over-cautious.
+
+Sweeping the two process-noise knobs:
+  sigma_a  how much acceleration we admit we cannot predict
+  sigma_d  how fast we let the disturbance estimate move
+
+  sigma_a  sigma_d     NEES   velocity err   tracking err
+                    (want 2)    [mrad/s]        [mrad]
+        2       20     1.39        23.4         0.56
+        2       60     1.39        39.6         0.38  <- used
+        2      150     1.41        62.3         0.32
+       10      300     1.42        88.6         0.30
+Use the saved aligned-time NEES and RMSE values to assess the trade-off.
+A mean far from 2 needs investigation; friction is only one possible cause.
+The tuning sweep is a single development seed, not held-out consistency evidence.
+
+======================================================================
+4. THE OBJECT FILTER
+======================================================================
+
+Camera frames this run:  62 used, 0 rejected by the gate,
+                         26 with nothing detected.
+
+Final position error before grasping: 1.83 mm
+Final yaw error:                      0.84 deg
+
+The block is on a belt doing 34.6 mm/s, and the filter settles on
+34.3 mm/s - an error of 0.7 mm/s. That number is the one worth
+looking at, because NOTHING MEASURES VELOCITY. The camera returns a pose and
+only a pose; the speed is inferred entirely from how that pose moves between
+frames, against a constant-velocity model. It is the same trick the joint
+observer pulls to get joint velocity out of a position encoder, and it is the
+reason both of these are Kalman filters rather than smoothers.
+
+The controller needs it. Position feedback alone puts the tool a steady
+speed/gain behind a moving target - about 14 mm here, two thirds of the way across
+the 30 mm block - so it never settles inside tolerance and the grasp never
+fires. Feeding this velocity estimate forward cancels that lag outright.
+
+The 26 blind frames are not a failure. As the gripper comes down the block
+goes out of the wrist camera's view - the camera sits off to one side of the
+tool, and at close range the block falls outside its field of view. You can see
+it in the right-hand plot: updates stop and the filter's uncertainty grows
+because it is now coasting. Coasting is survivable precisely because the filter
+knows the velocity: it keeps extrapolating the block along the belt instead of
+leaving it where it was last seen. The robot finishes the grasp on that
+extrapolation.
+
+This is worth knowing about rather than hiding: an eye-in-hand camera always
+goes blind at the moment of contact. A second fixed camera would fix it.
+
+Saved three figures to /Users/pranavachalla/Desktop/S&C/Assessment4/project/results

@@ -1,0 +1,95 @@
+{
+  "operating_q_rad": [
+    -0.3474008617670115,
+    -1.3477861721604072,
+    0.7077065081529617,
+    -0.9307167341081802,
+    -1.570796314463981,
+    -1.9181971882696143
+  ],
+  "open_loop_poles_real": [
+    -24.137777999854528,
+    -19.132707388179515,
+    -15.552891447857693,
+    -9.520955389971302,
+    3.418890404939851,
+    1.2583361726694486,
+    -4.130871016189812,
+    -3.2301888307681033,
+    -3.2301888307681033,
+    -1.9520499484911396,
+    -5.021065064422512e-16,
+    0.0033481328578024864
+  ],
+  "open_loop_poles_imag": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.5123572950092832,
+    -0.5123572950092832,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "controllability_rank": 12,
+  "observability_rank": 12,
+  "lqr_kp": 941.7780228268576,
+  "lqr_kd": 57.46885588300151,
+  "pbh_relative_tolerance": 1e-08,
+  "local_approximation_check": [
+    {
+      "position_perturbation_rad": 0.0001,
+      "acceleration_error_norm_rad_s2": 4.220016067801571e-08
+    },
+    {
+      "position_perturbation_rad": 0.001,
+      "acceleration_error_norm_rad_s2": 4.220862953776722e-06
+    },
+    {
+      "position_perturbation_rad": 0.01,
+      "acceleration_error_norm_rad_s2": 0.00042293012239010886
+    },
+    {
+      "position_perturbation_rad": 0.05,
+      "acceleration_error_norm_rad_s2": 0.010667537193553041
+    }
+  ],
+  "scope": "local smooth model; does not prove global/contact stability",
+  "provenance": {
+    "utc": "2026-11-06T11:21:47.980934+00:00",
+    "python": "3.12.10",
+    "versions": {
+      "mujoco": "3.15.0",
+      "numpy": "2.4.6",
+      "opencv-python": "4.14.0.94",
+      "roboticstoolbox-python": "1.4.4",
+      "control": "0.10.2",
+      "matplotlib": "3.11.2",
+      "imageio": "2.38.1"
+    },
+    "git_commit": "d8ee399f8b09756597920a3d7261191581e5dff1",
+    "git_status": "M .gitignore\n M README.md\n M project/README.md\n M project/assets/ur3/dae_to_obj.py\n M project/make_video.py\n M project/part_a_model.py\n M project/part_b_sensing.py\n M project/part_c_estimation.py\n M project/part_d_control.py\n M project/part_e_robustness.py\n M project/requirements.txt\n D project/results/demo_noise.mp4\n D project/results/demo_nominal.mp4\n D project/results/demo_nudge.mp4\n D project/results/demo_open_loop.mp4\n D project/results/part_b_detection.png\n D project/results/part_b_noise.png\n D project/results/part_c_object.png\n D project/results/part_c_observer.png\n D project/results/part_c_velocity.png\n D project/results/part_d_servo.png\n D project/results/part_d_tracking.png\n D project/results/part_e_spread.png\n D project/results/part_e_success.png\n M project/run_all.py\n M project/trackb.py\n M project/watch.py\n?? docs/SUBMISSION_EDITING.md\n?? project/evidence.py\n?? project/results/execution/\n?? project/results/legacy_before_review/\n?? project/results/model_matrices.npz\n?? project/results/model_report.json\n?? project/results/validation.json\n?? project/tests.py\n?? project/update_project_page.py",
+    "source_sha256": {
+      "evidence.py": "30ac13df1f767b2fde03b7139abe23b87d0d097fd14dfac7b19a450e729f996f",
+      "make_video.py": "48214cabeb26cf4da61416c7e805b67c0fb792adf81faaf0bc1a4f8e9a3aa4a7",
+      "part_a_model.py": "6aa0884347e3cd79b434e2b869c7d574989d2066def6a0cd0b6c6857c1d6d5a5",
+      "part_b_sensing.py": "53008d9c96b6b06fed5d4ad15a82c0538379fc81e2114bcb1c69cae510256ddc",
+      "part_c_estimation.py": "3eb096502e6ef1bf9d4e76ca3022dd73ed8e7abd9dbb20055619e2a8f1e22b88",
+      "part_d_control.py": "51758909745b219226776987365fba7b414c043855ff884468bb41f7eae89ad7",
+      "part_e_robustness.py": "f437889f1decca7b463aae7290cdb47feab45571b2d24167bd829d4761ae6f2a",
+      "run_all.py": "9e40cad995c645acabf876f3a723cce6bcffad3b654c5058788b72add4686002",
+      "tests.py": "e79f681227704f9edcfae4b7e765530e9a134072ecfe1f597d11aab45932ec11",
+      "trackb.py": "86ebfa29fd8116adac9267ce5bac015f4b17af81c9667af8942aa2392afb2bda",
+      "update_project_page.py": "8531abe08acca352270ccb41bfd4c6407ee1a302d42a84dd79acf0e09298920b",
+      "watch.py": "e80a92cfb9d0b013603e74431550009bf27cf6b21fa19a7aca9d9f13a093c3cd",
+      "ur3_pick_scene.xml": "c4cee18d468a531a82f8cf78ee49e6d060d0805fd0dc6eebe46933086539b782",
+      "requirements.txt": "28092adb90d664d0369709b0e410f34798f5a96a6adbae4d3d0720cbf318c6ab"
+    },
+    "calibration_sha256": null,
+    "noise_model_sha256": null
+  }
+}

@@ -11,3 +11,9 @@ project/checkerboard.png
 
 # working notes, kept locally but not part of the submission
 REBUILD_ROADMAP.md
+
+.venv/
+project/results/runs/**/*.npz
+
+project/results/.mpl-cache/
+project/results/calibration_observations.npz

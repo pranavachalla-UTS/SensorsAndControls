@@ -1,0 +1,86 @@
+======================================================================
+1. THE ARM, LINEARISED
+======================================================================
+Operating point (deg): [ -19.9  -77.2   40.5  -53.3  -90.  -109.9]
+
+Inertia matrix diagonal:  [0.464 0.819 0.303 0.046 0.031 0.021]
+Gravity stiffness dg/dq, worst term: 15.71 N m/rad
+
+Open-loop eigenvalues (1/s), slowest first:
+       3.4189 +0.0000j
+       1.2583 +0.0000j
+       0.0033 +0.0000j
+      -0.0000 +0.0000j
+      -1.9520 +0.0000j
+      -3.2302 +0.5124j
+      -3.2302 -0.5124j
+      -4.1309 +0.0000j
+      -9.5210 +0.0000j
+     -15.5529 +0.0000j
+     -19.1327 +0.0000j
+     -24.1378 +0.0000j
+
+Largest real part: +3.419 1/s
+  -> UNSTABLE. Left alone the arm falls over under its own weight,
+     so the controller is holding it up, not just steering it.
+
+======================================================================
+2. CAN WE CONTROL IT, AND CAN WE SEE IT?
+======================================================================
+
+First, why we do not use the textbook rank test here:
+    rank(ctrb(A,B)) straight from numpy : 9 / 12   <-- wrong
+    PBH test                            : 12 / 12   <-- right
+    The controllability matrix has singular values spanning ~1e10, so
+    its numerical rank is meaningless. The PBH test checks one mode at
+    a time and stays well conditioned.
+
+  Sensors                                      controllable  observable
+  6 torque motors, 6 position encoders             12 / 12    12 / 12
+  velocity sensors instead of encoders                -    11 / 12
+  encoders on joints 2-6 (pan encoder dead)           -    11 / 12
+
+  Reading that table:
+
+  * With one motor per joint the inertia matrix is invertible, so we can
+    produce any joint acceleration we like: fully controllable.
+
+  * With POSITION encoders alone, all twelve states are observable - including
+    the six joint velocities we never measure. That is the formal reason we
+    can leave tachometers off the robot and estimate velocity instead, which
+    is exactly what Part C does.
+
+  * With VELOCITY sensors alone we lose a state. Turning the shoulder about
+    the vertical axis changes no gravity torque and no velocity reading, so a
+    constant offset in that angle is invisible. Same story if the shoulder-pan
+    encoder fails.
+
+======================================================================
+3. THE MODEL THE CONTROLLER ACTUALLY DESIGNS AGAINST
+======================================================================
+
+  The controller cancels the arm's own dynamics (Part D):
+      tau = M(q) v + c(q,qdot) + g(q) + B qdot      =>      qddot = v
+  so the coupled 12-state problem becomes six identical double integrators,
+  one per joint, and we design one small controller for all of them.
+
+  Per joint, with state [q, qdot]:   A = [[0,1],[0,0]]   B = [0,1]'   C = [1,0]
+
+  The observer uses one extra state, d, for the acceleration the model did not
+  predict - friction, and the weight of whatever is in the gripper:
+      [q, qdot, d]        d behaves as a slow random walk
+
+  [q, qdot]    controllable : 2 / 2
+  [q, qdot, d] controllable : 2 / 3   (we cannot steer a disturbance - as expected)
+  [q, qdot, d] observable from position : 3 / 3   <-- so we can estimate d
+  [q, qdot, d] observable from velocity : 2 / 3
+
+  LQR gains: kp = 942 1/s^2, kd = 57.5 1/s
+  Controller speed : 32 rad/s
+  Observer speed   : 137 rad/s
+
+  The observer is about 4x faster than the controller.
+  These are local linear-design poles. Faster observer poles do not prove
+  global nonlinear stability under saturation, contact or model error.
+
+Saved /Users/pranavachalla/Desktop/S&C/Assessment4/project/results/part_a_poles.png

@@ -1,19 +1,22 @@
-# 41014 Sensors and Control — Integrated Project (Track B)
+# UTS 41014 — Sensors and Control integrated project
 
-Vision-guided pick with a UR3 in MuJoCo.
+**Track B: vision-guided UR3 moving-target pick in MuJoCo**
 
-| Folder | What is in it |
-|---|---|
-| **`project/`** | **The submission.** Start with [`project/README.md`](project/README.md). |
-| `Robots/` | UR3 collision meshes from the official `ur_description` package, used by the MuJoCo scene. |
-| `docs/` | The assignment brief. |
+Start with the **[project page](project/README.md)** for the model, calibration, observers, control design, measured validation status and reproduction commands.
 
-## Running it
+| Folder | Purpose |
+| --- | --- |
+| `project/` | Submission code, project page, tests and reproducible evidence |
+| `Robots/` | Original UR3 assets and licence |
+| `docs/` | Assessment guide and submission editing notes |
 
-```bash
-cd project
-pip install -r requirements.txt
-python run_all.py          # everything, about 10 minutes
+From a graphics-enabled local Terminal:
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r project/requirements.txt
+python project/run_all.py --quick --no-video
 ```
 
-Or one part at a time — see [`project/README.md`](project/README.md).
+Edit your YouTube link, actual team contributions and AI declaration in the labelled sections at the bottom of [project/README.md](project/README.md). The AI declaration is intentionally blank for now. [Editing guide](docs/SUBMISSION_EDITING.md).

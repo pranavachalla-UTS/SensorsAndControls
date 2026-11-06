@@ -1,63 +1,54 @@
-"""
-Run the whole project, start to finish.
-
-    python run_all.py              everything (about 10 minutes)
-    python run_all.py --quick      fewer trials in Part E (about 3 minutes)
-    python run_all.py --no-video   skip rendering the demo video
-
-Order matters: Part B writes the camera calibration and the measured sensor
-noise, which Parts C, D and E load. (They will fall back to nominal values if
-those files are missing, but the numbers in the report come from running Part B
-first.)
-
-Everything is printed as it goes, and the figures land in results/.
-"""
-
+# One reproducible command. A failed stage stops its dependent stages.
+import argparse
+import os
+from pathlib import Path
 import subprocess
 import sys
 import time
-from pathlib import Path
+from evidence import provenance, write_json
 
 HERE = Path(__file__).resolve().parent
-QUICK = "--quick" in sys.argv
+os.environ.setdefault("MPLCONFIGDIR", str(HERE / "results" / ".mpl-cache"))
+os.environ.setdefault("MPLBACKEND", "Agg")
+parser = argparse.ArgumentParser()
+parser.add_argument("--quick", action="store_true")
+parser.add_argument("--no-video", action="store_true")
+parser.add_argument("--held-out", action="store_true")
+parser.add_argument("--confidence-study", action="store_true")
+args = parser.parse_args()
+steps = [("tests.py", []), ("part_a_model.py", []), ("part_b_sensing.py", []),
+         ("part_c_estimation.py", []), ("part_d_control.py", [])]
+options = ["--quick"] if args.quick else []
+if args.held_out:
+    options.append("--held-out")
+steps.append(("part_e_robustness.py", options))
+if args.confidence_study:
+    study_options = ["--confidence-study"] + (["--quick"] if args.quick else [])
+    steps.append(("part_e_robustness.py", study_options))
+if not args.no_video:
+    steps += [("make_video.py", ["--seed", "4"]), ("make_video.py", ["--seed", "4", "--nudge"])]
 
-STEPS = [
-    ("part_a_model.py", [], "Part A - state-space model, controllability, observability"),
-    ("part_b_sensing.py", [], "Part B - camera calibration and how accurate it really is"),
-    ("part_c_estimation.py", [], "Part C - the two Kalman filters"),
-    ("part_d_control.py", [], "Part D - computed torque, LQR, visual servoing"),
-    ("part_e_robustness.py", ["--quick"] if QUICK else [],
-     "Part E - repeated trials and disturbances"),
-]
-if "--no-video" not in sys.argv:
-    STEPS.append(("make_video.py", [], "Demo video"))
-
-start = time.time()
-failed = []
-
-for script, args, description in STEPS:
-    print("\n" + "=" * 78)
-    print(f"  {description}")
-    print(f"  python {script} {' '.join(args)}".rstrip())
-    print("=" * 78, flush=True)
-
-    step_start = time.time()
-    # Separate process, so one crash cannot take the rest down and each gets a clean interpreter.
-    result = subprocess.run([sys.executable, script] + args, cwd=HERE)
-    elapsed = time.time() - step_start
-
-    if result.returncode == 0:
-        print(f"\n  [done in {elapsed:.0f} s]")
-    else:
-        print(f"\n  [FAILED after {elapsed:.0f} s - exit code {result.returncode}]")
-        failed.append(script)
-
-print("\n" + "=" * 78)
-if failed:
-    print(f"  {len(failed)} script(s) failed: {', '.join(failed)}")
-else:
-    print(f"  All done in {(time.time() - start) / 60:.1f} minutes.")
-print(f"  Figures and video are in {HERE / 'results'}")
-print("=" * 78)
-
-sys.exit(1 if failed else 0)
+report = {"status": "running", "provenance": provenance(), "stages": []}
+for name, options in steps:
+    print(f"\nRunning {name} {' '.join(options)}", flush=True)
+    started = time.monotonic()
+    log_path = HERE / "results" / "execution" / (name.replace(".py", "") + "_" + "_".join(o.lstrip('-') for o in options) + ".log")
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    result = subprocess.run([sys.executable, str(HERE / name), *options], cwd=HERE,
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    print(result.stdout, flush=True)
+    log_path.write_text(result.stdout)
+    report["stages"].append({"script": name, "options": options, "returncode": result.returncode,
+                             "wall_seconds": time.monotonic()-started,
+                             "log": log_path.relative_to(HERE).as_posix()})
+    if result.returncode:
+        report["status"] = "blocked"
+        report["blocked_stage"] = name
+        report["message"] = "Dependent stages were not run; no nominal-calibration fallback was used."
+        write_json(HERE / "results" / "validation.json", report)
+        subprocess.run([sys.executable, str(HERE / "update_project_page.py")], cwd=HERE)
+        raise SystemExit(result.returncode if result.returncode > 0 else 1)
+report["status"] = "complete"
+write_json(HERE / "results" / "validation.json", report)
+subprocess.run([sys.executable, str(HERE / "update_project_page.py")], cwd=HERE, check=True)
+print("All selected stages passed. Review the saved reports and updated project page.")

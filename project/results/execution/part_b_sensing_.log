@@ -1,0 +1,81 @@
+WARNING: ARB_clip_control unavailable while mjDEPTH_ZEROFAR requested, depth accuracy will be limited
+
+======================================================================
+1. CALIBRATING THE WRIST CAMERA
+======================================================================
+Photographing the checkerboard from assorted poses...
+Usable views: 24 training, 6 held out
+
+Reprojection error: 0.080 pixels
+                fx        fy        cx        cy
+  calibrated    433.58    433.62    319.17    239.36
+  true          432.97    432.97    319.50    239.50
+  error           0.61      0.65     -0.33     -0.14
+
+Distortion [k1 k2 p1 p2 k3]: [ 0.0003  0.0003 -0.0001 -0.0001  0.    ]
+  MuJoCo renders a perfect pinhole, so near-zero is the right answer.
+
+Hand-eye calibration (three standard solvers):
+  method        position error   angle error   board scatter
+  Tsai              0.65 mm      0.053 deg     0.070 mm
+  Park              0.65 mm      0.050 deg     0.068 mm
+  Daniilidis        0.69 mm      0.048 deg     0.070 mm
+
+Using the Park result (lowest board scatter).
+Camera position on the flange [m]: [0.0548 0.     0.0434]
+Nominal from the CAD model     [m]: [0.055 0.    0.044]
+
+Saved /Users/pranavachalla/Desktop/S&C/Assessment4/project/calibration.npz
+Held-out reprojection RMS: 0.074 px
+Held-out fixed-board scatter RMS: 0.064 mm
+
+======================================================================
+2. MEASURING THE LOCALISATION ERROR
+======================================================================
+
+Holding the arm still and photographing the same block many times tells us two
+different things, and the difference matters:
+
+  SPREAD  how much the answer jumps about between frames (random noise)
+  BIAS    how far the average answer sits from the truth (a systematic offset)
+
+A Kalman filter's R has to describe the TOTAL error, so we fit to the RMS error
+about the true position, not to the spread.
+
+40 frames at each height, same block each time.
+
+  camera   |------ spread (mm) ------|  |------- bias (mm) -------|  yaw err
+  range m     x       y       z           x       y       z         deg
+   0.160     0.03    0.02    0.08      +0.49   +0.23   +0.80      0.15
+   0.200     0.04    0.03    0.14      +0.40   +0.21   +0.88      0.17
+   0.240     0.05    0.03    0.18      +0.35   +0.18   +1.02      0.14
+   0.281     0.06    0.04    0.30      +0.31   +0.16   +1.12      0.22
+   0.321     0.04    0.04    0.22      +0.30   +0.16   +1.36      0.24
+   0.361     0.08    0.05    0.41      +0.29   +0.10   +1.50      0.28
+
+The z column is the interesting one. The spread is a few tenths of a
+millimetre, but the bias is over a millimetre - the measurement is repeatable
+without being accurate. Two reasons, both of which a real RGB-D camera shares:
+
+  * the block comes out 1-2 mm taller than it is, because its top face and the
+    surrounding table are both measured from depth, and the smooth part of the
+    depth error does not cancel between them;
+  * the top face is taken as the 90th percentile of the blob's heights, which
+    sits a fraction above the true face.
+
+If we fitted R to the spread alone, the filter would claim +-0.3 mm while
+actually being 1.5 mm out. Its gate would then start throwing away perfectly
+good measurements. So we fit to the RMS error instead.
+
+Fitted measurement noise,  sigma = a + b * range^2 :
+            a           b      sigma at 0.2 m   at 0.35 m
+  x     4.81e-04   1.00e-05       0.48 mm      0.48 mm
+  y     2.51e-04   1.00e-05       0.25 mm      0.25 mm
+  z     6.06e-04   7.29e-03       0.90 mm      1.50 mm
+  yaw   1.84e-03   2.27e-02       0.16 deg      0.27 deg
+
+Saved /Users/pranavachalla/Desktop/S&C/Assessment4/project/noise_model.npy  (this becomes R in the object filter)
+Because R depends on range, a frame taken from far away is automatically
+trusted less than a close one - which is why the estimate tightens up as
+the arm comes down.
+Saved /Users/pranavachalla/Desktop/S&C/Assessment4/project/results/part_b_detection.png and part_b_noise.png

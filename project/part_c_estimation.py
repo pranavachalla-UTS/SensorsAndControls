@@ -1,29 +1,12 @@
-"""
-PART C - Estimation: the Kalman filters.
-
-Run:  python part_c_estimation.py
-
-There are two estimators in this project and this script looks at both.
-
-  THE JOINT OBSERVER estimates [q, qdot, d] for every joint from the encoder
-  alone. Velocity is never measured, and d is the acceleration the controller's
-  model failed to predict (friction, and the weight of the block once we pick
-  it up).
-
-  THE OBJECT FILTER estimates the block's pose AND velocity from the camera,
-  fusing one measurement per frame. The block is on a moving belt, and the
-  camera only ever measures where it is - how fast it is going is inferred
-  from the way the pose changes, and the controller needs that velocity to
-  intercept the block rather than trail behind it.
-
-Writes: results/part_c_*.png
-"""
-
 import numpy as np
+# Save figures without opening a desktop plotting window.
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from pathlib import Path
 
 import trackb as tb
+from evidence import provenance, write_json
 
 RESULTS = Path(__file__).resolve().parent / "results"
 RESULTS.mkdir(exist_ok=True)
@@ -46,16 +29,7 @@ finite_difference = np.vstack([np.zeros(6), np.diff(log["q_meas"], axis=0) / tb.
 kf_error = np.sqrt(np.mean((log["qd"] - log["qd_hat"]) ** 2))
 fd_error = np.sqrt(np.mean((log["qd"][1:] - finite_difference[1:]) ** 2))
 
-print(f"""
-Velocity error over the whole pick:
-
-  difference the encoder   {1e3*fd_error:8.1f} mrad/s
-  Kalman filter            {1e3*kf_error:8.1f} mrad/s     {fd_error/kf_error:.0f}x better
-
-Differencing amplifies the encoder's quantisation: one count of 0.38 mrad
-divided by a 2 ms timestep is already 0.19 rad/s of noise, and that lands
-straight on the controller's kd term. The filter instead uses the fact that a
-real arm cannot change velocity instantly.""")
+print(f"\nVelocity error over the whole pick:\n\n  difference the encoder   {1000.0 * fd_error:8.1f} mrad/s\n  Kalman filter            {1000.0 * kf_error:8.1f} mrad/s     {fd_error / kf_error:.0f}x better\n\nDifferencing amplifies the encoder's quantisation: one count of 0.38 mrad\ndivided by a 2 ms timestep is already 0.19 rad/s of noise, and that lands\nstraight on the controller's kd term. The filter instead uses the fact that a\nreal arm cannot change velocity instantly.")
 
 fig, axes = plt.subplots(2, 3, figsize=(12, 5.5), sharex=True)
 for j, ax in enumerate(axes.ravel()):
@@ -90,35 +64,14 @@ print("2. WHAT THE DISTURBANCE STATE IS DOING")
 print("=" * 70)
 
 _, info_off, _ = tb.run_pick(seed=0, use_d_feedforward=False)
-print(f"""
-d is the acceleration the controller's model did not account for. The model
-leaves out Coulomb friction and does not know the gripper is holding a block,
-so there is genuinely something there to find.
-
-Cancelling it in the controller is worth a lot:
-
-  tracking error, d fed forward       {info['tracking_rms_mrad']:6.2f} mrad
-  tracking error, d ignored           {info_off['tracking_rms_mrad']:6.2f} mrad
-                                      {info_off['tracking_rms_mrad']/info['tracking_rms_mrad']:.0f}x worse
-
-This is how we get rid of steady-state droop without putting an integrator in
-the controller - no wind-up to worry about, and d is a signal we can plot.""")
+print(f"\nd is the acceleration the controller's model did not account for. The model\nleaves out Coulomb friction and does not know the gripper is holding a block,\nso there is genuinely something there to find.\n\nCancelling it in the controller is worth a lot:\n\n  tracking error, d fed forward       {info['tracking_rms_mrad']:6.2f} mrad\n  tracking error, d ignored           {info_off['tracking_rms_mrad']:6.2f} mrad\n                                      {info_off['tracking_rms_mrad'] / info['tracking_rms_mrad']:.0f}x worse\n\nThis is how we get rid of steady-state droop without putting an integrator in\nthe controller - no wind-up to worry about, and d is a signal we can plot.")
 
 
 print()
 print("=" * 70)
 print("3. CONSISTENCY, AND TUNING")
 print("=" * 70)
-print("""
-A filter can be accurate and still be lying about how sure it is. The standard
-check is NEES: compare the actual error against the covariance the filter
-claims. Averaged over [q, qdot] an honest filter scores about 2 (the number of
-states). Much higher means over-confident, much lower means over-cautious.
-
-Sweeping the two process-noise knobs:
-  sigma_a  how much acceleration we admit we cannot predict
-  sigma_d  how fast we let the disturbance estimate move
-""")
+print('\nA filter can be accurate and still be lying about how sure it is. The standard\ncheck is NEES: compare the actual error against the covariance the filter\nclaims. Averaged over [q, qdot] an honest filter scores about 2 (the number of\nstates). Much higher means over-confident, much lower means over-cautious.\n\nSweeping the two process-noise knobs:\n  sigma_a  how much acceleration we admit we cannot predict\n  sigma_d  how fast we let the disturbance estimate move\n')
 
 print("  sigma_a  sigma_d     NEES   velocity err   tracking err")
 print("                    (want 2)    [mrad/s]        [mrad]")
@@ -130,17 +83,9 @@ for sa, sd in [(2, 20), (2, 60), (2, 150), (10, 300)]:
     print(f"  {sa:7} {sd:8}  {inf['nees_mean']:7.2f}  {inf['kf_qd_rmse_mrad_s']:10.1f}  "
           f"{inf['tracking_rms_mrad']:11.2f}{mark}")
 
-print(f"""
-The trade-off is visible in those columns: allowing more process noise makes
-the filter more honest (NEES falls towards 2) but its velocity estimate gets
-noisier, because it is leaning less on the model.
-
-We settled on sigma_a = 2, sigma_d = 60. NEES still sits near
-{sweep[1][2]:.0f} rather than 2, and it is worth being straight about why: the
-dominant error is not random. Coulomb friction flips sign the instant a joint
-reverses, which is a step, not a random walk, and no amount of process noise
-describes a step well. Forcing NEES down to 2 by inflating Q just blurs the
-velocity estimate for no real gain, as the last row shows.""")
+print("Use the saved aligned-time NEES and RMSE values to assess the trade-off.")
+print("A mean far from 2 needs investigation; friction is only one possible cause.")
+print("The tuning sweep is a single development seed, not held-out consistency evidence.")
 
 fig, axes = plt.subplots(1, 3, figsize=(12, 3.4))
 
@@ -165,7 +110,7 @@ if grasp_start:
     ax.text(grasp_start, ax.get_ylim()[1] * 0.85, " picks up block", color="red", fontsize=7)
 ax.set_xlabel("time [s]")
 ax.set_ylabel("estimated disturbance [rad/s$^2$]")
-ax.set_title("$\\hat{d}$: friction + the block's weight")
+ax.set_title("Estimated unmodelled acceleration")
 ax.grid(alpha=0.3)
 
 ax = axes[2]
@@ -198,37 +143,7 @@ error_mm = 1e3 * np.linalg.norm(log["obj_est"][window, :3] - log["obj_true"][win
 speed_est = 1e3 * np.linalg.norm(log["obj_est"][window, 4:6], axis=1)
 speed_true = 1e3 * np.linalg.norm(log["obj_vel_true"][window, :2], axis=1)
 
-print(f"""
-Camera frames this run:  {info['frames_used']} used, {info['frames_rejected']} rejected by the gate,
-                         {info['frames_blind']} with nothing detected.
-
-Final position error before grasping: {error_mm[-1]:.2f} mm
-Final yaw error:                      {info['object_yaw_error_deg']:.2f} deg
-
-The block is on a belt doing {info['object_speed_mm_s']:.1f} mm/s, and the filter settles on
-{speed_est[-1]:.1f} mm/s - an error of {info['object_speed_error_mm_s']:.1f} mm/s. That number is the one worth
-looking at, because NOTHING MEASURES VELOCITY. The camera returns a pose and
-only a pose; the speed is inferred entirely from how that pose moves between
-frames, against a constant-velocity model. It is the same trick the joint
-observer pulls to get joint velocity out of a position encoder, and it is the
-reason both of these are Kalman filters rather than smoothers.
-
-The controller needs it. Position feedback alone puts the tool a steady
-speed/gain behind a moving target - about {info['object_speed_mm_s'] / tb.PBVS_GAIN:.0f} mm here, two thirds of the way across
-the 30 mm block - so it never settles inside tolerance and the grasp never
-fires. Feeding this velocity estimate forward cancels that lag outright.
-
-The {info['frames_blind']} blind frames are not a failure. As the gripper comes down the block
-goes out of the wrist camera's view - the camera sits off to one side of the
-tool, and at close range the block falls outside its field of view. You can see
-it in the right-hand plot: updates stop and the filter's uncertainty grows
-because it is now coasting. Coasting is survivable precisely because the filter
-knows the velocity: it keeps extrapolating the block along the belt instead of
-leaving it where it was last seen. The robot finishes the grasp on that
-extrapolation.
-
-This is worth knowing about rather than hiding: an eye-in-hand camera always
-goes blind at the moment of contact. A second fixed camera would fix it.""")
+print(f"\nCamera frames this run:  {info['frames_used']} used, {info['frames_rejected']} rejected by the gate,\n                         {info['frames_blind']} with nothing detected.\n\nFinal position error before grasping: {error_mm[-1]:.2f} mm\nFinal yaw error:                      {info['object_yaw_error_deg']:.2f} deg\n\nThe block is on a belt doing {info['object_speed_mm_s']:.1f} mm/s, and the filter settles on\n{speed_est[-1]:.1f} mm/s - an error of {info['object_speed_error_mm_s']:.1f} mm/s. That number is the one worth\nlooking at, because NOTHING MEASURES VELOCITY. The camera returns a pose and\nonly a pose; the speed is inferred entirely from how that pose moves between\nframes, against a constant-velocity model. It is the same trick the joint\nobserver pulls to get joint velocity out of a position encoder, and it is the\nreason both of these are Kalman filters rather than smoothers.\n\nThe controller needs it. Position feedback alone puts the tool a steady\nspeed/gain behind a moving target - about {info['object_speed_mm_s'] / tb.PBVS_GAIN:.0f} mm here, two thirds of the way across\nthe 30 mm block - so it never settles inside tolerance and the grasp never\nfires. Feeding this velocity estimate forward cancels that lag outright.\n\nThe {info['frames_blind']} blind frames are not a failure. As the gripper comes down the block\ngoes out of the wrist camera's view - the camera sits off to one side of the\ntool, and at close range the block falls outside its field of view. You can see\nit in the right-hand plot: updates stop and the filter's uncertainty grows\nbecause it is now coasting. Coasting is survivable precisely because the filter\nknows the velocity: it keeps extrapolating the block along the belt instead of\nleaving it where it was last seen. The robot finishes the grasp on that\nextrapolation.\n\nThis is worth knowing about rather than hiding: an eye-in-hand camera always\ngoes blind at the moment of contact. A second fixed camera would fix it.")
 
 fig, axes = plt.subplots(1, 4, figsize=(15.5, 3.4))
 labels = ["x [mm]", "y [mm]", "yaw [deg]"]
@@ -246,7 +161,10 @@ for ax, i, label in zip(axes[:2], [0, 1], labels[:2]):
 
 # The velocity panel: the quantity nothing ever measured.
 ax = axes[2]
-speed_sigma = 1e3 * np.linalg.norm(log["obj_sigma"][window, 4:6], axis=1)
+velocity = log["obj_est"][window, 4:6]
+velocity_cov = log["obj_cov"][window, 4:6, 4:6]
+direction = velocity / np.maximum(np.linalg.norm(velocity, axis=1, keepdims=True), 1e-12)
+speed_sigma = 1e3 * np.sqrt(np.maximum(0, np.einsum("ni,nij,nj->n", direction, velocity_cov, direction)))
 ax.fill_between(t[window], speed_est - 2 * speed_sigma, speed_est + 2 * speed_sigma,
                 color="tab:green", alpha=0.25, lw=0, label="$\\pm2\\sigma$")
 ax.plot(t[window], speed_est, color="tab:green", label="filtered")
@@ -275,3 +193,13 @@ ax.grid(alpha=0.3)
 fig.tight_layout()
 fig.savefig(RESULTS / "part_c_object.png", dpi=150)
 print(f"\nSaved three figures to {RESULTS}")
+
+# Retain the numerical study behind the figures.
+write_json(RESULTS / "estimation_report.json", {"trial": info,
+           "velocity_fd_rmse_rad_s": fd_error, "velocity_kf_rmse_rad_s": kf_error,
+           "disturbance_disabled_trial": info_off,
+           "tuning_columns": ["sigma_a", "sigma_d", "nees", "velocity_rmse_mrad_s", "tracking_rmse_mrad"],
+           "tuning_rows": sweep,
+           "timing": "posterior estimate, covariance and truth all at the same pre-step time",
+           "tuning_scope": "development seed 0 only; not a multi-trial consistency proof",
+           "provenance": provenance()})
