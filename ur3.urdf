@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='utf-8'?>
 <robot name="ur3">
   <link name="world" />
   <link name="base_link" />
@@ -6,13 +5,13 @@
     <visual>
       <origin rpy="0.0 0.0 3.141592653589793" xyz="0.0 0.0 0.0" />
       <geometry>
-        <mesh filename="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/visual/base.dae" />
+        <mesh filename="Robots/meshes/ur3/visual/base.dae" />
       </geometry>
     </visual>
     <collision>
       <origin rpy="0.0 0.0 3.141592653589793" xyz="0.0 0.0 0.0" />
       <geometry>
-        <mesh filename="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/collision/base.stl" />
+        <mesh filename="Robots/meshes/ur3/collision/base.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -25,13 +24,13 @@
     <visual>
       <origin rpy="0.0 0.0 3.141592653589793" xyz="0.0 0.0 0.0" />
       <geometry>
-        <mesh filename="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/visual/shoulder.dae" />
+        <mesh filename="Robots/meshes/ur3/visual/shoulder.dae" />
       </geometry>
     </visual>
     <collision>
       <origin rpy="0.0 0.0 3.141592653589793" xyz="0.0 0.0 0.0" />
       <geometry>
-        <mesh filename="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/collision/shoulder.stl" />
+        <mesh filename="Robots/meshes/ur3/collision/shoulder.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -44,13 +43,13 @@
     <visual>
       <origin rpy="1.5707963267948966 0.0 -1.5707963267948966" xyz="0.0 0.0 0.1198" />
       <geometry>
-        <mesh filename="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/visual/upperarm.dae" />
+        <mesh filename="Robots/meshes/ur3/visual/upperarm.dae" />
       </geometry>
     </visual>
     <collision>
       <origin rpy="1.5707963267948966 0.0 -1.5707963267948966" xyz="0.0 0.0 0.1198" />
       <geometry>
-        <mesh filename="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/collision/upperarm.stl" />
+        <mesh filename="Robots/meshes/ur3/collision/upperarm.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -63,13 +62,13 @@
     <visual>
       <origin rpy="1.5707963267948966 0.0 -1.5707963267948966" xyz="0.0 0.0 0.0275" />
       <geometry>
-        <mesh filename="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/visual/forearm.dae" />
+        <mesh filename="Robots/meshes/ur3/visual/forearm.dae" />
       </geometry>
     </visual>
     <collision>
       <origin rpy="1.5707963267948966 0.0 -1.5707963267948966" xyz="0.0 0.0 0.0275" />
       <geometry>
-        <mesh filename="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/collision/forearm.stl" />
+        <mesh filename="Robots/meshes/ur3/collision/forearm.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -82,13 +81,13 @@
     <visual>
       <origin rpy="1.5707963267948966 0.0 0.0" xyz="0.0 0.0 -0.085" />
       <geometry>
-        <mesh filename="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/visual/wrist1.dae" />
+        <mesh filename="Robots/meshes/ur3/visual/wrist1.dae" />
       </geometry>
     </visual>
     <collision>
       <origin rpy="1.5707963267948966 0.0 0.0" xyz="0.0 0.0 -0.085" />
       <geometry>
-        <mesh filename="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/collision/wrist1.stl" />
+        <mesh filename="Robots/meshes/ur3/collision/wrist1.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -101,13 +100,13 @@
     <visual>
       <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.083" />
       <geometry>
-        <mesh filename="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/visual/wrist2.dae" />
+        <mesh filename="Robots/meshes/ur3/visual/wrist2.dae" />
       </geometry>
     </visual>
     <collision>
       <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 -0.083" />
       <geometry>
-        <mesh filename="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/collision/wrist2.stl" />
+        <mesh filename="Robots/meshes/ur3/collision/wrist2.stl" />
       </geometry>
     </collision>
     <inertial>
@@ -120,13 +119,13 @@
     <visual>
       <origin rpy="1.5707963267948966 0.0 0.0" xyz="0.0 -0.002 -0.082" />
       <geometry>
-        <mesh filename="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/visual/wrist3.dae" />
+        <mesh filename="Robots/meshes/ur3/visual/wrist3.dae" />
       </geometry>
     </visual>
     <collision>
       <origin rpy="1.5707963267948966 0.0 0.0" xyz="0.0 -0.002 -0.082" />
       <geometry>
-        <mesh filename="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/collision/wrist3.stl" />
+        <mesh filename="Robots/meshes/ur3/collision/wrist3.stl" />
       </geometry>
     </collision>
     <inertial>

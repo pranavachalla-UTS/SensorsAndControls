@@ -1,13 +1,12 @@
-<?xml version='1.0' encoding='utf-8'?>
 <mujoco model="track_b">
   <asset>
-    <mesh name="base" content_type="model/stl" file="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/collision/base.stl" />
-    <mesh name="shoulder" content_type="model/stl" file="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/collision/shoulder.stl" />
-    <mesh name="upperarm" content_type="model/stl" file="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/collision/upperarm.stl" />
-    <mesh name="forearm" content_type="model/stl" file="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/collision/forearm.stl" />
-    <mesh name="wrist1" content_type="model/stl" file="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/collision/wrist1.stl" />
-    <mesh name="wrist2" content_type="model/stl" file="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/collision/wrist2.stl" />
-    <mesh name="wrist3" content_type="model/stl" file="/Users/pranavachalla/Desktop/S&amp;C/Assessment4/Robots/meshes/ur3/collision/wrist3.stl" />
+    <mesh name="base" content_type="model/stl" file="Robots/meshes/ur3/collision/base.stl" />
+    <mesh name="shoulder" content_type="model/stl" file="Robots/meshes/ur3/collision/shoulder.stl" />
+    <mesh name="upperarm" content_type="model/stl" file="Robots/meshes/ur3/collision/upperarm.stl" />
+    <mesh name="forearm" content_type="model/stl" file="Robots/meshes/ur3/collision/forearm.stl" />
+    <mesh name="wrist1" content_type="model/stl" file="Robots/meshes/ur3/collision/wrist1.stl" />
+    <mesh name="wrist2" content_type="model/stl" file="Robots/meshes/ur3/collision/wrist2.stl" />
+    <mesh name="wrist3" content_type="model/stl" file="Robots/meshes/ur3/collision/wrist3.stl" />
   </asset>
   <option timestep="0.002" gravity="0 0 -9.81" />
   <worldbody>

@@ -36,7 +36,7 @@ for mesh in robot.iter("mesh"):
     mesh.set(
         "filename",
         filename.replace(
-            "package://ur_description/", robots.as_posix() + "/"
+            "package://ur_description/", "Robots/"
         ),
     )
 
