@@ -1,0 +1,16 @@
+<mujoco model="track_b">
+  <option timestep="0.002" gravity="0 0 -9.81" />
+  <worldbody>
+    <light pos="0 -0.5 2" />
+    <geom name="floor" type="plane" size="2 2 0.1" rgba="0.3 0.3 0.3 1" />
+    <geom name="table" type="box" pos="0 0 0.55" size="0.5 0.4 0.05" rgba="0.7 0.6 0.4 1" />
+    <geom name="leg_1" type="box" pos="-0.44 -0.34 0.25" size="0.03 0.03 0.25" rgba="0.4 0.3 0.2 1" />
+    <geom name="leg_2" type="box" pos="-0.44 0.34 0.25" size="0.03 0.03 0.25" rgba="0.4 0.3 0.2 1" />
+    <geom name="leg_3" type="box" pos="0.44 -0.34 0.25" size="0.03 0.03 0.25" rgba="0.4 0.3 0.2 1" />
+    <geom name="leg_4" type="box" pos="0.44 0.34 0.25" size="0.03 0.03 0.25" rgba="0.4 0.3 0.2 1" />
+    <body name="target" pos="-0.25 0 0.625">
+      <freejoint />
+      <geom name="target_geom" type="box" size="0.02 0.02 0.02" mass="0.05" friction="1 0.01 0.001" rgba="1 0 0 1" />
+    </body>
+  </worldbody>
+</mujoco>

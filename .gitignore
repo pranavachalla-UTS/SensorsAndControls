@@ -10,3 +10,5 @@ results/.mpl-cache/
 results/capture.npz
 results/*.npy
 results/*.npz
+
+results/raw/

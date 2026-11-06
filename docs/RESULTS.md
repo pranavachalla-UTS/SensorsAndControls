@@ -28,18 +28,22 @@ The pulse increases tracking error and unmeasured-velocity error while torque RM
 
 ## Development failures and what changed
 
-The initial upper-percentile depth selector failed all ten high-noise development picks: it selected positive depth noise and stopped the cup above the surface. That earlier summary is preserved in `results/before_depth_fix/experiment_summary.json`. Eroding the target boundary and using median interior height removed that bias. Using top-face pixels for lateral centre retained localisation accuracy. The single-observation pipeline then passed the same high-noise seeds; its summary is in `results/before_visual_loop/experiment_summary.json`. The final pipeline adds two visual corrections and was rerun in all four conditions. These are development comparisons, not a held-out controlled ablation study.
+The initial upper-percentile depth selector failed all ten high-noise development picks: it selected positive depth noise and stopped the cup above the surface. That earlier summary is preserved in `archive/development/before_depth_fix/experiment_summary.json`. Eroding the target boundary and using median interior height removed that bias. Using top-face pixels for lateral centre retained localisation accuracy. The single-observation pipeline then passed the same high-noise seeds; its summary is in `archive/development/before_visual_loop/experiment_summary.json`. The final pipeline adds two visual corrections and was rerun in all four conditions. These are development comparisons, not a held-out controlled ablation study.
 
 An imported base/shoulder mesh overlap initially prevented joint tracking. Only that adjoining pair was excluded; other contacts remain enabled. The first camera attempt failed to create a CoreGraphics connection, so all reported camera results use the explicitly selected CPU backend. Failed picks leave suction inactive instead of reporting success from tool motion alone.
 
 ## Plots
 
-![Nominal estimated-state tracking](../results/nominal_tracking.png)
+![Nominal estimated-state tracking](../results/figures/nominal_tracking.png)
 
-![Torque disturbance and observer response](../results/torque_pulse_tracking.png)
+![Torque disturbance and observer response](../results/figures/torque_pulse_tracking.png)
 
-Plots show seed 0. Shading is the KF velocity-error +/-2-sigma interval; truth is evaluation-only. Per-trial JSON contains settings, visual update count, contact pairs, hold height, errors and success. Rerun `run_experiments.py` to regenerate full CSV histories, then `plot_results.py` to recreate plots.
+Plots show seed 0. Shading is the KF velocity-error +/-2-sigma interval; truth is evaluation-only. Per-trial JSON contains settings, visual update count, contact pairs, hold height, errors and success. Rerun `python main.py trials` to regenerate full CSV histories, then `python main.py plot` to recreate plots.
 
 ## Remaining evidence
 
 The viewer and raster camera need validation on the student machine. Real seal mechanics, payload/model mismatch, mount calibration errors, target motion, arbitrary object orientations and wider workspaces remain untested. The video, real contribution statement and student review are still required. Stronger higher-band evidence would compare alternatives on a larger held-out test set and quantify the operating limits, rather than extrapolate from these forty successful trials.
+
+## Folder reorganisation
+
+The saved forty-trial study belongs to the source commit recorded above. A later organisation-only change moved code into `src/`, scenes into `models/`, and robot assets into `assets/`. It combined the forty detailed JSON records into `results/trials.json`. The original source hashes still describe the recorded earlier commit. The reorganised version was checked separately; it does not claim a new forty-trial study.

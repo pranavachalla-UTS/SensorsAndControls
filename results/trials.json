@@ -1,0 +1,2050 @@
+{
+  "nominal": [
+    {
+      "seed": 0,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.24034580836364533,
+        -0.016971572874857233,
+        0.6398260303448268
+      ],
+      "localisation_error_m": 0.0008618089643251455,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.24106710065137466,
+        -0.015545228677495145,
+        0.6427677363122244
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7320778704149955,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.00028944842122387125,
+      "velocity_rmse_rad_s": 0.008069856410224896,
+      "two_sigma_coverage": 0.9902857142857143,
+      "torque_rms_nm": 3.869578045206089,
+      "tracking_rmse_rad": 0.0028541222462535798
+    },
+    {
+      "seed": 1,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.24934359698952424,
+        0.030531055211049193,
+        0.6395492698408405
+      ],
+      "localisation_error_m": 0.001072257645497832,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.24974191572908153,
+        0.032435903469445804,
+        0.642744111720568
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.731599232463682,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0002925321949021736,
+      "velocity_rmse_rad_s": 0.008457394774124055,
+      "two_sigma_coverage": 0.9905238095238095,
+      "torque_rms_nm": 4.000345936432437,
+      "tracking_rmse_rad": 0.0028044706741056427
+    },
+    {
+      "seed": 2,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.26663367989226533,
+        -0.014897271541121127,
+        0.6395389652198143
+      ],
+      "localisation_error_m": 0.0008685263972644722,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.26710150530241716,
+        -0.01333454000183134,
+        0.6427724039103411
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7314737361014085,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0002872380607853355,
+      "velocity_rmse_rad_s": 0.00878183947339592,
+      "two_sigma_coverage": 0.9911785714285715,
+      "torque_rms_nm": 4.214232280503899,
+      "tracking_rmse_rad": 0.0027768935913464964
+    },
+    {
+      "seed": 3,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.27863272371346653,
+        -0.01921684715610549,
+        0.6398037203197384
+      ],
+      "localisation_error_m": 0.0008807873885279573,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.2795549825234387,
+        -0.017565912136395155,
+        0.6427168644102467
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7316797013433146,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0002846640303765662,
+      "velocity_rmse_rad_s": 0.008247071085863379,
+      "two_sigma_coverage": 0.9918095238095238,
+      "torque_rms_nm": 4.38375168479364,
+      "tracking_rmse_rad": 0.0027876948062152285
+    },
+    {
+      "seed": 4,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.21968608661094385,
+        -0.00047821669870579814,
+        0.6396368043930167
+      ],
+      "localisation_error_m": 0.0014733911914203662,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.21977289422968876,
+        0.001912121619867822,
+        0.6427457807443397
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7316894698689957,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.00028560263933299245,
+      "velocity_rmse_rad_s": 0.008507649193930822,
+      "two_sigma_coverage": 0.9915238095238095,
+      "torque_rms_nm": 3.605937033786101,
+      "tracking_rmse_rad": 0.0028993831623110033
+    },
+    {
+      "seed": 5,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.22851444839523616,
+        0.020419743083899128,
+        0.6391534710501086
+      ],
+      "localisation_error_m": 0.001362056442914703,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.22937540637896076,
+        0.022458527620992992,
+        0.6427385599706052
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7318551932371961,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.00029125052017613817,
+      "velocity_rmse_rad_s": 0.008294397702811436,
+      "two_sigma_coverage": 0.9909761904761905,
+      "torque_rms_nm": 3.7304598917426235,
+      "tracking_rmse_rad": 0.0028589506608756644
+    },
+    {
+      "seed": 6,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.24698290672748197,
+        -0.011896173342935343,
+        0.6395357709564911
+      ],
+      "localisation_error_m": 0.001049933470067768,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.24787956260905958,
+        -0.010192004663308765,
+        0.6427571531008232
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7322010797623357,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0002840409702937817,
+      "velocity_rmse_rad_s": 0.008586460484247507,
+      "two_sigma_coverage": 0.9923571428571428,
+      "torque_rms_nm": 3.9566590474702,
+      "tracking_rmse_rad": 0.002892320596373544
+    },
+    {
+      "seed": 7,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.2411942700247784,
+        0.026946042108113542,
+        0.639590469289594
+      ],
+      "localisation_error_m": 0.0009118569578080752,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.24178156697382597,
+        0.028836741007408448,
+        0.642770906121773
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7320979025374007,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0002886810733144121,
+      "velocity_rmse_rad_s": 0.008060650412116635,
+      "two_sigma_coverage": 0.9914404761904761,
+      "torque_rms_nm": 3.8926517660784783,
+      "tracking_rmse_rad": 0.0028916049605494116
+    },
+    {
+      "seed": 8,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.26195965235292257,
+        0.03316844944533975,
+        0.639594598647019
+      ],
+      "localisation_error_m": 0.000998581368161115,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.2625896593579883,
+        0.034744544278540825,
+        0.6427609091992165
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.731569807435269,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.000291006966036326,
+      "velocity_rmse_rad_s": 0.008424253353033375,
+      "two_sigma_coverage": 0.9904761904761905,
+      "torque_rms_nm": 4.173439468476486,
+      "tracking_rmse_rad": 0.00280882578931278
+    },
+    {
+      "seed": 9,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.22487078120119713,
+        -0.01573874338767872,
+        0.6399254851190587
+      ],
+      "localisation_error_m": 0.0011349268273836755,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.22469464376524856,
+        -0.014405539480577828,
+        0.6427387698986076
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7319176438507857,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0002945780014369094,
+      "velocity_rmse_rad_s": 0.008387700529023788,
+      "two_sigma_coverage": 0.9898571428571429,
+      "torque_rms_nm": 3.6673889659789,
+      "tracking_rmse_rad": 0.002915157318169317
+    }
+  ],
+  "sensor_noise": [
+    {
+      "seed": 0,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.004,
+      "depth_std_m": 0.005,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.240909869649227,
+        -0.018755075032299458,
+        0.6393767069680787
+      ],
+      "localisation_error_m": 0.002735540497738248,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.24129335360994392,
+        -0.013706607138857557,
+        0.6427471307157839
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7307819328741423,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0008173441852070334,
+      "velocity_rmse_rad_s": 0.011627838708262705,
+      "two_sigma_coverage": 0.9898214285714285,
+      "torque_rms_nm": 3.8684253329566594,
+      "tracking_rmse_rad": 0.0033343373970061334
+    },
+    {
+      "seed": 1,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.004,
+      "depth_std_m": 0.005,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.24921120378600015,
+        0.028272015215907054,
+        0.638460753640212
+      ],
+      "localisation_error_m": 0.0035610791914445594,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.24997323946655153,
+        0.034647356882806346,
+        0.6426854531846117
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.728932138920332,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0008386142871951558,
+      "velocity_rmse_rad_s": 0.011795566137651075,
+      "two_sigma_coverage": 0.9906428571428572,
+      "torque_rms_nm": 3.9963088891098106,
+      "tracking_rmse_rad": 0.003282707062922831
+    },
+    {
+      "seed": 2,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.004,
+      "depth_std_m": 0.005,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.2659006975837737,
+        -0.01635154165195303,
+        0.6383753782803704
+      ],
+      "localisation_error_m": 0.002821992457499493,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.2670175563898053,
+        -0.01104285792404587,
+        0.6427889651488387
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7296294946927452,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0008143677177662388,
+      "velocity_rmse_rad_s": 0.011868588167636043,
+      "two_sigma_coverage": 0.9921428571428571,
+      "torque_rms_nm": 4.212394898547238,
+      "tracking_rmse_rad": 0.0032482215871178772
+    },
+    {
+      "seed": 3,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.004,
+      "depth_std_m": 0.005,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.2791204131858716,
+        -0.020751614958151483,
+        0.6393582087197511
+      ],
+      "localisation_error_m": 0.002391622597246632,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.27942364065347536,
+        -0.015188629159383628,
+        0.6426077493512988
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.729454083810991,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0008106643217814079,
+      "velocity_rmse_rad_s": 0.012013590403268647,
+      "two_sigma_coverage": 0.991904761904762,
+      "torque_rms_nm": 4.375980665407538,
+      "tracking_rmse_rad": 0.0032419501227811606
+    },
+    {
+      "seed": 4,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.004,
+      "depth_std_m": 0.005,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.22092157809817403,
+        -0.0031729328554477923,
+        0.6390834960142712
+      ],
+      "localisation_error_m": 0.004486394051241445,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.2201066247926061,
+        0.004573681840516038,
+        0.6427424149076714
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.729981914479383,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0008191310544804147,
+      "velocity_rmse_rad_s": 0.011818692324089636,
+      "two_sigma_coverage": 0.9909880952380953,
+      "torque_rms_nm": 3.6082492904449506,
+      "tracking_rmse_rad": 0.003437955818111066
+    },
+    {
+      "seed": 5,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.004,
+      "depth_std_m": 0.005,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.22927337713743196,
+        0.017685870019420173,
+        0.6375664945467505
+      ],
+      "localisation_error_m": 0.004558061670919039,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.22961584264613005,
+        0.02482936074747858,
+        0.642735093063305
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7306651094995921,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0008265395060127512,
+      "velocity_rmse_rad_s": 0.012023155285198145,
+      "two_sigma_coverage": 0.9910833333333333,
+      "torque_rms_nm": 3.736524026659514,
+      "tracking_rmse_rad": 0.003410088418455913
+    },
+    {
+      "seed": 6,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.004,
+      "depth_std_m": 0.005,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.24663971591436118,
+        -0.01367961258190352,
+        0.6387674920442531
+      ],
+      "localisation_error_m": 0.0030125994057811434,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.24769358195483998,
+        -0.00776461987943899,
+        0.6427563678802246
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7309701279345416,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.000813687642074494,
+      "velocity_rmse_rad_s": 0.011856686803309946,
+      "two_sigma_coverage": 0.990904761904762,
+      "torque_rms_nm": 3.956661788102454,
+      "tracking_rmse_rad": 0.0033904421145460116
+    },
+    {
+      "seed": 7,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.004,
+      "depth_std_m": 0.005,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.24118574456948333,
+        0.0245848344310466,
+        0.6384713260764143
+      ],
+      "localisation_error_m": 0.003520304378056868,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.24178477812112337,
+        0.03110717059931974,
+        0.6427880660016427
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7306580706803224,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0008255306475667132,
+      "velocity_rmse_rad_s": 0.01174041261626349,
+      "two_sigma_coverage": 0.9914761904761905,
+      "torque_rms_nm": 3.893421725838518,
+      "tracking_rmse_rad": 0.0033826488910995386
+    },
+    {
+      "seed": 8,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.004,
+      "depth_std_m": 0.005,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.2621380279906061,
+        0.03157468599214296,
+        0.6386823708058376
+      ],
+      "localisation_error_m": 0.0028087529023471825,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.2627408901050998,
+        0.03645309223598749,
+        0.6427530984612778
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7292301840412208,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0008340441420813697,
+      "velocity_rmse_rad_s": 0.011775156477820984,
+      "two_sigma_coverage": 0.9899880952380953,
+      "torque_rms_nm": 4.1700680818515545,
+      "tracking_rmse_rad": 0.0033027614699741564
+    },
+    {
+      "seed": 9,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.004,
+      "depth_std_m": 0.005,
+      "dropout": 0.0,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.22560612468055552,
+        -0.016668175521631128,
+        0.6395316993609921
+      ],
+      "localisation_error_m": 0.0023446497291133434,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.22540436673651526,
+        -0.012824759184824853,
+        0.6427295404948001
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7303158849490102,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0008427616398415342,
+      "velocity_rmse_rad_s": 0.0120934264040307,
+      "two_sigma_coverage": 0.9905595238095238,
+      "torque_rms_nm": 3.6697083193786226,
+      "tracking_rmse_rad": 0.003447287728069808
+    }
+  ],
+  "dropout": [
+    {
+      "seed": 0,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.25,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.24022878366900946,
+        -0.016991218711757003,
+        0.6397408250980963
+      ],
+      "localisation_error_m": 0.0009081227398899484,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.24100613289797163,
+        -0.015607069781158736,
+        0.6427720922181144
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7316987570194429,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0003265293690727846,
+      "velocity_rmse_rad_s": 0.008350037399089263,
+      "two_sigma_coverage": 0.9904047619047619,
+      "torque_rms_nm": 3.8682484778619446,
+      "tracking_rmse_rad": 0.0028764614370232343
+    },
+    {
+      "seed": 1,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.25,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.24953627784982862,
+        0.03046412809266122,
+        0.6396110949959517
+      ],
+      "localisation_error_m": 0.0011630616298305464,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.24962843190107525,
+        0.03235160592480108,
+        0.6427379595979337
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7311772964682799,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0003260243835707617,
+      "velocity_rmse_rad_s": 0.008109686371889576,
+      "two_sigma_coverage": 0.9900238095238095,
+      "torque_rms_nm": 3.99828058387138,
+      "tracking_rmse_rad": 0.0028291550077869983
+    },
+    {
+      "seed": 2,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.25,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.26667726908305484,
+        -0.014932848107897148,
+        0.6395499629786702
+      ],
+      "localisation_error_m": 0.0008952681711247399,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.26691375460061806,
+        -0.013299927250774078,
+        0.6427786017239235
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7313511902901664,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0003208596030657076,
+      "velocity_rmse_rad_s": 0.008927439101647828,
+      "two_sigma_coverage": 0.991297619047619,
+      "torque_rms_nm": 4.213270943035036,
+      "tracking_rmse_rad": 0.002783444955178352
+    },
+    {
+      "seed": 3,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.25,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.27851509881234154,
+        -0.01922320532991644,
+        0.6397499399897328
+      ],
+      "localisation_error_m": 0.000948480514680055,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.27943750525571054,
+        -0.01766002282162554,
+        0.6427120732404472
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7315210358283151,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.00031923875865942235,
+      "velocity_rmse_rad_s": 0.008354632647358397,
+      "two_sigma_coverage": 0.9925238095238095,
+      "torque_rms_nm": 4.383350663486023,
+      "tracking_rmse_rad": 0.0027881261676293134
+    },
+    {
+      "seed": 4,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.25,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.21973340506267486,
+        -0.0004023698222811664,
+        0.6396801835147263
+      ],
+      "localisation_error_m": 0.0014254874991933223,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.2195770583662191,
+        0.001755654526706992,
+        0.6427537659818657
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7315059895706482,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.00031706129227914315,
+      "velocity_rmse_rad_s": 0.008676073845339312,
+      "two_sigma_coverage": 0.9925238095238095,
+      "torque_rms_nm": 3.6045273175877988,
+      "tracking_rmse_rad": 0.0029337382748760234
+    },
+    {
+      "seed": 5,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.25,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.22840309109953205,
+        0.020319695614393687,
+        0.6390874231020385
+      ],
+      "localisation_error_m": 0.001495681214267691,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.22915558686324689,
+        0.02240539998675098,
+        0.6427325601091058
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7318913545933057,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.00032843099173378033,
+      "velocity_rmse_rad_s": 0.008534813995001413,
+      "two_sigma_coverage": 0.9904047619047619,
+      "torque_rms_nm": 3.7296459017301062,
+      "tracking_rmse_rad": 0.0028824919403382006
+    },
+    {
+      "seed": 6,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.25,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.24709958069067645,
+        -0.012009214593138612,
+        0.639516662569533
+      ],
+      "localisation_error_m": 0.001127487657378089,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.24774992633396545,
+        -0.010279539601970812,
+        0.6427546180624685
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7320485335185132,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.00031807601590102007,
+      "velocity_rmse_rad_s": 0.008881640248699587,
+      "two_sigma_coverage": 0.9923809523809524,
+      "torque_rms_nm": 3.95642592381819,
+      "tracking_rmse_rad": 0.0029020160065416243
+    },
+    {
+      "seed": 7,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.25,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.24122607103774124,
+        0.026880316170185617,
+        0.6395691302245624
+      ],
+      "localisation_error_m": 0.0009797737618015944,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.2415677699902988,
+        0.02871044299361472,
+        0.6427709299100097
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.731955686426619,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0003227236644504549,
+      "velocity_rmse_rad_s": 0.008214166253648694,
+      "two_sigma_coverage": 0.9910357142857142,
+      "torque_rms_nm": 3.8923072168373962,
+      "tracking_rmse_rad": 0.002907296911964572
+    },
+    {
+      "seed": 8,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.25,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.2621226058467762,
+        0.033089226815586306,
+        0.639658939754676
+      ],
+      "localisation_error_m": 0.0010465346883309675,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.26263550266737634,
+        0.03464147298248105,
+        0.6427500767062115
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.731537317412204,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0003275343125066801,
+      "velocity_rmse_rad_s": 0.008560540911877159,
+      "two_sigma_coverage": 0.9901904761904762,
+      "torque_rms_nm": 4.173584924071996,
+      "tracking_rmse_rad": 0.002829542172743183
+    },
+    {
+      "seed": 9,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.25,
+      "disturbance_nm": 0.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.224906595179667,
+        -0.015621779608436786,
+        0.6400576082582219
+      ],
+      "localisation_error_m": 0.001093088582878787,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.22481042207353044,
+        -0.014393061098114421,
+        0.6427402330566381
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7318450215636345,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0003301904344391966,
+      "velocity_rmse_rad_s": 0.008547619203909658,
+      "two_sigma_coverage": 0.9900833333333333,
+      "torque_rms_nm": 3.6680469649045837,
+      "tracking_rmse_rad": 0.0029387077099451266
+    }
+  ],
+  "torque_pulse": [
+    {
+      "seed": 0,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 2.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.24034580836364533,
+        -0.016971572874857233,
+        0.6398260303448268
+      ],
+      "localisation_error_m": 0.0008618089643251455,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.24103464072475642,
+        -0.015490459848301798,
+        0.6427674975389335
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7320743900971135,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0003851352101023736,
+      "velocity_rmse_rad_s": 0.018582933152670643,
+      "two_sigma_coverage": 0.9796190476190476,
+      "torque_rms_nm": 3.8872491459317597,
+      "tracking_rmse_rad": 0.008377729202401787
+    },
+    {
+      "seed": 1,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 2.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.24934359698952424,
+        0.030531055211049193,
+        0.6395492698408405
+      ],
+      "localisation_error_m": 0.001072257645497832,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.24973048548705942,
+        0.03238717514629463,
+        0.6427444341034725
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7316039497689226,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.00038449933836926594,
+      "velocity_rmse_rad_s": 0.018267272651141253,
+      "two_sigma_coverage": 0.9798214285714286,
+      "torque_rms_nm": 4.019106849092291,
+      "tracking_rmse_rad": 0.008134440037807226
+    },
+    {
+      "seed": 2,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 2.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.26663367989226533,
+        -0.014897271541121127,
+        0.6395389652198143
+      ],
+      "localisation_error_m": 0.0008685263972644722,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.26684145193593445,
+        -0.013281900049290392,
+        0.6427724900443528
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7314791014831199,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0003689417577314619,
+      "velocity_rmse_rad_s": 0.017775768921670283,
+      "two_sigma_coverage": 0.9810833333333333,
+      "torque_rms_nm": 4.231504770624172,
+      "tracking_rmse_rad": 0.00778620419663309
+    },
+    {
+      "seed": 3,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 2.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.27863272371346653,
+        -0.01921684715610549,
+        0.6398037203197384
+      ],
+      "localisation_error_m": 0.0008807873885279573,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.27957130156447957,
+        -0.017660849110724262,
+        0.6427168441561173
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7316764731027774,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0003640649183993325,
+      "velocity_rmse_rad_s": 0.017129218145985076,
+      "two_sigma_coverage": 0.9818690476190476,
+      "torque_rms_nm": 4.403398619237834,
+      "tracking_rmse_rad": 0.0075910033230971756
+    },
+    {
+      "seed": 4,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 2.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.21968608661094385,
+        -0.00047821669870579814,
+        0.6396368043930167
+      ],
+      "localisation_error_m": 0.0014733911914203662,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.2197212032908067,
+        0.0017948384018306538,
+        0.6427451288748062
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.731680339323897,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.00039303573623001946,
+      "velocity_rmse_rad_s": 0.02002163243963854,
+      "two_sigma_coverage": 0.9805714285714285,
+      "torque_rms_nm": 3.6218287133819547,
+      "tracking_rmse_rad": 0.00900763795809663
+    },
+    {
+      "seed": 5,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 2.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.22851444839523616,
+        0.020419743083899128,
+        0.6391534710501086
+      ],
+      "localisation_error_m": 0.001362056442914703,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.22933038260086366,
+        0.02242549536188998,
+        0.6427385220730838
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7318551503829936,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0003932147542180687,
+      "velocity_rmse_rad_s": 0.019329106710821678,
+      "two_sigma_coverage": 0.9801904761904762,
+      "torque_rms_nm": 3.747247462679596,
+      "tracking_rmse_rad": 0.008685674829377599
+    },
+    {
+      "seed": 6,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 2.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.24698290672748197,
+        -0.011896173342935343,
+        0.6395357709564911
+      ],
+      "localisation_error_m": 0.001049933470067768,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.24786301295156976,
+        -0.010228664552373241,
+        0.6427571694300706
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.73220042509753,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0003761764971617372,
+      "velocity_rmse_rad_s": 0.018440289301382428,
+      "two_sigma_coverage": 0.9816190476190476,
+      "torque_rms_nm": 3.9752030652864305,
+      "tracking_rmse_rad": 0.008225269846151217
+    },
+    {
+      "seed": 7,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 2.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.2411942700247784,
+        0.026946042108113542,
+        0.639590469289594
+      ],
+      "localisation_error_m": 0.0009118569578080752,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.24160880608722735,
+        0.028760258907017833,
+        0.6427635681963828
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7320896042976527,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.00037625007421516587,
+      "velocity_rmse_rad_s": 0.0183622180227828,
+      "two_sigma_coverage": 0.980452380952381,
+      "torque_rms_nm": 3.9104526206626087,
+      "tracking_rmse_rad": 0.008346675080759945
+    },
+    {
+      "seed": 8,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 2.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.26195965235292257,
+        0.03316844944533975,
+        0.639594598647019
+      ],
+      "localisation_error_m": 0.000998581368161115,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.2625877946934323,
+        0.03470241284934936,
+        0.642760580329242
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7315644364620707,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.00037339276840840223,
+      "velocity_rmse_rad_s": 0.017736312508560562,
+      "two_sigma_coverage": 0.9804285714285714,
+      "torque_rms_nm": 4.192497693636506,
+      "tracking_rmse_rad": 0.007852078839844014
+    },
+    {
+      "seed": 9,
+      "success": true,
+      "attached": true,
+      "encoder_std_rad": 0.001,
+      "depth_std_m": 0.001,
+      "dropout": 0.0,
+      "disturbance_nm": 2.0,
+      "camera_backend": "ray",
+      "surface_world_m": [
+        -0.22487078120119713,
+        -0.01573874338767872,
+        0.6399254851190587
+      ],
+      "localisation_error_m": 0.0011349268273836755,
+      "visual_updates": 3,
+      "touch_tip_world_m": [
+        -0.22464630774890124,
+        -0.014373539980086699,
+        0.6427390890260468
+      ],
+      "contacts_at_touch": [
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "table",
+          "target_geom"
+        ],
+        [
+          "cup",
+          "target_geom"
+        ]
+      ],
+      "min_hold_height_m": 0.7319227987243421,
+      "reason": "lift held",
+      "angle_rmse_rad": 0.0004007655548706569,
+      "velocity_rmse_rad_s": 0.019618819351672437,
+      "two_sigma_coverage": 0.9789285714285715,
+      "torque_rms_nm": 3.6837727700639205,
+      "tracking_rmse_rad": 0.00886188530109982
+    }
+  ]
+}
