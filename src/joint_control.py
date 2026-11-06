@@ -1,6 +1,6 @@
 import numpy as np
 import mujoco
-from robot_common import estimated_data, indices
+from robot_common import estimated_data, indices, full_mass_matrix
 
 
 def state_model(dt):
@@ -50,8 +50,7 @@ def feedback(model, observer, reference, reference_velocity, reference_accelerat
     acceleration = np.clip(acceleration, -30, 30)
     estimate = estimated_data(model, q, v)
     qi, vi = indices(model)
-    M = np.zeros((model.nv, model.nv))
-    mujoco.mj_fullM(model, estimate, M)
+    M = full_mass_matrix(model, estimate)
     # Cancel estimated gravity/Coriolis and passive damping, then apply feedback.
     mass = M[np.ix_(vi, vi)]
     bias = estimate.qfrc_bias[vi] - estimate.qfrc_passive[vi]

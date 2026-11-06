@@ -80,3 +80,13 @@ def solve_ik(model, q_start, point_world, rotation):
             if model.jnt_limited[joint]:
                 data.qpos[qi[i]] = np.clip(data.qpos[qi[i]], *model.jnt_range[joint])
     raise RuntimeError('IK failed: requested pose is not reachable from this seed')
+
+
+def full_mass_matrix(model, data):
+    # MuJoCo changed this call between releases; support both interfaces.
+    matrix = np.zeros((model.nv, model.nv))
+    if hasattr(data, "qM"):
+        mujoco.mj_fullM(model, matrix, data.qM)
+    else:
+        mujoco.mj_fullM(model, data, matrix)
+    return matrix

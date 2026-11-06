@@ -1,7 +1,7 @@
 import json
 import mujoco
 import numpy as np
-from robot_common import RESULTS, HOME, load_scene, indices, estimated_data
+from robot_common import RESULTS, HOME, load_scene, indices, estimated_data, full_mass_matrix
 from joint_control import state_model, ranks
 
 
@@ -21,8 +21,7 @@ def analyse():
     A_robot = A_full[np.ix_(arm, arm)]
     B_robot = B_full[arm]
     actual_c, actual_o = ranks(A_robot, B_robot, C)
-    M = np.zeros((model.nv, model.nv))
-    mujoco.mj_fullM(model, data, M)
+    M = full_mass_matrix(model, data)
     result = {'dt_s': dt, 'state_order': 'six angles then six velocities',
               'compensated_input': 'joint acceleration rad/s^2',
               'compensated_controllability_rank': rank_c,

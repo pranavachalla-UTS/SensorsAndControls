@@ -62,8 +62,13 @@ def capture_rays(model, data, height=480, width=640):
     rays = np.ascontiguousarray((optical / lengths[:, None]) @ rotation.T)
     ids = np.full(height*width, -1, dtype=np.int32)
     distances = np.full(height*width, -1.0)
-    mujoco.mj_multiRay(model, data, data.cam_xpos[camera], rays.ravel(), None,
-                       True, -1, ids, distances, None, height*width, 3.0)
+    # Newer releases accept a normals output; older releases omit it.
+    try:
+        mujoco.mj_multiRay(model, data, data.cam_xpos[camera], rays.ravel(), None,
+                           True, -1, ids, distances, None, height*width, 3.0)
+    except TypeError:
+        mujoco.mj_multiRay(model, data, data.cam_xpos[camera], rays.ravel(), None,
+                           True, -1, ids, distances, height*width, 3.0)
     rgb = np.zeros((height*width, 3), dtype=np.uint8)
     valid = ids >= 0
     rgb[valid] = (255 * model.geom_rgba[ids[valid], :3]).astype(np.uint8)

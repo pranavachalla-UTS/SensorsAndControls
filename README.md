@@ -21,7 +21,7 @@ You do not need to read or edit every file. Keeping sensing, estimation and cont
 
 ## Install and run
 
-Tested with Python 3.12 on macOS ARM64. From the repository folder:
+Tested with Python 3.12 on macOS ARM64. The compatibility fix passed seven checks and a seed-0 headless pick on MuJoCo 3.3.7 and 3.17.0; the earlier forty-trial study used 3.17.0. The interactive viewer still needs validation on your machine. From the repository folder:
 
 ```sh
 python3 -m venv .venv
