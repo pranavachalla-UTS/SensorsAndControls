@@ -5,3 +5,8 @@ __pycache__/
 venv/
 MUJOCO_LOG.TXT
 results/trial_*.csv
+results/**/*.csv
+results/.mpl-cache/
+results/capture.npz
+results/*.npy
+results/*.npz

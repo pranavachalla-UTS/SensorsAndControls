@@ -1,0 +1,44 @@
+{
+  "K": [
+    [
+      377.11747464880506,
+      0.0,
+      319.49999999999994
+    ],
+    [
+      0.0,
+      377.13058740694936,
+      239.49999999999986
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "width": 640,
+  "height": 480,
+  "backend": "ray",
+  "method": "known simulated sphere centres; independent held-out positions",
+  "training_points": 24,
+  "validation_points": 12,
+  "validation_rmse_pixels": 0.09133481040222559,
+  "nominal_K": [
+    [
+      376.72453850819767,
+      0.0,
+      319.5
+    ],
+    [
+      0.0,
+      376.72453850819767,
+      239.5
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "extrinsics": "Known simulated mount and encoder FK; no real hand-eye calibration claimed"
+}

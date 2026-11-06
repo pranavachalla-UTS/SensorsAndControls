@@ -1,25 +1,15 @@
-from pathlib import Path
-
 import numpy as np
+from robot_common import RESULTS
 
-# Current Assessment4 folder
-project = Path(__file__).resolve().parent
 
-# Load the target position already calculated by detect_target.py
-surface_base = np.load(project / "target_surface_base.npy")
+def main():
+    surface = np.load(RESULTS / 'target_surface_base.npy')
+    # Base Z points upward. This waypoint is 8 cm above the detected surface.
+    approach = surface + [0, 0, 0.08]
+    np.save(RESULTS / 'target_approach_base.npy', approach)
+    print('Approach in base frame [m]:', np.round(approach, 4))
+    print('Use run_pick.py for the complete pipeline with a fresh camera capture')
 
-print("Detected target surface point [m]:")
-print(np.round(surface_base, 4))
 
-# Create a SAFE approach point above the object
-
-safe_height = 0.04  # 10 cm above the detected surface
-
-approach_point = surface_base.copy()
-approach_point[2] += safe_height
-
-print("\nSafe approach point [m]:")
-print(np.round(approach_point, 4))
-
-# Save it so we can use it for robot motion next
-np.save(project / "target_approach_base.npy", approach_point)
+if __name__ == '__main__':
+    main()
