@@ -1,0 +1,194 @@
+{
+  "nominal": {
+    "trials": 10,
+    "successes": 10,
+    "success_rate": 1.0,
+    "success_95_percent_interval": [
+      0.7224598312333834,
+      1.0
+    ],
+    "settings": {},
+    "camera_backend": "ray",
+    "failures": [],
+    "localisation_error_m": {
+      "mean": 0.00045475723730787146,
+      "count": 10
+    },
+    "angle_rmse_rad": {
+      "mean": 0.00028968374377525937,
+      "count": 10
+    },
+    "velocity_rmse_rad_s": {
+      "mean": 0.00883368065843688,
+      "count": 10
+    },
+    "tracking_rmse_rad": {
+      "mean": 0.0032149719837998346,
+      "count": 10
+    },
+    "torque_rms_nm": {
+      "mean": 3.9817038499541413,
+      "count": 10
+    },
+    "two_sigma_coverage": {
+      "mean": 0.9910060606060606,
+      "count": 10
+    }
+  },
+  "sensor_noise": {
+    "trials": 10,
+    "successes": 0,
+    "success_rate": 0.0,
+    "success_95_percent_interval": [
+      -2.7755575615628914e-17,
+      0.2775401687666166
+    ],
+    "settings": {
+      "encoder_std": 0.004,
+      "depth_std": 0.005
+    },
+    "camera_backend": "ray",
+    "failures": [
+      {
+        "seed": 0,
+        "reason": "No cup/object contact: suction stays off"
+      },
+      {
+        "seed": 1,
+        "reason": "No cup/object contact: suction stays off"
+      },
+      {
+        "seed": 2,
+        "reason": "No cup/object contact: suction stays off"
+      },
+      {
+        "seed": 3,
+        "reason": "No cup/object contact: suction stays off"
+      },
+      {
+        "seed": 4,
+        "reason": "No cup/object contact: suction stays off"
+      },
+      {
+        "seed": 5,
+        "reason": "No cup/object contact: suction stays off"
+      },
+      {
+        "seed": 6,
+        "reason": "No cup/object contact: suction stays off"
+      },
+      {
+        "seed": 7,
+        "reason": "No cup/object contact: suction stays off"
+      },
+      {
+        "seed": 8,
+        "reason": "No cup/object contact: suction stays off"
+      },
+      {
+        "seed": 9,
+        "reason": "No cup/object contact: suction stays off"
+      }
+    ],
+    "localisation_error_m": {
+      "mean": 0.004908249409039403,
+      "count": 10
+    },
+    "angle_rmse_rad": {
+      "mean": 0.0008085406394940646,
+      "count": 10
+    },
+    "velocity_rmse_rad_s": {
+      "mean": 0.010927396387320407,
+      "count": 10
+    },
+    "tracking_rmse_rad": {
+      "mean": 0.0008576826275733281,
+      "count": 10
+    },
+    "torque_rms_nm": {
+      "mean": 3.9813671811661306,
+      "count": 10
+    },
+    "two_sigma_coverage": {
+      "mean": 0.9928285714285714,
+      "count": 10
+    }
+  },
+  "dropout": {
+    "trials": 10,
+    "successes": 10,
+    "success_rate": 1.0,
+    "success_95_percent_interval": [
+      0.7224598312333834,
+      1.0
+    ],
+    "settings": {
+      "dropout": 0.25
+    },
+    "camera_backend": "ray",
+    "failures": [],
+    "localisation_error_m": {
+      "mean": 0.0004979803545203033,
+      "count": 10
+    },
+    "angle_rmse_rad": {
+      "mean": 0.00032479120319007387,
+      "count": 10
+    },
+    "velocity_rmse_rad_s": {
+      "mean": 0.008978083081669754,
+      "count": 10
+    },
+    "tracking_rmse_rad": {
+      "mean": 0.0032322426530637925,
+      "count": 10
+    },
+    "torque_rms_nm": {
+      "mean": 3.982040171920245,
+      "count": 10
+    },
+    "two_sigma_coverage": {
+      "mean": 0.991269696969697,
+      "count": 10
+    }
+  },
+  "torque_pulse": {
+    "trials": 10,
+    "successes": 10,
+    "success_rate": 1.0,
+    "success_95_percent_interval": [
+      0.7224598312333834,
+      1.0
+    ],
+    "settings": {
+      "disturbance": 2.0
+    },
+    "camera_backend": "ray",
+    "failures": [],
+    "localisation_error_m": {
+      "mean": 0.00045475723730787146,
+      "count": 10
+    },
+    "angle_rmse_rad": {
+      "mean": 0.00040235987340911497,
+      "count": 10
+    },
+    "velocity_rmse_rad_s": {
+      "mean": 0.02074617115263406,
+      "count": 10
+    },
+    "tracking_rmse_rad": {
+      "mean": 0.009412079158896499,
+      "count": 10
+    },
+    "torque_rms_nm": {
+      "mean": 4.003946766386994,
+      "count": 10
+    },
+    "two_sigma_coverage": {
+      "mean": 0.9777727272727275,
+      "count": 10
+    }
+  }
+}

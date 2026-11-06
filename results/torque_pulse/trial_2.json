@@ -1,0 +1,51 @@
+{
+  "seed": 2,
+  "success": true,
+  "attached": true,
+  "encoder_std_rad": 0.001,
+  "depth_std_m": 0.001,
+  "dropout": 0.0,
+  "disturbance_nm": 2.0,
+  "camera_backend": "ray",
+  "surface_world_m": [
+    -0.26663367989226533,
+    -0.014897271541121127,
+    0.6395389652198143
+  ],
+  "localisation_error_m": 0.0008685263972644722,
+  "visual_updates": 3,
+  "touch_tip_world_m": [
+    -0.26684145193593445,
+    -0.013281900049290392,
+    0.6427724900443528
+  ],
+  "contacts_at_touch": [
+    [
+      "table",
+      "target_geom"
+    ],
+    [
+      "table",
+      "target_geom"
+    ],
+    [
+      "table",
+      "target_geom"
+    ],
+    [
+      "table",
+      "target_geom"
+    ],
+    [
+      "cup",
+      "target_geom"
+    ]
+  ],
+  "min_hold_height_m": 0.7314791014831199,
+  "reason": "lift held",
+  "angle_rmse_rad": 0.0003689417577314619,
+  "velocity_rmse_rad_s": 0.017775768921670283,
+  "two_sigma_coverage": 0.9810833333333333,
+  "torque_rms_nm": 4.231504770624172,
+  "tracking_rmse_rad": 0.00778620419663309
+}

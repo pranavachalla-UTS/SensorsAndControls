@@ -1,0 +1,153 @@
+{
+  "nominal": {
+    "trials": 10,
+    "successes": 10,
+    "success_rate": 1.0,
+    "success_95_percent_interval": [
+      0.7224598312333834,
+      1.0
+    ],
+    "settings": {},
+    "camera_backend": "ray",
+    "failures": [],
+    "localisation_error_m": {
+      "mean": 0.0010614126653371108,
+      "count": 10
+    },
+    "angle_rmse_rad": {
+      "mean": 0.00029010320712985954,
+      "count": 10
+    },
+    "velocity_rmse_rad_s": {
+      "mean": 0.008893479622536258,
+      "count": 10
+    },
+    "tracking_rmse_rad": {
+      "mean": 0.0032182710964148917,
+      "count": 10
+    },
+    "torque_rms_nm": {
+      "mean": 3.9812481948101235,
+      "count": 10
+    },
+    "two_sigma_coverage": {
+      "mean": 0.990671212121212,
+      "count": 10
+    }
+  },
+  "sensor_noise": {
+    "trials": 10,
+    "successes": 10,
+    "success_rate": 1.0,
+    "success_95_percent_interval": [
+      0.7224598312333834,
+      1.0
+    ],
+    "settings": {
+      "encoder_std": 0.004,
+      "depth_std": 0.005
+    },
+    "camera_backend": "ray",
+    "failures": [],
+    "localisation_error_m": {
+      "mean": 0.0032240996881387957,
+      "count": 10
+    },
+    "angle_rmse_rad": {
+      "mean": 0.0008337723588031709,
+      "count": 10
+    },
+    "velocity_rmse_rad_s": {
+      "mean": 0.012971716153918279,
+      "count": 10
+    },
+    "tracking_rmse_rad": {
+      "mean": 0.0037719934321755974,
+      "count": 10
+    },
+    "torque_rms_nm": {
+      "mean": 3.9811028272437703,
+      "count": 10
+    },
+    "two_sigma_coverage": {
+      "mean": 0.9896136363636364,
+      "count": 10
+    }
+  },
+  "dropout": {
+    "trials": 10,
+    "successes": 10,
+    "success_rate": 1.0,
+    "success_95_percent_interval": [
+      0.7224598312333834,
+      1.0
+    ],
+    "settings": {
+      "dropout": 0.25
+    },
+    "camera_backend": "ray",
+    "failures": [],
+    "localisation_error_m": {
+      "mean": 0.001108298645937574,
+      "count": 10
+    },
+    "angle_rmse_rad": {
+      "mean": 0.00032536274993582426,
+      "count": 10
+    },
+    "velocity_rmse_rad_s": {
+      "mean": 0.009046022595818768,
+      "count": 10
+    },
+    "tracking_rmse_rad": {
+      "mean": 0.0032357994895369285,
+      "count": 10
+    },
+    "torque_rms_nm": {
+      "mean": 3.981487832154759,
+      "count": 10
+    },
+    "two_sigma_coverage": {
+      "mean": 0.9909969696969696,
+      "count": 10
+    }
+  },
+  "torque_pulse": {
+    "trials": 10,
+    "successes": 10,
+    "success_rate": 1.0,
+    "success_95_percent_interval": [
+      0.7224598312333834,
+      1.0
+    ],
+    "settings": {
+      "disturbance": 2.0
+    },
+    "camera_backend": "ray",
+    "failures": [],
+    "localisation_error_m": {
+      "mean": 0.0010614126653371108,
+      "count": 10
+    },
+    "angle_rmse_rad": {
+      "mean": 0.000402669060032731,
+      "count": 10
+    },
+    "velocity_rmse_rad_s": {
+      "mean": 0.020772401804016762,
+      "count": 10
+    },
+    "tracking_rmse_rad": {
+      "mean": 0.009413586627089101,
+      "count": 10
+    },
+    "torque_rms_nm": {
+      "mean": 4.003505197977274,
+      "count": 10
+    },
+    "two_sigma_coverage": {
+      "mean": 0.9774424242424242,
+      "count": 10
+    }
+  }
+}

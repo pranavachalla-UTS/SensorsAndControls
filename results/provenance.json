@@ -1,0 +1,26 @@
+{
+  "source_commit": "ddc35f7e0f90ca73e25aa5500308e2654242dfbd",
+  "python": "3.12.10",
+  "platform": "macOS-26.0-arm64-arm-64bit",
+  "mujoco": "3.17.0",
+  "numpy": "2.5.4",
+  "opencv": "5.0.0",
+  "source_sha256": {
+    "analyse_model.py": "e1ffa6a816e4179521edcde0eb8551dd2452af25aaae892660799db0fe9b10dc",
+    "prepare_ur3.py": "8bb9d46201198ac55f8be277688c219a724dfec59a7e9627586e6dd89d3c15d1",
+    "vision.py": "ab4ffa5e6bd2eb8cae824c62ee5dcbd85a48f5f2ca97446c85d72ec886fba561",
+    "approach_target.py": "e026477b97751408e7aff32f36740b35e3eac2d3bb96fb50b09f76412aa18857",
+    "run_pick.py": "d17a05727bfabdc6dec8dede40464af4e646572cdb13350cd723f23285ca440b",
+    "move_robot.py": "3cc60baf323162f6468fdb0ed892b181282e001e0a8dab6d29a1d7446d09a0b3",
+    "calibrate_camera.py": "912930fe40157eb5db1b6e7292dc228f59093a1daa7bfeb2015491ed884cd83d",
+    "detect_target.py": "af751314c5cd9e4347db05d84f8ee2f5da2b8f8a20f40b59b14e36382a4b211d",
+    "joint_control.py": "fbeff726813c82e404014fa747302b8b04c84899bc280090a815461ee2ab6256",
+    "view_project.py": "b3d129583fe9db4ec9d87f73e5dc2e534392f31c1bef724274161cfe4e41b759",
+    "load_ur3.py": "d31442605cd25ddf1b9be1e7d886d8d1f986bc5efe792c8621c237bd8a1a8d63",
+    "plot_results.py": "899fd3ce90252ba643ad4266fc9f47604037988342d2aec7465f61d507e389c3",
+    "run_experiments.py": "df524293350ef531b0993e8039d63954bc2aee8b19ea075332475d39a40983a1",
+    "robot_common.py": "58ca32edd2ddd3f5b17eeeba4166ade1d1ba687d959617208f1f12594058d9de",
+    "tests/test_pipeline.py": "ebed4e685df20decadf822afa7c9b178856e20d9598c8ac3c0eaa48abcf43431",
+    "dynamic_scene.xml": "d6a3f60dd1d831d057cc43513fc7a232c5dc81560b31fc3693440dce7069a8f7"
+  }
+}
