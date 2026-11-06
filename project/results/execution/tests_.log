@@ -13,6 +13,6 @@ test_success_intervals_express_small_sample_uncertainty (__main__.ProjectTests.t
 test_trial_evidence_round_trip_and_no_overwrite (__main__.ProjectTests.test_trial_evidence_round_trip_and_no_overwrite) ... ok
 
 ----------------------------------------------------------------------
-Ran 13 tests in 0.299s
+Ran 13 tests in 0.272s
 
 OK

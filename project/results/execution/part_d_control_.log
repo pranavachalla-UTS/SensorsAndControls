@@ -42,7 +42,7 @@ command twitchy.
   result                    picked it up
   tracking error, RMS       0.38 mrad
   tracking error, worst     4.48 mrad
-  torque, RMS               4.73 N m
+  torque, RMS               4.74 N m
   torque, peak              23.3 N m  (limits are 56/56/28/12/12/12)
 
 Sub-milliradian tracking on a 0.25 m forearm is about 0.1 mm at the tool, which

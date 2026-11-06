@@ -74,7 +74,7 @@ if model and est and control:
     trial = est["trial"]
     lines += ["### Model, observer and controller checks", "",
               f"At the reported operating point, controllability and observability ranks are **{model['controllability_rank']}/12** and **{model['observability_rank']}/12**. This is a local smooth-model result; contacts and saturation are outside that proof.", "",
-              f"On the Part C seed-{trial['seed']} development trial, velocity RMSE was **{1000*est['velocity_kf_rmse_rad_s']:.2f} mrad/s** for the observer versus **{1000*est['velocity_fd_rmse_rad_s']:.2f} mrad/s** for encoder differencing. Mean time-aligned joint NEES was **{trial['nees_mean']:.3f}** for the three-state per-joint filter. A mean below 3 suggests conservative uncertainty on this trial; it is not a multi-trial consistency proof.", "",
+              f"On the Part C seed-{trial['seed']} development trial, velocity RMSE was **{1000*est['velocity_kf_rmse_rad_s']:.2f} mrad/s** for the observer versus **{1000*est['velocity_fd_rmse_rad_s']:.2f} mrad/s** for encoder differencing. Mean time-aligned joint NEES was **{trial['nees_mean']:.3f}** for the angle and velocity states checked by the per-joint filter (reference value: 2). A mean below 2 suggests conservative uncertainty on this trial; it is not a multi-trial consistency proof.", "",
               f"The Part D trial recorded peak joint torque **{control['peak_torque_nm']:.2f} Nm**. LQR gains are kp={control['lqr_kp']:.2f}, kd={control['lqr_kd']:.2f}. The weight sweep is a compensated double-integrator analysis, not repeated nonlinear robot trials.", "",
               "[Model report](results/model_report.json) · [Observer report](results/estimation_report.json) · [Control report](results/control_report.json)", ""]
 
@@ -82,4 +82,3 @@ page = PAGE.read_text()
 page = replace_section(page, "VALIDATION", status)
 page = replace_section(page, "RESULTS", "\n".join(lines))
 PAGE.write_text(page)
-print("Updated generated results/status only; video, contributions and AI sections were preserved.")

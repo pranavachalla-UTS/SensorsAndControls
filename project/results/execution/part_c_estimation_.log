@@ -9,7 +9,7 @@ Running one pick to collect data...
 
 Velocity error over the whole pick:
 
-  difference the encoder      363.4 mrad/s
+  difference the encoder      362.2 mrad/s
   Kalman filter                39.6 mrad/s     9x better
 
 Differencing amplifies the encoder's quantisation: one count of 0.38 mrad
@@ -28,7 +28,7 @@ so there is genuinely something there to find.
 Cancelling it in the controller is worth a lot:
 
   tracking error, d fed forward         0.38 mrad
-  tracking error, d ignored             5.43 mrad
+  tracking error, d ignored             5.42 mrad
                                       14x worse
 
 This is how we get rid of steady-state droop without putting an integrator in
@@ -49,10 +49,10 @@ Sweeping the two process-noise knobs:
 
   sigma_a  sigma_d     NEES   velocity err   tracking err
                     (want 2)    [mrad/s]        [mrad]
-        2       20     1.39        23.4         0.56
+        2       20     1.39        23.4         0.57
         2       60     1.39        39.6         0.38  <- used
-        2      150     1.41        62.3         0.32
-       10      300     1.42        88.6         0.30
+        2      150     1.40        62.2         0.33
+       10      300     1.42        88.7         0.30
 Use the saved aligned-time NEES and RMSE values to assess the trade-off.
 A mean far from 2 needs investigation; friction is only one possible cause.
 The tuning sweep is a single development seed, not held-out consistency evidence.
@@ -64,11 +64,11 @@ The tuning sweep is a single development seed, not held-out consistency evidence
 Camera frames this run:  62 used, 0 rejected by the gate,
                          26 with nothing detected.
 
-Final position error before grasping: 1.83 mm
-Final yaw error:                      0.84 deg
+Final position error before grasping: 2.83 mm
+Final yaw error:                      6.15 deg
 
 The block is on a belt doing 34.6 mm/s, and the filter settles on
-34.3 mm/s - an error of 0.7 mm/s. That number is the one worth
+35.6 mm/s - an error of 1.2 mm/s. That number is the one worth
 looking at, because NOTHING MEASURES VELOCITY. The camera returns a pose and
 only a pose; the speed is inferred entirely from how that pose moves between
 frames, against a constant-velocity model. It is the same trick the joint

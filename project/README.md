@@ -7,11 +7,9 @@ A wrist RGB-D camera locates a red block travelling across a clear table. Joint 
 ## Current verification status
 
 <!-- VALIDATION:START -->
-Latest runner status: **complete_with_chart_repair**.
+Latest runner status: **complete**.
 
-Tests and Parts A-D passed. All 102 Part E trials completed; the chart initially failed on floating-point interval roundoff. The corrected replot command completed using the original saved records, without rerunning trials. Video generation was excluded by --no-video.
-
-Passed stages: `tests.py`, `part_a_model.py`, `part_b_sensing.py`, `part_c_estimation.py`, `part_d_control.py`.
+Passed stages: `tests.py`, `part_a_model.py`, `part_b_sensing.py`, `part_c_estimation.py`, `part_d_control.py`, `part_e_robustness.py`, `part_e_robustness.py`.
 
 [Machine-readable validation record](results/validation.json). Full stage logs are under `results/execution/`.
 <!-- VALIDATION:END -->
@@ -105,35 +103,52 @@ The baseline grasp policy uses estimated pose tolerance. The **experimental conf
 <!-- RESULTS:START -->
 ### Repeated-trial study
 
-Split: `development`. Seeds: 0–5. Errors below use all attempts with a defined measurement, including failures.
+Split: `held_out`. Seeds: 1000–1014. Errors below use all attempts with a defined measurement, including failures.
 
 | Condition | Sustained lifts | 95% Wilson interval | Grasp error, all defined attempts [mm] | Cycle time, all attempts [s] |
 | --- | ---: | --- | ---: | ---: |
-| nominal | 6/6 | 61.0–100.0% | 4.70 | 11.46 |
-| noise_3 | 6/6 | 61.0–100.0% | 7.38 | 11.69 |
-| noise_6 | 1/6 | 3.0–56.4% | 42.66 | 11.04 |
-| noise_10 | 0/6 | 0.0–39.0% | — | 8.98 |
-| forearm_push_40N | 6/6 | 61.0–100.0% | 4.70 | 11.45 |
-| forearm_push_120N | 6/6 | 61.0–100.0% | 4.49 | 11.46 |
-| nudge_dx_3cm | 6/6 | 61.0–100.0% | 4.77 | 11.52 |
-| nudge_dx_6cm | 6/6 | 61.0–100.0% | 3.32 | 11.75 |
-| payload_0.5kg | 6/6 | 61.0–100.0% | 4.82 | 11.45 |
-| payload_2.0kg | 6/6 | 61.0–100.0% | 4.73 | 11.46 |
-| mount_error_2mm | 6/6 | 61.0–100.0% | 7.11 | 11.45 |
-| depth_scale_1p02 | 6/6 | 61.0–100.0% | 4.29 | 11.52 |
-| parked_open_loop | 2/6 | 9.7–70.0% | 30.86 | 13.58 |
-| moving_open_loop | 3/6 | 18.8–81.2% | 12.37 | 11.16 |
-| no_velocity_feedforward | 0/6 | 0.0–39.0% | — | 8.77 |
-| nudge_closed_loop | 6/6 | 61.0–100.0% | 7.39 | 11.57 |
-| nudge_open_loop | 0/6 | 0.0–39.0% | 47.74 | 9.73 |
+| nominal | 15/15 | 79.6–100.0% | 4.39 | 11.50 |
+| noise_3 | 14/15 | 70.2–98.8% | 10.06 | 11.70 |
+| noise_6 | 8/15 | 30.1–75.2% | 18.91 | 11.47 |
+| noise_10 | 0/15 | 0.0–20.4% | 19.80 | 9.22 |
+| forearm_push_40N | 15/15 | 79.6–100.0% | 3.67 | 11.50 |
+| forearm_push_120N | 15/15 | 79.6–100.0% | 3.74 | 11.50 |
+| nudge_dx_3cm | 15/15 | 79.6–100.0% | 4.02 | 11.51 |
+| nudge_dx_6cm | 15/15 | 79.6–100.0% | 4.40 | 11.69 |
+| payload_0.5kg | 15/15 | 79.6–100.0% | 3.49 | 11.49 |
+| payload_2.0kg | 15/15 | 79.6–100.0% | 4.31 | 11.49 |
+| mount_error_2mm | 15/15 | 79.6–100.0% | 6.39 | 11.49 |
+| depth_scale_1p02 | 15/15 | 79.6–100.0% | 3.26 | 11.56 |
+| parked_open_loop | 3/15 | 7.0–45.2% | 62.81 | 11.63 |
+| moving_open_loop | 3/15 | 7.0–45.2% | 23.39 | 10.67 |
+| no_velocity_feedforward | 0/15 | 0.0–20.4% | — | 8.77 |
+| nudge_closed_loop | 15/15 | 79.6–100.0% | 3.65 | 11.56 |
+| nudge_open_loop | 0/15 | 0.0–20.4% | 55.32 | 10.26 |
 
-[Raw records, settings and provenance](results/runs/development-20261106T112220Z-103313000/study.json). NPZ time histories regenerate with the same command and are retained locally.
+[Raw records, settings and provenance](results/runs/heldout-20261106T113030Z-428753000/study.json). NPZ time histories regenerate with the same command and are retained locally.
 
-![Success and sample uncertainty](results/runs/development-20261106T112220Z-103313000/success.png)
+![Success and sample uncertainty](results/runs/heldout-20261106T113030Z-428753000/success.png)
 
-Failure counts: noise_6: {'grasp not confirmed by both finger contact sensors': 5}; noise_10: {'align took too long': 6}; parked_open_loop: {'grasp not confirmed by both finger contact sensors': 3, 'descend took too long': 1}; moving_open_loop: {'did not lift it': 2, 'grasp not confirmed by both finger contact sensors': 1}; no_velocity_feedforward: {'align took too long': 6}; nudge_open_loop: {'grasp not confirmed by both finger contact sensors': 6}.
+Failure counts: noise_3: {'did not lift it': 1}; noise_6: {'grasp not confirmed by both finger contact sensors': 7}; noise_10: {'align took too long': 14, 'grasp not confirmed by both finger contact sensors': 1}; parked_open_loop: {'grasp not confirmed by both finger contact sensors': 7, 'descend took too long': 4, 'did not lift it': 1}; moving_open_loop: {'descend took too long': 4, 'did not lift it': 2, 'grasp not confirmed by both finger contact sensors': 6}; no_velocity_feedforward: {'align took too long': 15}; nudge_open_loop: {'descend took too long': 4, 'grasp not confirmed by both finger contact sensors': 9, 'did not lift it': 2}.
 
-**Held-out confidence-policy comparison: pending a completed graphics-enabled run.**
+### Held-out confidence-policy comparison
+
+Split: `held_out`. Seeds: 1000–1029. Errors below use all attempts with a defined measurement, including failures.
+
+| Condition | Sustained lifts | 95% Wilson interval | Grasp error, all defined attempts [mm] | Cycle time, all attempts [s] |
+| --- | ---: | --- | ---: | ---: |
+| nominal_baseline | 30/30 | 88.6–100.0% | 4.38 | 11.48 |
+| nominal_confidence | 0/30 | 0.0–11.4% | — | 8.81 |
+| nudge_baseline | 30/30 | 88.6–100.0% | 4.44 | 11.56 |
+| nudge_confidence | 0/30 | 0.0–11.4% | — | 8.90 |
+| noise6_baseline | 18/30 | 42.3–75.4% | 21.91 | 11.79 |
+| noise6_confidence | 0/30 | 0.0–11.4% | — | 9.68 |
+
+[Raw records, settings and provenance](results/runs/heldout-confidence-20261106T114113Z-424290000/study.json). NPZ time histories regenerate with the same command and are retained locally.
+
+![Success and sample uncertainty](results/runs/heldout-confidence-20261106T114113Z-424290000/success.png)
+
+Failure counts: nominal_confidence: {'grasp aborted: target uncertainty or stale vision': 30}; nudge_confidence: {'grasp aborted: target uncertainty or stale vision': 30}; noise6_baseline: {'grasp not confirmed by both finger contact sensors': 12}; noise6_confidence: {'grasp aborted: target uncertainty or stale vision': 29, 'descend took too long': 1}.
 
 ### Held-out calibration
 
@@ -145,7 +160,7 @@ Held-out reprojection RMS: **0.074 px**. Fixed-board scatter RMS: **0.064 mm**.
 
 At the reported operating point, controllability and observability ranks are **12/12** and **12/12**. This is a local smooth-model result; contacts and saturation are outside that proof.
 
-On the Part C seed-0 development trial, velocity RMSE was **39.65 mrad/s** for the observer versus **363.40 mrad/s** for encoder differencing. Mean time-aligned joint NEES was **1.393** for the three-state per-joint filter. A mean below 3 suggests conservative uncertainty on this trial; it is not a multi-trial consistency proof.
+On the Part C seed-0 development trial, velocity RMSE was **39.60 mrad/s** for the observer versus **362.18 mrad/s** for encoder differencing. Mean time-aligned joint NEES was **1.392** for the angle and velocity states checked by the per-joint filter (reference value: 2). A mean below 2 suggests conservative uncertainty on this trial; it is not a multi-trial consistency proof.
 
 The Part D trial recorded peak joint torque **23.33 Nm**. LQR gains are kp=941.78, kd=57.47. The weight sweep is a compensated double-integrator analysis, not repeated nonlinear robot trials.
 
@@ -169,7 +184,8 @@ The robustness suite also injects a 2 mm calibration-mount error and a 2% depth-
 ## Five-minute demonstration video
 
 <!-- VIDEO:START -->
-Video link pending upload.
+[Watch the demonstration](https://youtu.be/rQuGVwgUpcU)
+
 <!-- Paste your YouTube URL here once uploaded, and state the code/results revision shown. -->
 <!-- VIDEO:END -->
 
@@ -178,11 +194,12 @@ Video link pending upload.
 <!-- CONTRIBUTIONS:START -->
 | Member | Actual contribution |
 | --- | --- |
-| | |
+| Pranava | Parts A and B; collaborated with Ryan on Part E and the demonstration video. |
+| Ryan | Parts C and D; collaborated with Pranava on Part E and the demonstration video. |
 <!-- CONTRIBUTIONS:END -->
 
 ## Generative AI declaration
 
 <!-- AI:START -->
-
+OpenAI’s ChatGPT was used to explain the content and theory, improve understanding of the task, assist with debugging and provide guidance in complex situations. 
 <!-- AI:END -->

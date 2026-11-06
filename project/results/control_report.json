@@ -12,8 +12,8 @@
     "grasp_policy": "baseline",
     "contact_confirmed": true,
     "hold_samples": 250,
-    "min_hold_lift_m": 0.14093964153955355,
-    "max_hold_tcp_distance_m": 0.018627063933972055,
+    "min_hold_lift_m": 0.1408787327197231,
+    "max_hold_tcp_distance_m": 0.0191198211205485,
     "calibration_mode": "measured",
     "settings": {
       "noise_scale": 1.0,
@@ -28,25 +28,25 @@
       "mount_error_mm": 0.0,
       "depth_scale": 1.0
     },
-    "time_s": 11.522000000000517,
-    "lift_m": 0.14106976283829423,
+    "time_s": 11.524000000000518,
+    "lift_m": 0.14101458236840117,
     "frames_used": 62,
     "frames_rejected": 0,
     "frames_blind": 26,
     "filter_resets": 0,
-    "grasp_error_mm": 1.664896210601971,
-    "object_error_mm": 1.8267497669284647,
-    "object_yaw_error_deg": 0.8400417243107536,
-    "object_speed_mm_s": 34.60878661666438,
-    "object_speed_error_mm_s": 0.6511514561971516,
-    "tracking_rms_mrad": 0.3775483512360484,
-    "kf_qd_rmse_mrad_s": 39.64691473018472,
-    "nees_mean": 1.392545001015168,
-    "torque_rms": 4.733715198523073,
-    "history_file": "runs/pick-20261106T112218Z-722555000/seed_00000.npz",
-    "history_sha256": "dad51dc59b476d0a472573466d40c9a86d2fa29c0371f177dc81b92525af4f7a",
+    "grasp_error_mm": 2.7608128472698388,
+    "object_error_mm": 2.829151085805897,
+    "object_yaw_error_deg": 6.154275752418014,
+    "object_speed_mm_s": 34.60865177688887,
+    "object_speed_error_mm_s": 1.2416769620312513,
+    "tracking_rms_mrad": 0.37876334184097515,
+    "kf_qd_rmse_mrad_s": 39.595176252504544,
+    "nees_mean": 1.3915748357912796,
+    "torque_rms": 4.741141292438944,
+    "history_file": "runs/pick-20261106T113029Z-166863000/seed_00000.npz",
+    "history_sha256": "68cc59534208ec229abb4eb99457dbd33f4289797b5f446bb3b1d1e485f428fe",
     "provenance": {
-      "utc": "2026-11-06T11:22:18.814346+00:00",
+      "utc": "2026-11-06T11:30:29.254576+00:00",
       "python": "3.12.10",
       "versions": {
         "mujoco": "3.15.0",
@@ -57,8 +57,8 @@
         "matplotlib": "3.11.2",
         "imageio": "2.38.1"
       },
-      "git_commit": "d8ee399f8b09756597920a3d7261191581e5dff1",
-      "git_status": "M .gitignore\n M README.md\n M project/README.md\n M project/assets/ur3/dae_to_obj.py\n M project/make_video.py\n M project/part_a_model.py\n M project/part_b_sensing.py\n M project/part_c_estimation.py\n M project/part_d_control.py\n M project/part_e_robustness.py\n M project/requirements.txt\n D project/results/demo_noise.mp4\n D project/results/demo_nominal.mp4\n D project/results/demo_nudge.mp4\n D project/results/demo_open_loop.mp4\n M project/results/part_b_noise.png\n M project/results/part_c_object.png\n M project/results/part_c_observer.png\n M project/results/part_c_velocity.png\n D project/results/part_d_servo.png\n D project/results/part_d_tracking.png\n D project/results/part_e_spread.png\n D project/results/part_e_success.png\n M project/run_all.py\n M project/trackb.py\n M project/watch.py\n?? docs/SUBMISSION_EDITING.md\n?? project/evidence.py\n?? project/results/calibration_report.json\n?? project/results/estimation_report.json\n?? project/results/execution/\n?? project/results/legacy_before_review/\n?? project/results/model_matrices.npz\n?? project/results/model_report.json\n?? project/results/noise_report.json\n?? project/results/runs/\n?? project/results/validation.json\n?? project/tests.py\n?? project/update_project_page.py",
+      "git_commit": "71addbc891415d142865535c0d637c275cbd0167",
+      "git_status": "M project/results/calibration_report.json\n M project/results/estimation_report.json\n M project/results/execution/part_c_estimation_.log\n M project/results/execution/tests_.log\n M project/results/model_report.json\n M project/results/noise_report.json\n M project/results/part_c_object.png\n M project/results/part_c_observer.png\n M project/results/part_c_velocity.png\n?? project/results/runs/pick-20261106T113010Z-704965000/\n?? project/results/runs/pick-20261106T113014Z-165212000/\n?? project/results/runs/pick-20261106T113016Z-868883000/\n?? project/results/runs/pick-20261106T113019Z-534559000/\n?? project/results/runs/pick-20261106T113022Z-272751000/\n?? project/results/runs/pick-20261106T113024Z-989888000/",
       "source_sha256": {
         "evidence.py": "30ac13df1f767b2fde03b7139abe23b87d0d097fd14dfac7b19a450e729f996f",
         "make_video.py": "48214cabeb26cf4da61416c7e805b67c0fb792adf81faaf0bc1a4f8e9a3aa4a7",
@@ -66,17 +66,17 @@
         "part_b_sensing.py": "53008d9c96b6b06fed5d4ad15a82c0538379fc81e2114bcb1c69cae510256ddc",
         "part_c_estimation.py": "3eb096502e6ef1bf9d4e76ca3022dd73ed8e7abd9dbb20055619e2a8f1e22b88",
         "part_d_control.py": "51758909745b219226776987365fba7b414c043855ff884468bb41f7eae89ad7",
-        "part_e_robustness.py": "f437889f1decca7b463aae7290cdb47feab45571b2d24167bd829d4761ae6f2a",
+        "part_e_robustness.py": "0aeab05c6c98c1cda0dcb66124a480e975c10766379b6c3974ba48fe424e1d52",
         "run_all.py": "9e40cad995c645acabf876f3a723cce6bcffad3b654c5058788b72add4686002",
         "tests.py": "e79f681227704f9edcfae4b7e765530e9a134072ecfe1f597d11aab45932ec11",
         "trackb.py": "86ebfa29fd8116adac9267ce5bac015f4b17af81c9667af8942aa2392afb2bda",
-        "update_project_page.py": "8531abe08acca352270ccb41bfd4c6407ee1a302d42a84dd79acf0e09298920b",
+        "update_project_page.py": "dba57c509f1cf7f343a38382ff59757b8fddd4ea66142be7d3d35efe9794f55f",
         "watch.py": "e80a92cfb9d0b013603e74431550009bf27cf6b21fa19a7aca9d9f13a093c3cd",
         "ur3_pick_scene.xml": "c4cee18d468a531a82f8cf78ee49e6d060d0805fd0dc6eebe46933086539b782",
         "requirements.txt": "28092adb90d664d0369709b0e410f34798f5a96a6adbae4d3d0720cbf318c6ab"
       },
-      "calibration_sha256": "0abdbeda1dc21d4c70943985300054c96e758ccfcaf1d5340a4aaed8e3eefb9f",
-      "noise_model_sha256": "85b6626f9aca6ddf7f956a594bf9c5bfb4fd61cde22cc95262d1e250b251f65e"
+      "calibration_sha256": "b8db3fa1138db364ec2eed78d38b6569ad2b6a8cbdf0b211cc2e00e06c693adc",
+      "noise_model_sha256": "88ed525aec57fc5603a85f7554c9e978a54b41d55b214cf957a0b88d38e1c457"
     }
   },
   "lqr_kp": 941.7780228268576,
@@ -126,7 +126,7 @@
   "sweep_scope": "compensated double integrator; not six nonlinear robot sweeps",
   "peak_torque_nm": 23.330666739799543,
   "provenance": {
-    "utc": "2026-11-06T11:22:19.186301+00:00",
+    "utc": "2026-11-06T11:30:29.609020+00:00",
     "python": "3.12.10",
     "versions": {
       "mujoco": "3.15.0",
@@ -137,8 +137,8 @@
       "matplotlib": "3.11.2",
       "imageio": "2.38.1"
     },
-    "git_commit": "d8ee399f8b09756597920a3d7261191581e5dff1",
-    "git_status": "M .gitignore\n M README.md\n M project/README.md\n M project/assets/ur3/dae_to_obj.py\n M project/make_video.py\n M project/part_a_model.py\n M project/part_b_sensing.py\n M project/part_c_estimation.py\n M project/part_d_control.py\n M project/part_e_robustness.py\n M project/requirements.txt\n D project/results/demo_noise.mp4\n D project/results/demo_nominal.mp4\n D project/results/demo_nudge.mp4\n D project/results/demo_open_loop.mp4\n M project/results/part_b_noise.png\n M project/results/part_c_object.png\n M project/results/part_c_observer.png\n M project/results/part_c_velocity.png\n M project/results/part_d_servo.png\n M project/results/part_d_tracking.png\n D project/results/part_e_spread.png\n D project/results/part_e_success.png\n M project/run_all.py\n M project/trackb.py\n M project/watch.py\n?? docs/SUBMISSION_EDITING.md\n?? project/evidence.py\n?? project/results/calibration_report.json\n?? project/results/estimation_report.json\n?? project/results/execution/\n?? project/results/legacy_before_review/\n?? project/results/model_matrices.npz\n?? project/results/model_report.json\n?? project/results/noise_report.json\n?? project/results/runs/\n?? project/results/validation.json\n?? project/tests.py\n?? project/update_project_page.py",
+    "git_commit": "71addbc891415d142865535c0d637c275cbd0167",
+    "git_status": "M project/results/calibration_report.json\n M project/results/estimation_report.json\n M project/results/execution/part_c_estimation_.log\n M project/results/execution/tests_.log\n M project/results/model_report.json\n M project/results/noise_report.json\n M project/results/part_c_object.png\n M project/results/part_c_observer.png\n M project/results/part_c_velocity.png\n M project/results/part_d_servo.png\n M project/results/part_d_tracking.png\n?? project/results/runs/pick-20261106T113010Z-704965000/\n?? project/results/runs/pick-20261106T113014Z-165212000/\n?? project/results/runs/pick-20261106T113016Z-868883000/\n?? project/results/runs/pick-20261106T113019Z-534559000/\n?? project/results/runs/pick-20261106T113022Z-272751000/\n?? project/results/runs/pick-20261106T113024Z-989888000/\n?? project/results/runs/pick-20261106T113029Z-166863000/",
     "source_sha256": {
       "evidence.py": "30ac13df1f767b2fde03b7139abe23b87d0d097fd14dfac7b19a450e729f996f",
       "make_video.py": "48214cabeb26cf4da61416c7e805b67c0fb792adf81faaf0bc1a4f8e9a3aa4a7",
@@ -146,16 +146,16 @@
       "part_b_sensing.py": "53008d9c96b6b06fed5d4ad15a82c0538379fc81e2114bcb1c69cae510256ddc",
       "part_c_estimation.py": "3eb096502e6ef1bf9d4e76ca3022dd73ed8e7abd9dbb20055619e2a8f1e22b88",
       "part_d_control.py": "51758909745b219226776987365fba7b414c043855ff884468bb41f7eae89ad7",
-      "part_e_robustness.py": "f437889f1decca7b463aae7290cdb47feab45571b2d24167bd829d4761ae6f2a",
+      "part_e_robustness.py": "0aeab05c6c98c1cda0dcb66124a480e975c10766379b6c3974ba48fe424e1d52",
       "run_all.py": "9e40cad995c645acabf876f3a723cce6bcffad3b654c5058788b72add4686002",
       "tests.py": "e79f681227704f9edcfae4b7e765530e9a134072ecfe1f597d11aab45932ec11",
       "trackb.py": "86ebfa29fd8116adac9267ce5bac015f4b17af81c9667af8942aa2392afb2bda",
-      "update_project_page.py": "8531abe08acca352270ccb41bfd4c6407ee1a302d42a84dd79acf0e09298920b",
+      "update_project_page.py": "dba57c509f1cf7f343a38382ff59757b8fddd4ea66142be7d3d35efe9794f55f",
       "watch.py": "e80a92cfb9d0b013603e74431550009bf27cf6b21fa19a7aca9d9f13a093c3cd",
       "ur3_pick_scene.xml": "c4cee18d468a531a82f8cf78ee49e6d060d0805fd0dc6eebe46933086539b782",
       "requirements.txt": "28092adb90d664d0369709b0e410f34798f5a96a6adbae4d3d0720cbf318c6ab"
     },
-    "calibration_sha256": "0abdbeda1dc21d4c70943985300054c96e758ccfcaf1d5340a4aaed8e3eefb9f",
-    "noise_model_sha256": "85b6626f9aca6ddf7f956a594bf9c5bfb4fd61cde22cc95262d1e250b251f65e"
+    "calibration_sha256": "b8db3fa1138db364ec2eed78d38b6569ad2b6a8cbdf0b211cc2e00e06c693adc",
+    "noise_model_sha256": "88ed525aec57fc5603a85f7554c9e978a54b41d55b214cf957a0b88d38e1c457"
   }
 }

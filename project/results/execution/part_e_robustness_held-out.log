@@ -1,0 +1,258 @@
+WARNING: ARB_clip_control unavailable while mjDEPTH_ZEROFAR requested, depth accuracy will be limited
+
+nominal 1000 PASS picked it up
+nominal 1001 PASS picked it up
+nominal 1002 PASS picked it up
+nominal 1003 PASS picked it up
+nominal 1004 PASS picked it up
+nominal 1005 PASS picked it up
+nominal 1006 PASS picked it up
+nominal 1007 PASS picked it up
+nominal 1008 PASS picked it up
+nominal 1009 PASS picked it up
+nominal 1010 PASS picked it up
+nominal 1011 PASS picked it up
+nominal 1012 PASS picked it up
+nominal 1013 PASS picked it up
+nominal 1014 PASS picked it up
+noise_3 1000 FAIL did not lift it
+noise_3 1001 PASS picked it up
+noise_3 1002 PASS picked it up
+noise_3 1003 PASS picked it up
+noise_3 1004 PASS picked it up
+noise_3 1005 PASS picked it up
+noise_3 1006 PASS picked it up
+noise_3 1007 PASS picked it up
+noise_3 1008 PASS picked it up
+noise_3 1009 PASS picked it up
+noise_3 1010 PASS picked it up
+noise_3 1011 PASS picked it up
+noise_3 1012 PASS picked it up
+noise_3 1013 PASS picked it up
+noise_3 1014 PASS picked it up
+noise_6 1000 FAIL grasp not confirmed by both finger contact sensors
+noise_6 1001 PASS picked it up
+noise_6 1002 PASS picked it up
+noise_6 1003 PASS picked it up
+noise_6 1004 PASS picked it up
+noise_6 1005 PASS picked it up
+noise_6 1006 FAIL grasp not confirmed by both finger contact sensors
+noise_6 1007 FAIL grasp not confirmed by both finger contact sensors
+noise_6 1008 FAIL grasp not confirmed by both finger contact sensors
+noise_6 1009 PASS picked it up
+noise_6 1010 PASS picked it up
+noise_6 1011 PASS picked it up
+noise_6 1012 FAIL grasp not confirmed by both finger contact sensors
+noise_6 1013 FAIL grasp not confirmed by both finger contact sensors
+noise_6 1014 FAIL grasp not confirmed by both finger contact sensors
+noise_10 1000 FAIL align took too long
+noise_10 1001 FAIL align took too long
+noise_10 1002 FAIL align took too long
+noise_10 1003 FAIL align took too long
+noise_10 1004 FAIL align took too long
+noise_10 1005 FAIL align took too long
+noise_10 1006 FAIL align took too long
+noise_10 1007 FAIL align took too long
+noise_10 1008 FAIL align took too long
+noise_10 1009 FAIL align took too long
+noise_10 1010 FAIL align took too long
+noise_10 1011 FAIL grasp not confirmed by both finger contact sensors
+noise_10 1012 FAIL align took too long
+noise_10 1013 FAIL align took too long
+noise_10 1014 FAIL align took too long
+forearm_push_40N 1000 PASS picked it up
+forearm_push_40N 1001 PASS picked it up
+forearm_push_40N 1002 PASS picked it up
+forearm_push_40N 1003 PASS picked it up
+forearm_push_40N 1004 PASS picked it up
+forearm_push_40N 1005 PASS picked it up
+forearm_push_40N 1006 PASS picked it up
+forearm_push_40N 1007 PASS picked it up
+forearm_push_40N 1008 PASS picked it up
+forearm_push_40N 1009 PASS picked it up
+forearm_push_40N 1010 PASS picked it up
+forearm_push_40N 1011 PASS picked it up
+forearm_push_40N 1012 PASS picked it up
+forearm_push_40N 1013 PASS picked it up
+forearm_push_40N 1014 PASS picked it up
+forearm_push_120N 1000 PASS picked it up
+forearm_push_120N 1001 PASS picked it up
+forearm_push_120N 1002 PASS picked it up
+forearm_push_120N 1003 PASS picked it up
+forearm_push_120N 1004 PASS picked it up
+forearm_push_120N 1005 PASS picked it up
+forearm_push_120N 1006 PASS picked it up
+forearm_push_120N 1007 PASS picked it up
+forearm_push_120N 1008 PASS picked it up
+forearm_push_120N 1009 PASS picked it up
+forearm_push_120N 1010 PASS picked it up
+forearm_push_120N 1011 PASS picked it up
+forearm_push_120N 1012 PASS picked it up
+forearm_push_120N 1013 PASS picked it up
+forearm_push_120N 1014 PASS picked it up
+nudge_dx_3cm 1000 PASS picked it up
+nudge_dx_3cm 1001 PASS picked it up
+nudge_dx_3cm 1002 PASS picked it up
+nudge_dx_3cm 1003 PASS picked it up
+nudge_dx_3cm 1004 PASS picked it up
+nudge_dx_3cm 1005 PASS picked it up
+nudge_dx_3cm 1006 PASS picked it up
+nudge_dx_3cm 1007 PASS picked it up
+nudge_dx_3cm 1008 PASS picked it up
+nudge_dx_3cm 1009 PASS picked it up
+nudge_dx_3cm 1010 PASS picked it up
+nudge_dx_3cm 1011 PASS picked it up
+nudge_dx_3cm 1012 PASS picked it up
+nudge_dx_3cm 1013 PASS picked it up
+nudge_dx_3cm 1014 PASS picked it up
+nudge_dx_6cm 1000 PASS picked it up
+nudge_dx_6cm 1001 PASS picked it up
+nudge_dx_6cm 1002 PASS picked it up
+nudge_dx_6cm 1003 PASS picked it up
+nudge_dx_6cm 1004 PASS picked it up
+nudge_dx_6cm 1005 PASS picked it up
+nudge_dx_6cm 1006 PASS picked it up
+nudge_dx_6cm 1007 PASS picked it up
+nudge_dx_6cm 1008 PASS picked it up
+nudge_dx_6cm 1009 PASS picked it up
+nudge_dx_6cm 1010 PASS picked it up
+nudge_dx_6cm 1011 PASS picked it up
+nudge_dx_6cm 1012 PASS picked it up
+nudge_dx_6cm 1013 PASS picked it up
+nudge_dx_6cm 1014 PASS picked it up
+payload_0.5kg 1000 PASS picked it up
+payload_0.5kg 1001 PASS picked it up
+payload_0.5kg 1002 PASS picked it up
+payload_0.5kg 1003 PASS picked it up
+payload_0.5kg 1004 PASS picked it up
+payload_0.5kg 1005 PASS picked it up
+payload_0.5kg 1006 PASS picked it up
+payload_0.5kg 1007 PASS picked it up
+payload_0.5kg 1008 PASS picked it up
+payload_0.5kg 1009 PASS picked it up
+payload_0.5kg 1010 PASS picked it up
+payload_0.5kg 1011 PASS picked it up
+payload_0.5kg 1012 PASS picked it up
+payload_0.5kg 1013 PASS picked it up
+payload_0.5kg 1014 PASS picked it up
+payload_2.0kg 1000 PASS picked it up
+payload_2.0kg 1001 PASS picked it up
+payload_2.0kg 1002 PASS picked it up
+payload_2.0kg 1003 PASS picked it up
+payload_2.0kg 1004 PASS picked it up
+payload_2.0kg 1005 PASS picked it up
+payload_2.0kg 1006 PASS picked it up
+payload_2.0kg 1007 PASS picked it up
+payload_2.0kg 1008 PASS picked it up
+payload_2.0kg 1009 PASS picked it up
+payload_2.0kg 1010 PASS picked it up
+payload_2.0kg 1011 PASS picked it up
+payload_2.0kg 1012 PASS picked it up
+payload_2.0kg 1013 PASS picked it up
+payload_2.0kg 1014 PASS picked it up
+mount_error_2mm 1000 PASS picked it up
+mount_error_2mm 1001 PASS picked it up
+mount_error_2mm 1002 PASS picked it up
+mount_error_2mm 1003 PASS picked it up
+mount_error_2mm 1004 PASS picked it up
+mount_error_2mm 1005 PASS picked it up
+mount_error_2mm 1006 PASS picked it up
+mount_error_2mm 1007 PASS picked it up
+mount_error_2mm 1008 PASS picked it up
+mount_error_2mm 1009 PASS picked it up
+mount_error_2mm 1010 PASS picked it up
+mount_error_2mm 1011 PASS picked it up
+mount_error_2mm 1012 PASS picked it up
+mount_error_2mm 1013 PASS picked it up
+mount_error_2mm 1014 PASS picked it up
+depth_scale_1p02 1000 PASS picked it up
+depth_scale_1p02 1001 PASS picked it up
+depth_scale_1p02 1002 PASS picked it up
+depth_scale_1p02 1003 PASS picked it up
+depth_scale_1p02 1004 PASS picked it up
+depth_scale_1p02 1005 PASS picked it up
+depth_scale_1p02 1006 PASS picked it up
+depth_scale_1p02 1007 PASS picked it up
+depth_scale_1p02 1008 PASS picked it up
+depth_scale_1p02 1009 PASS picked it up
+depth_scale_1p02 1010 PASS picked it up
+depth_scale_1p02 1011 PASS picked it up
+depth_scale_1p02 1012 PASS picked it up
+depth_scale_1p02 1013 PASS picked it up
+depth_scale_1p02 1014 PASS picked it up
+parked_open_loop 1000 FAIL grasp not confirmed by both finger contact sensors
+parked_open_loop 1001 PASS picked it up
+parked_open_loop 1002 FAIL descend took too long
+parked_open_loop 1003 FAIL grasp not confirmed by both finger contact sensors
+parked_open_loop 1004 FAIL descend took too long
+parked_open_loop 1005 PASS picked it up
+parked_open_loop 1006 FAIL did not lift it
+parked_open_loop 1007 FAIL descend took too long
+parked_open_loop 1008 FAIL grasp not confirmed by both finger contact sensors
+parked_open_loop 1009 FAIL grasp not confirmed by both finger contact sensors
+parked_open_loop 1010 FAIL grasp not confirmed by both finger contact sensors
+parked_open_loop 1011 PASS picked it up
+parked_open_loop 1012 FAIL grasp not confirmed by both finger contact sensors
+parked_open_loop 1013 FAIL grasp not confirmed by both finger contact sensors
+parked_open_loop 1014 FAIL descend took too long
+moving_open_loop 1000 FAIL descend took too long
+moving_open_loop 1001 PASS picked it up
+moving_open_loop 1002 FAIL descend took too long
+moving_open_loop 1003 PASS picked it up
+moving_open_loop 1004 FAIL did not lift it
+moving_open_loop 1005 FAIL grasp not confirmed by both finger contact sensors
+moving_open_loop 1006 FAIL grasp not confirmed by both finger contact sensors
+moving_open_loop 1007 FAIL grasp not confirmed by both finger contact sensors
+moving_open_loop 1008 FAIL did not lift it
+moving_open_loop 1009 FAIL grasp not confirmed by both finger contact sensors
+moving_open_loop 1010 PASS picked it up
+moving_open_loop 1011 FAIL descend took too long
+moving_open_loop 1012 FAIL descend took too long
+moving_open_loop 1013 FAIL grasp not confirmed by both finger contact sensors
+moving_open_loop 1014 FAIL grasp not confirmed by both finger contact sensors
+no_velocity_feedforward 1000 FAIL align took too long
+no_velocity_feedforward 1001 FAIL align took too long
+no_velocity_feedforward 1002 FAIL align took too long
+no_velocity_feedforward 1003 FAIL align took too long
+no_velocity_feedforward 1004 FAIL align took too long
+no_velocity_feedforward 1005 FAIL align took too long
+no_velocity_feedforward 1006 FAIL align took too long
+no_velocity_feedforward 1007 FAIL align took too long
+no_velocity_feedforward 1008 FAIL align took too long
+no_velocity_feedforward 1009 FAIL align took too long
+no_velocity_feedforward 1010 FAIL align took too long
+no_velocity_feedforward 1011 FAIL align took too long
+no_velocity_feedforward 1012 FAIL align took too long
+no_velocity_feedforward 1013 FAIL align took too long
+no_velocity_feedforward 1014 FAIL align took too long
+nudge_closed_loop 1000 PASS picked it up
+nudge_closed_loop 1001 PASS picked it up
+nudge_closed_loop 1002 PASS picked it up
+nudge_closed_loop 1003 PASS picked it up
+nudge_closed_loop 1004 PASS picked it up
+nudge_closed_loop 1005 PASS picked it up
+nudge_closed_loop 1006 PASS picked it up
+nudge_closed_loop 1007 PASS picked it up
+nudge_closed_loop 1008 PASS picked it up
+nudge_closed_loop 1009 PASS picked it up
+nudge_closed_loop 1010 PASS picked it up
+nudge_closed_loop 1011 PASS picked it up
+nudge_closed_loop 1012 PASS picked it up
+nudge_closed_loop 1013 PASS picked it up
+nudge_closed_loop 1014 PASS picked it up
+nudge_open_loop 1000 FAIL descend took too long
+nudge_open_loop 1001 FAIL grasp not confirmed by both finger contact sensors
+nudge_open_loop 1002 FAIL descend took too long
+nudge_open_loop 1003 FAIL grasp not confirmed by both finger contact sensors
+nudge_open_loop 1004 FAIL grasp not confirmed by both finger contact sensors
+nudge_open_loop 1005 FAIL grasp not confirmed by both finger contact sensors
+nudge_open_loop 1006 FAIL grasp not confirmed by both finger contact sensors
+nudge_open_loop 1007 FAIL grasp not confirmed by both finger contact sensors
+nudge_open_loop 1008 FAIL did not lift it
+nudge_open_loop 1009 FAIL grasp not confirmed by both finger contact sensors
+nudge_open_loop 1010 FAIL grasp not confirmed by both finger contact sensors
+nudge_open_loop 1011 FAIL descend took too long
+nudge_open_loop 1012 FAIL descend took too long
+nudge_open_loop 1013 FAIL grasp not confirmed by both finger contact sensors
+nudge_open_loop 1014 FAIL did not lift it
+Saved reproducible study: /Users/pranavachalla/Desktop/S&C/Assessment4/project/results/runs/heldout-20261106T113030Z-428753000

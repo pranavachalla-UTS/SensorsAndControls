@@ -1,0 +1,83 @@
+{
+  "seed": 1006,
+  "success": false,
+  "reason": "grasp not confirmed by both finger contact sensors",
+  "block_xy": [
+    -0.07830361808271542,
+    0.24
+  ],
+  "block_speed": 0.035,
+  "looks_used": 1,
+  "grasp_policy": "baseline",
+  "contact_confirmed": false,
+  "hold_samples": 0,
+  "min_hold_lift_m": null,
+  "max_hold_tcp_distance_m": null,
+  "calibration_mode": "measured",
+  "settings": {
+    "noise_scale": 1.0,
+    "payload_kg": 0.0,
+    "nudge_m": [
+      0.04,
+      -0.03
+    ],
+    "push_n": null,
+    "block_speed_m_s": 0.035,
+    "open_loop": true,
+    "observer_tuning": null,
+    "use_d_feedforward": true,
+    "use_v_feedforward": true,
+    "mount_error_mm": 0.0,
+    "depth_scale": 1.0
+  },
+  "time_s": 9.974,
+  "lift_m": -3.694386268602787e-05,
+  "frames_used": 3,
+  "frames_rejected": 0,
+  "frames_blind": 0,
+  "filter_resets": 0,
+  "grasp_error_mm": 76.30349079048442,
+  "object_error_mm": 77.21504920331262,
+  "object_yaw_error_deg": 1.018221758449625,
+  "object_speed_mm_s": 34.60918200797323,
+  "object_speed_error_mm_s": 5.153935862326605,
+  "tracking_rms_mrad": 1.300393909349437,
+  "kf_qd_rmse_mrad_s": 40.006141746204506,
+  "nees_mean": 1.4240070863508618,
+  "torque_rms": 5.191248984037383,
+  "history_file": "runs/heldout-20261106T113030Z-428753000/nudge_open_loop/seed_01006.npz",
+  "history_sha256": "3040b3cfcfcc545dbaabacdf0f00fa5be6d95860117c4e2ad84556a43129f208",
+  "provenance": {
+    "utc": "2026-11-06T11:41:04.246907+00:00",
+    "python": "3.12.10",
+    "versions": {
+      "mujoco": "3.15.0",
+      "numpy": "2.4.6",
+      "opencv-python": "4.14.0.94",
+      "roboticstoolbox-python": "1.4.4",
+      "control": "0.10.2",
+      "matplotlib": "3.11.2",
+      "imageio": "2.38.1"
+    },
+    "git_commit": "71addbc891415d142865535c0d637c275cbd0167",
+    "git_status": "M project/results/calibration_report.json\n M project/results/control_report.json\n M project/results/estimation_report.json\n M project/results/execution/part_c_estimation_.log\n M project/results/execution/part_d_control_.log\n M project/results/execution/tests_.log\n M project/results/model_report.json\n M project/results/noise_report.json\n M project/results/part_c_object.png\n M project/results/part_c_observer.png\n M project/results/part_c_velocity.png\n M project/results/part_d_servo.png\n M project/results/part_d_tracking.png\n?? project/results/runs/heldout-20261106T113030Z-428753000/\n?? project/results/runs/pick-20261106T113010Z-704965000/\n?? project/results/runs/pick-20261106T113014Z-165212000/\n?? project/results/runs/pick-20261106T113016Z-868883000/\n?? project/results/runs/pick-20261106T113019Z-534559000/\n?? project/results/runs/pick-20261106T113022Z-272751000/\n?? project/results/runs/pick-20261106T113024Z-989888000/\n?? project/results/runs/pick-20261106T113029Z-166863000/",
+    "source_sha256": {
+      "evidence.py": "30ac13df1f767b2fde03b7139abe23b87d0d097fd14dfac7b19a450e729f996f",
+      "make_video.py": "48214cabeb26cf4da61416c7e805b67c0fb792adf81faaf0bc1a4f8e9a3aa4a7",
+      "part_a_model.py": "6aa0884347e3cd79b434e2b869c7d574989d2066def6a0cd0b6c6857c1d6d5a5",
+      "part_b_sensing.py": "53008d9c96b6b06fed5d4ad15a82c0538379fc81e2114bcb1c69cae510256ddc",
+      "part_c_estimation.py": "3eb096502e6ef1bf9d4e76ca3022dd73ed8e7abd9dbb20055619e2a8f1e22b88",
+      "part_d_control.py": "51758909745b219226776987365fba7b414c043855ff884468bb41f7eae89ad7",
+      "part_e_robustness.py": "0aeab05c6c98c1cda0dcb66124a480e975c10766379b6c3974ba48fe424e1d52",
+      "run_all.py": "9e40cad995c645acabf876f3a723cce6bcffad3b654c5058788b72add4686002",
+      "tests.py": "e79f681227704f9edcfae4b7e765530e9a134072ecfe1f597d11aab45932ec11",
+      "trackb.py": "86ebfa29fd8116adac9267ce5bac015f4b17af81c9667af8942aa2392afb2bda",
+      "update_project_page.py": "dba57c509f1cf7f343a38382ff59757b8fddd4ea66142be7d3d35efe9794f55f",
+      "watch.py": "e80a92cfb9d0b013603e74431550009bf27cf6b21fa19a7aca9d9f13a093c3cd",
+      "ur3_pick_scene.xml": "c4cee18d468a531a82f8cf78ee49e6d060d0805fd0dc6eebe46933086539b782",
+      "requirements.txt": "28092adb90d664d0369709b0e410f34798f5a96a6adbae4d3d0720cbf318c6ab"
+    },
+    "calibration_sha256": "b8db3fa1138db364ec2eed78d38b6569ad2b6a8cbdf0b211cc2e00e06c693adc",
+    "noise_model_sha256": "88ed525aec57fc5603a85f7554c9e978a54b41d55b214cf957a0b88d38e1c457"
+  }
+}
