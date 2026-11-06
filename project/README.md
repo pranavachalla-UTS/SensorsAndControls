@@ -11,7 +11,7 @@ Tracking a moving target is what makes the estimation earn its keep. The camera
 reports a pose and nothing else, so the block's velocity is never measured —
 the object filter infers it from how the pose changes, and the controller feeds
 it forward to intercept the block instead of trailing behind it. Turn that one
-term off and the success rate goes from 12/12 to 0/12: the tool settles a
+term off and the success rate goes from 15/15 to 0/15: the tool settles a
 steady `speed / gain` ≈ 14 mm behind a block only 30 mm wide, never gets inside
 the 3 mm grasp tolerance, and the grasp never fires.
 
@@ -28,7 +28,7 @@ the camera.
 | Estimators | Kalman filter per joint on `[q, q̇, d]`; constant-velocity Kalman filter on the block's `[pose, velocity]` |
 | Controller | Computed torque + LQR at 500 Hz, steered by PBVS with velocity feedforward |
 | Target | Red block on a belt at 35 mm/s, heading redrawn each trial |
-| Nominal result | 12/12 picks, grasp error 4.9 ± 2.5 mm, cycle 10.9 s |
+| Nominal result | 15/15 picks, grasp error 3.9 ± 2.4 mm, cycle 11.0 s |
 
 ---
 
@@ -47,11 +47,48 @@ python part_b_sensing.py       # camera calibration + how accurate it really is
 python part_c_estimation.py    # the two Kalman filters
 python part_d_control.py       # computed torque, LQR, visual servoing
 python part_e_robustness.py    # repeated trials and disturbances  (~6 min)
-python make_video.py           # renders a demo video
+python make_video.py           # renders a demo clip (see flags below)
 ```
 
 `python part_e_robustness.py --quick` runs fewer trials if you just want to see
-it work.
+it work. `python run_all.py` runs everything in order, about 10 minutes.
+
+### Demo clips
+
+`make_video.py` renders one pick with the scene on the left and, on the right,
+the object filter's estimate with its 1σ uncertainty beside the true state, the
+inferred block speed beside the true speed, the joint estimate the controller is
+actually running on, and the commanded torque against each motor's limit.
+
+```bash
+python make_video.py                 # nominal pick          -> results/demo_nominal.mp4
+python make_video.py --nudge         # block knocked 4 cm    -> results/demo_nudge.mp4
+python make_video.py --noise         # 6x sensor noise       -> results/demo_noise.mp4
+python make_video.py --open-loop     # camera off after one look, block knocked
+```
+
+The open-loop clip is the control case: same disturbance, camera switched off,
+gripper closes on empty table.
+
+### How closely these numbers should reproduce
+
+Every figure quoted on this page is printed by the scripts in this folder, and
+the trials are seeded, so re-running them lands in the same place. They are not
+bit-identical between runs, though, and it is worth saying why rather than
+leaving a marker to wonder.
+
+The depth image comes back from the OpenGL renderer, which is not guaranteed
+bit-exact across runs (`mjDEPTH_ZEROFAR` falls back when `ARB_clip_control` is
+unavailable, which it is here). A depth value that lands a fraction either side
+of a threshold changes which pixels the detector keeps, which moves the
+localisation by a few tenths of a millimetre, and the controller then follows a
+slightly different path. Re-running Part C at the same seed moved its final
+pre-grasp error between 1.6 mm and 2.0 mm.
+
+So the **single-trial** numbers in Parts C and D are good to about one
+significant figure, and should be read that way. The quantitative weight sits
+on Part E, where every figure is a mean over repeated trials with the spread
+reported alongside it.
 
 | File | What is in it |
 |---|---|
@@ -247,8 +284,8 @@ encoder, which needs no model at all — so that is the fair comparison:
 
 | | velocity error |
 |---|---:|
-| difference the encoder | 362 mrad/s |
-| Kalman filter | **39 mrad/s** |
+| difference the encoder | 363 mrad/s |
+| Kalman filter | **40 mrad/s** |
 
 Nine times better. Differencing amplifies quantisation: one encoder count
 (0.38 mrad) over a 2 ms step is already 0.19 rad/s of noise, and that lands
@@ -260,8 +297,8 @@ picked up. Cancelling it in the controller is worth a lot:
 
 | | tracking error |
 |---|---:|
-| `d` fed forward | **0.32 mrad** |
-| `d` ignored | 4.74 mrad |
+| `d` fed forward | **0.41 mrad** |
+| `d` ignored | 5.51 mrad |
 
 That is how steady-state droop is removed without putting an integrator in the
 controller — no wind-up, and `d` is a signal you can plot.
@@ -273,15 +310,15 @@ honest filter averages about 2.
 
 | σ_a | σ_d | NEES | velocity error | tracking |
 |---:|---:|---:|---:|---:|
-| 2 | 20 | 10.2 | 22.8 mrad/s | 0.45 mrad |
-| 2 | 60 | **7.4** | **39.1** | **0.32** |
-| 2 | 150 | 5.6 | 61.6 | 0.27 |
-| 10 | 300 | 4.4 | 88.0 | 0.27 |
+| 2 | 20 | 12.3 | 23.6 mrad/s | 0.57 mrad |
+| 2 | 60 | **8.9** | **39.7** | **0.41** |
+| 2 | 150 | 6.6 | 62.3 | 0.30 |
+| 10 | 300 | 5.2 | 88.5 | 0.31 |
 
 More process noise makes the filter more honest but blurs the velocity
 estimate. We use σ_a = 2, σ_d = 60.
 
-**NEES stays near 7 rather than 2, and that is worth being straight about.**
+**NEES stays near 9 rather than 2, and that is worth being straight about.**
 The dominant error is not random: Coulomb friction flips sign the instant a
 joint reverses, which is a step, not a random walk, and no amount of process
 noise describes a step well. Forcing NEES to 2 by inflating Q just blurs the
@@ -296,7 +333,8 @@ re-initialises there. That recovery is what makes the nudge test in Part E work.
 
 ### What happens when the block leaves the view
 
-About a quarter of the camera frames in a normal run return no detection. As
+Roughly 30% of the camera frames in a normal run return no detection (62 used,
+26 blind in the run plotted here). As
 the gripper descends, the block drops out of the wrist camera's field of view —
 the camera is mounted off to one side of the tool, so at close range it cannot
 see what the gripper is about to grasp.
@@ -337,8 +375,8 @@ that estimate carries noise:
 | **0.005** | **942** | **57.5** | **166 ms** | **2.30** |
 | 0.02 | 239 | 44.0 | 646 ms | 1.76 |
 
-On the real pick this gives **0.32 mrad** RMS tracking, with peak torque 24 N m
-against limits of 56/56/28/12/12/12. On a 0.25 m forearm 0.32 mrad is about
+On the real pick this gives **0.41 mrad** RMS tracking, with peak torque 23.3 N m
+against limits of 56/56/28/12/12/12. On a 0.25 m forearm 0.41 mrad is about
 0.1 mm at the tool — so the controller is not what limits grasp accuracy. The
 vision is.
 
@@ -361,48 +399,107 @@ asks for joint speeds the motors cannot deliver.
 `python part_e_robustness.py`
 
 15 trials per condition, reusing the same 15 block placements each time so a
-difference between rows is the condition and not luck.
+difference between rows is the condition and not luck about where the block
+landed.
 
-| Condition | Picked up | Grasp error |
-|---|---:|---:|
-| nominal | 15/15 | 0.77 mm |
-| sensor noise ×3 | 15/15 | 0.72 mm |
-| sensor noise ×6 | 15/15 | 0.83 mm |
-| sensor noise ×10 | **3/15** | 3.48 mm |
-| 40 N shove to the forearm | 15/15 | 0.75 mm |
-| 120 N shove | 15/15 | 0.78 mm |
-| block knocked 3 cm mid-approach | 15/15 | 0.74 mm |
-| block knocked 6 cm mid-approach | 15/15 | 0.69 mm |
-| unmodelled 0.5 kg payload | 15/15 | 0.72 mm |
-| unmodelled 2.0 kg payload | 15/15 | 0.74 mm |
+| Condition | Picked up | Grasp error | Block estimate error |
+|---|---:|---:|---:|
+| nominal | 15/15 | 3.87 mm | 3.98 mm |
+| sensor noise ×3 | 15/15 | 9.33 mm | 9.78 mm |
+| sensor noise ×6 | **7/15** | 14.81 mm | 15.90 mm |
+| sensor noise ×10 | **0/15** | — | — |
+| 40 N shove to the forearm | 15/15 | 3.69 mm | 3.84 mm |
+| 120 N shove | 15/15 | 4.14 mm | 4.23 mm |
+| block knocked 3 cm mid-approach | 15/15 | 4.73 mm | 4.87 mm |
+| block knocked 6 cm mid-approach | 15/15 | 3.55 mm | 3.69 mm |
+| unmodelled 0.5 kg payload | 15/15 | 3.49 mm | 3.58 mm |
+| unmodelled 2.0 kg payload | 15/15 | 3.84 mm | 3.95 mm |
 
-Nominal grasp error over 15 trials: **0.77 ± 0.16 mm**, cycle time 10.8 s.
+Nominal grasp error over 15 trials: **3.87 ± 2.42 mm**, cycle time 11.0 s.
 
-**Where it breaks.** At ten times the modelled sensor noise, 12 of 15 trials
-fail with "align took too long". The cause is visible in the numbers: the block
-estimate error rises from 0.95 mm to 3.78 mm, so the PBVS goal keeps jumping by
-more than the 3 mm arrival tolerance and the arm never settles inside it long
-enough to move on. Note the failure mode is a timeout, not a crash or a bad
-grasp — the robot gives up rather than closing its gripper on the wrong place.
-The fix would be a looser tolerance or more averaging before committing, both
-of which trade cycle time for noise immunity.
+![Success rate by condition](results/part_e_success.png)
+
+![Nominal spread over 15 trials](results/part_e_spread.png)
+
+Read the mechanical disturbances and the sensor noise rows differently. A
+120 N shove to the forearm does not move the grasp error at all, because the
+controller sees it as a disturbance, the observer's `d` state absorbs it, and
+the block never moved. Neither does an unmodelled 2 kg payload. Knocking the
+block across the table costs about a millimetre, because the filter has to
+notice, reject and re-initialise before the arm can follow. **Everything
+mechanical is cheap; only the sensing is expensive.** That is the honest
+summary of this table, and it is the opposite of what we expected before
+running it.
+
+**Where it breaks, and why.** Sensor noise is the one axis that defeats it, and
+it does so in two distinct ways:
+
+- **At ×6 noise: 7/15.** The failures are `did not lift it` (5) and `descend
+  took too long` (3). The block estimate error has risen from 3.98 mm to
+  15.90 mm — half a block width — so the gripper is being sent to a place the
+  block is not, closes on the table edge, and comes up empty. **This is the
+  failure mode to worry about**, because the robot does not know it failed. It
+  commits to a bad estimate and reports a completed grasp.
+- **At ×10 noise: 0/15, every one `align took too long`.** Here the estimate is
+  jumping by more than the 3 mm arrival tolerance faster than the arm can
+  settle inside it, so the align phase never completes. This failure is the
+  benign one: the robot gives up rather than grasping the wrong place.
+
+Those two are worth separating because the obvious fix points in opposite
+directions. Loosening the arrival tolerance would convert ×10 timeouts into
+completed-but-wrong grasps, which is worse. The real fix is more averaging
+before committing — trading cycle time for a better estimate — and a check that
+refuses to close the gripper when the filter's own covariance is too wide to
+justify it. The filter already reports that uncertainty; nothing currently acts
+on it.
 
 ### Does closing the loop through vision actually matter?
 
 Easy to claim, so here is the test. "Open loop" means the robot looks once,
 switches the camera off, and drives to where it thought the block was.
 
-| | Picked up |
-|---|---:|
-| open loop, nothing disturbs the block | 15/15 |
-| closed loop, block knocked 4 cm | **15/15** |
-| open loop, block knocked 4 cm | **0/15** |
+| | Picked up | Grasp error |
+|---|---:|---:|
+| closed loop, nominal | **15/15** | 3.87 mm |
+| closed loop, block knocked 4 cm | **15/15** | 5.45 mm |
+| open loop, block parked | 5/15 | 19.89 mm |
+| open loop, block moving | 7/15 | 11.27 mm |
+| open loop, block knocked 4 cm | **0/15** | — |
+| no velocity feedforward | **0/15** | — |
 
-With nothing moving, open loop is fine — which is exactly why this comparison
-needs a disturbance to mean anything. With the camera running, the filter sees
-measurements that disagree with its estimate, gates them out, and after four in
-a row concludes the block has really moved and re-initialises. Open loop there
-is nothing to notice with, and the gripper closes on empty table.
+Three things in that table, and only the third is the one we set out to test.
+
+**Open loop fails even with nothing disturbing the block** — 5/15 with it
+parked. That is not what we predicted, and the reason is the motion model. A
+constant-velocity filter with nothing left to correct it does not sit still, it
+*extrapolates* along whatever velocity it happened to infer from its first three
+frames. Guess 10 mm/s wrong and six seconds of approach turns that into 60 mm
+of error. An earlier constant-position version of this filter had no velocity to
+be wrong about and so degraded gracefully instead. **The motion model is what
+lets the robot coast through the blind frames at the end of the descent, and it
+is also what makes running without measurements dangerous.** A motion model is
+only worth having while something keeps correcting it. That trade is a direct
+consequence of the design choice in Part C, and it cuts both ways.
+
+**Velocity feedforward is load-bearing: 0/15 without it.** Nothing is broken in
+that run — the camera is running, the filter is tracking the block to a few
+millimetres, the arm is healthy. It simply never closes. A proportional law
+settles at a steady `error = speed / gain`, about 14 mm at belt speed, against a
+block 30 mm wide and a 3 mm grasp tolerance, so the tool trails the block across
+the table until the phase times out. It is the plainest demonstration in this
+project that **estimating a state and using it are two different things**.
+
+**And the comparison we meant to run:** with the block knocked 4 cm after the
+robot has locked on, closed loop is 15/15 and open loop is 0/15. With the camera
+running, the filter sees measurements that disagree with its estimate, gates
+them out, and after four consecutive rejections concludes the block has really
+moved and re-initialises there. Open loop there is nothing to notice with, and
+the gripper closes on empty table.
+
+One caveat on reading that table: the two open-loop rows are separate
+experiments, not a matched pair. A parked block is drawn from the whole table
+while a moving one always starts at the upstream edge, so the placements differ
+and the two success rates are not comparable like for like.
 
 ---
 
