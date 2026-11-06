@@ -201,5 +201,5 @@ The robustness suite also injects a 2 mm calibration-mount error and a 2% depth-
 ## Generative AI declaration
 
 <!-- AI:START -->
-OpenAI’s ChatGPT was used to explain the content and theory, improve understanding of the task, assist with debugging and provide guidance in complex situations. 
+OpenAI’s ChatGPT was used to explain the content and theory, improve understanding of the task, assist with debugging and provide guidance in complex situations. OpenAI Codex also assisted with code implementation, documentation, validation and video editing. The video uses AI-generated synthetic narration.
 <!-- AI:END -->

@@ -1,0 +1,36 @@
+name: Deploy project portfolio
+on:
+  push:
+    branches: ["ryan/project-upload"]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Prepare only portfolio evidence for publication
+        run: |
+          mkdir -p _site/project
+          cp index.html .nojekyll _site/
+          cp -R project/results _site/project/results
+          find _site -type f -name '*.npz' -delete
+          find _site -type f -name '*.mp4' -delete
+          rm -rf _site/project/results/legacy_before_review _site/project/results/.mpl-cache
+          cp project/README.md project/requirements.txt _site/project/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
